@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pesan Sekarang — Dear Darlene</title>
+<meta name="description" content="Form pemesanan Dear Darlene — pilih seri, total terhitung otomatis, kirim ke WhatsApp.">
+<link rel="icon" href="images/brand/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+.order-wrap{padding:54px 0 90px}
+.order-layout{display:grid;grid-template-columns:1.45fr .95fr;gap:30px;align-items:start;max-width:1060px;margin:0 auto}
+.info-strip{max-width:1060px;margin:0 auto 26px;display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.info-strip div{background:var(--paper);border-left:3px solid var(--wine);padding:11px 16px;font-size:12px;color:var(--taupe);border-radius:0 8px 8px 0}
+.form-card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:34px 36px}
+.fg-title{font-family:var(--pf);font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--maroon);border-bottom:1px solid var(--line);padding-bottom:9px;margin:28px 0 18px;display:flex;align-items:center;gap:9px}
+.fg-title:first-child{margin-top:0}
+.fg-title .dot{width:7px;height:7px;background:var(--wine);border-radius:50%}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:11px;letter-spacing:.5px;text-transform:uppercase;color:var(--taupe);margin-bottom:6px}
+.field label .req{color:var(--wine)}
+.field input,.field select,.field textarea{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-family:var(--body);font-size:14px;font-weight:300;background:var(--cream);color:var(--ink);transition:.2s}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--maroon);background:#fff;box-shadow:0 0 0 3px rgba(84,11,20,.07)}
+.field textarea{resize:vertical;min-height:62px}
+.field .hint{font-size:11px;color:var(--taupe);margin-top:4px}
+/* summary sticky */
+.summary{position:sticky;top:96px;background:var(--maroon);color:var(--cream);border-radius:16px;padding:28px 28px;box-shadow:0 24px 50px -26px rgba(84,11,20,.5)}
+.summary h4{font-family:var(--pf);font-size:15px;letter-spacing:1px;text-transform:uppercase;color:var(--cream);margin-bottom:16px}
+.sum-row{display:flex;justify-content:space-between;align-items:baseline;font-size:13.5px;padding:6px 0;color:#ecd9d4}
+.sum-row.free b{color:#f0ddd8}
+.sum-total{display:flex;justify-content:space-between;align-items:baseline;border-top:1px solid rgba(248,248,246,.25);margin-top:12px;padding-top:14px}
+.sum-total span{font-size:11px;letter-spacing:2px;text-transform:uppercase}
+.sum-total b{font-family:var(--pf);font-size:26px;color:var(--cream)}
+.pay-box{background:rgba(248,248,246,.1);border:1px dashed rgba(248,248,246,.35);border-radius:12px;padding:15px 16px;margin-top:18px;font-size:13px}
+.pay-box .bank{font-family:var(--pf);font-size:18px;color:var(--cream);letter-spacing:.5px;margin:2px 0}
+.pay-box .note{color:#ecd9d4;font-size:12px;margin-top:7px;font-style:italic}
+.summary .btn{margin-top:18px}
+.summary .err{color:#ffd9d2;font-size:12px;margin-top:10px;display:none;text-align:center}
+.summary small{display:block;color:#e6d4cf;font-size:11px;margin-top:10px;text-align:center}
+@media(max-width:880px){
+  .order-layout{grid-template-columns:1fr;gap:22px}
+  .summary{position:static}
+  .info-strip{grid-template-columns:1fr}
+  .form-card{padding:26px 22px}
+}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a href="index.html" class="brand"><span class="dd">DD</span><span class="wm">DARLENE</span></a>
+  <div class="nav-links"><a href="index.html">Home</a><a href="koleksi.html">Koleksi</a><a href="about.html">About</a><a href="news.html">News</a><a href="order.html" class="btn btn-primary active">Pesan Sekarang</a></div>
+  <button class="burger" onclick="document.getElementById('senderName').focus()">☰</button>
+</div></nav>
+
+<main>
+<div class="pagehead">
+  <div class="wrap">
+    <div class="crumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Pesan</div>
+    <span class="eyebrow">Pemesanan</span>
+    <h1>Buat Pesanan Anda</h1>
+    <p>Isi form di bawah — total terhitung otomatis, lalu kirim ke WhatsApp kami dengan satu klik.</p>
+  </div>
+</div>
+
+<div class="order-wrap">
+  <div class="wrap">
+    <div class="info-strip reveal">
+      <div>🔅 Same day order dikirim 1–2 jam setelah pembayaran</div>
+      <div>🔅 Same day: tulisan &amp; warna mengikuti template katalog</div>
+      <div>🔅 Preview desain diberikan setelah pembayaran</div>
+      <div>📦 Pengiriman 08.45–16.45 (Sabtu s/d 14.45)</div>
+    </div>
+
+    <div class="order-layout">
+      <!-- FORM -->
+      <div class="form-card reveal">
+        <div class="fg-title"><span class="dot"></span>Data Pengirim</div>
+        <div class="grid2">
+          <div class="field"><label>Nama <span class="req">*</span></label><input id="senderName" placeholder="Nama Anda"></div>
+          <div class="field"><label>No HP <span class="req">*</span></label><input id="senderPhone" inputmode="tel" placeholder="08xxxxxxxxxx"></div>
+        </div>
+
+        <div class="fg-title"><span class="dot"></span>Data Penerima</div>
+        <div class="grid2">
+          <div class="field"><label>Nama Penerima <span class="req">*</span></label><input id="recName" placeholder="Nama penerima"></div>
+          <div class="field"><label>No HP Penerima</label><input id="recPhone" inputmode="tel" placeholder="08xxxxxxxxxx"></div>
+        </div>
+        <div class="field"><label>Alamat Lengkap <span class="req">*</span></label><textarea id="recAddr" placeholder="Alamat lengkap pengiriman"></textarea></div>
+        <div class="grid2">
+          <div class="field"><label>Hari / Tanggal Pengiriman <span class="req">*</span></label><input id="delDate" type="date"></div>
+          <div class="field"><label>Jam Tiba (jika request)</label><input id="delTime" type="time"></div>
+        </div>
+
+        <div class="fg-title"><span class="dot"></span>Detail Produk</div>
+        <div class="grid2">
+          <div class="field"><label>Ukuran <span class="req">*</span></label>
+            <select id="series"><option value="">— Pilih ukuran —</option>
+              <option value="classic">Classic — Rp 290.000</option>
+              <option value="grande">Grande — Rp 590.000</option>
+              <option value="royale">Royale — Rp 680.000</option>
+              <option value="outdoor">Outdoor — mulai Rp 500.000</option>
+            </select></div>
+          <div class="field"><label>Variasi</label>
+            <select id="variation"><option value="">— Pilih —</option><option value="Lite">Lite (ilustrasi cetak)</option><option value="Bloom">Bloom (dengan bunga)</option></select></div>
+          <div class="field"><label>Design</label>
+            <select id="design"><option value="">— Pilih —</option><option value="Rosie">Rosie (Lite)</option><option value="Jasmine">Jasmine (Bloom)</option><option value="Lily">Lily (Bloom)</option><option value="Orchid">Orchid (Bloom)</option></select></div>
+          <div class="field"><label>Warna</label>
+            <select id="color"><option value="Sesuai foto katalog">Sesuai foto katalog</option><option value="Custom warna (min. H-2)">Custom warna (min. H-2)</option></select></div>
+        </div>
+        <div class="field"><label>Add-On Logo 3D + Lampu</label>
+          <select id="addon"><option value="tidak">Tidak</option><option value="ya">Ya (Classic +20rb · Grande +30rb · Royale +40rb)</option></select></div>
+        <div class="field"><label>Tulisan di Papan <span class="req">*</span> <span class="hint">(akan di-copy persis)</span></label><textarea id="boardText" placeholder="Contoh: Congratulations for the opening of ..."></textarea></div>
+        <div class="grid2">
+          <div class="field"><label>Tulisan "from" di Papan</label><input id="fromText" placeholder="Contoh: from RICH Sneakers"></div>
+          <div class="field"><label>Logo (IG / screenshot)</label><input id="logo" placeholder="@instagram / infokan logo"></div>
+        </div>
+        <div class="field" style="margin-bottom:0"><label>Tau Dear Darlene dari mana?</label><input id="source" placeholder="Instagram / teman / Google ..."></div>
+      </div>
+
+      <!-- SUMMARY -->
+      <div class="summary reveal">
+        <h4>Ringkasan Pesanan</h4>
+        <div id="sumLines"><div class="sum-row"><span>Belum ada produk dipilih</span><b>—</b></div></div>
+        <div class="sum-row free"><span>Ongkir (Jkt &amp; Tgr)</span><b>FREE</b></div>
+        <div class="sum-total"><span>Total</span><b id="sumTotal">Rp 0</b></div>
+        <div class="pay-box">
+          <div>Transfer ke:</div>
+          <div class="bank">BCA 6044700594</div>
+          <div>a.n. Felicia Darlene</div>
+          <div class="note">Jika sudah transfer, preview desain kami kirim ya 🥰</div>
+        </div>
+        <button class="btn btn-cream btn-block" id="submitBtn">
+          <svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.1-.2.3-.7 1-.9 1.1-.2.2-.3.2-.6.1-1.7-.9-2.8-1.5-4-3.4-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5-.1-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 5 4.3 1.8.8 2.5.9 3.4.8.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 00-8.6 15l-1.4 5 5.2-1.4A10 10 0 1012 2z"/></svg>
+          Pesan via WhatsApp
+        </button>
+        <div class="err" id="errMsg">Mohon lengkapi data bertanda * dulu ya.</div>
+        <small>Diarahkan ke WhatsApp dengan detail terisi otomatis.</small>
+      </div>
+    </div>
+  </div>
+</div>
+</main>
+
+<footer class="footer" id="footer"></footer>
+<a class="fab" href="https://wa.me/628111344911?text=Halo%20Dear%20Darlene%20%F0%9F%8C%B8" target="_blank" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.1-.2.3-.7 1-.9 1.1-.2.2-.3.2-.6.1-1.7-.9-2.8-1.5-4-3.4-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5-.1-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 5 4.3 1.8.8 2.5.9 3.4.8.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 00-8.6 15l-1.4 5 5.2-1.4A10 10 0 1012 2z"/></svg></a>
+
+<script>
+var CONFIG={waNumber:"628111344911",bank:"BCA 6044700594 a.n. Felicia Darlene",ongkir:0,
+  prices:{classic:290000,grande:590000,royale:680000,outdoor:500000},
+  addonPrices:{classic:20000,grande:30000,royale:40000,outdoor:0},
+  seriesLabel:{classic:"Classic",grande:"Grande",royale:"Royale",outdoor:"Outdoor"}};
+function rupiah(n){return "Rp "+n.toLocaleString("id-ID");}
+function val(id){return (document.getElementById(id).value||"").trim();}
+function recalc(){
+  var s=val("series"),lines=document.getElementById("sumLines"),totalEl=document.getElementById("sumTotal");
+  if(!s){lines.innerHTML='<div class="sum-row"><span>Belum ada produk dipilih</span><b>—</b></div>';totalEl.textContent="Rp 0";return {base:0,total:0,desc:""};}
+  var base=CONFIG.prices[s]||0,label=CONFIG.seriesLabel[s],html="";
+  var desc=[label,val("variation"),val("design")].filter(Boolean).join(" ");
+  if(val("color")&&val("color").indexOf("katalog")<0)desc+=" ("+val("color")+")";
+  html+='<div class="sum-row"><span>'+(desc||label)+'</span><b>'+rupiah(base)+'</b></div>';
+  var total=base;
+  if(val("addon")==="ya"){var ad=CONFIG.addonPrices[s]||0;if(ad>0){html+='<div class="sum-row"><span>Add-on Logo 3D + Lampu</span><b>'+rupiah(ad)+'</b></div>';total+=ad;}}
+  if(s==="outdoor")html+='<div class="sum-row"><span style="font-size:11.5px">*Harga final via WhatsApp</span><b></b></div>';
+  total+=CONFIG.ongkir;lines.innerHTML=html;totalEl.textContent=rupiah(total);
+  return {base:base,total:total,desc:(desc||label)};
+}
+["series","variation","design","color","addon"].forEach(function(id){document.getElementById(id).addEventListener("change",recalc);});
+function buildMessage(){
+  var s=val("series"),c=recalc(),L="*Form Pemesanan Dear Darlene*\n\n";
+  L+="*DATA PENGIRIM*\nNama : "+val("senderName")+"\nNo HP : "+val("senderPhone")+"\n\n";
+  L+="*DATA PENERIMA*\nNama : "+val("recName")+"\nNo HP : "+(val("recPhone")||"-")+"\nAlamat lengkap : "+val("recAddr")+"\nHari/tanggal pengiriman : "+val("delDate")+"\nJam tiba : "+(val("delTime")||"-")+"\n\n";
+  L+="*DETAIL PRODUK*\nUkuran : "+(CONFIG.seriesLabel[s]||"-")+"\nVariasi : "+(val("variation")||"-")+"\nDesign : "+(val("design")||"-")+"\nWarna : "+(val("color")||"-")+"\nAdd On Logo 3D+Lampu : "+(val("addon")==="ya"?"Ya":"Tidak")+"\nTulisan di papan : "+(val("boardText")||"-")+"\nTulisan from : "+(val("fromText")||"-")+"\nLogo : "+(val("logo")||"-")+"\nTau Dear Darlene darimana : "+(val("source")||"-")+"\n\n";
+  L+="*RINGKASAN*\n"+c.desc+" : "+rupiah(c.base)+"\n";
+  if(val("addon")==="ya"&&CONFIG.addonPrices[s]>0)L+="Add-on Logo 3D+Lampu : "+rupiah(CONFIG.addonPrices[s])+"\n";
+  L+="Ongkir : "+(CONFIG.ongkir>0?rupiah(CONFIG.ongkir):"FREE")+"\nTOTAL : "+rupiah(c.total)+"\n\nPembayaran : "+CONFIG.bank;
+  return L;
+}
+document.getElementById("submitBtn").addEventListener("click",function(){
+  var req=["senderName","senderPhone","recName","recAddr","delDate","series","boardText"],ok=true;
+  req.forEach(function(id){var el=document.getElementById(id);if(!el.value.trim()){ok=false;el.style.borderColor="#8d3b46";}else el.style.borderColor="";});
+  var err=document.getElementById("errMsg");
+  if(!ok){err.style.display="block";document.querySelector('.form-card').scrollIntoView({behavior:"smooth",block:"start"});return;}
+  err.style.display="none";
+  window.open("https://wa.me/"+CONFIG.waNumber+"?text="+encodeURIComponent(buildMessage()),"_blank");
+});
+
+// Auto-pilih ukuran dari tombol "Pesan X" (mis. order.html?series=grande)
+(function(){
+  var p=new URLSearchParams(location.search).get("series");
+  if(p&&CONFIG.prices[p]){
+    var sel=document.getElementById("series");
+    sel.value=p;
+    sel.style.transition="box-shadow .3s"; sel.style.boxShadow="0 0 0 3px rgba(141,59,70,.3)";
+    setTimeout(function(){sel.style.boxShadow="";},1600);
+    // sorot ringkasan biar kelihatan total langsung
+    var sm=document.querySelector(".summary");
+    if(sm){sm.style.transition="transform .3s";sm.style.transform="scale(1.015)";setTimeout(function(){sm.style.transform="";},500);}
+  }
+})();
+recalc();
+</script>
+<script src="shared.js"></script>
+</body>
+</html>
