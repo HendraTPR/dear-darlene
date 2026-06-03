@@ -108,6 +108,10 @@ section{padding:96px 0}
 
 @media(max-width:880px){
   .nav-links{display:none}.burger{display:block}
+  .nav.nav-open .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;position:absolute;top:100%;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--line);box-shadow:0 14px 26px rgba(53,40,37,.10);padding:4px 22px 16px}
+  .nav.nav-open .nav-links a{width:100%;padding:14px 2px;border-bottom:1px solid var(--line);font-size:13px;letter-spacing:1.5px}
+  .nav.nav-open .nav-links a:not(.btn).active:after{display:none}
+  .nav.nav-open .nav-links a.btn-primary{margin-top:14px;text-align:center;border-radius:999px;border-bottom:none;padding:14px}
   section{padding:64px 0}.sec-head h2{font-size:30px}.pagehead h1{font-size:34px}
   .footer-grid{grid-template-columns:1fr;gap:30px}
 }
