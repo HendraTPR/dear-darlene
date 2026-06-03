@@ -55,22 +55,31 @@
   .options .opt-grid{grid-template-columns:1fr}
   .masonry{columns:2}
 }
+
+/* ===== Galeri foto per variasi (geser kiri/kanan) ===== */
+.gal-wrap{position:relative}
+.gal-nav{position:absolute;inset:0;display:flex;justify-content:space-between;align-items:center;pointer-events:none;padding:0 10px}
+.gal-nav button{pointer-events:auto;width:40px;height:40px;border-radius:50%;border:none;background:rgba(255,255,255,.92);color:var(--maroon);font-size:24px;line-height:1;cursor:pointer;box-shadow:0 4px 14px -4px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;transition:.2s;font-family:var(--body)}
+.gal-nav button:hover{background:#fff;transform:scale(1.08)}
+.gal-dots{display:flex;gap:7px;justify-content:center;margin-top:12px}
+.gal-dots .gd{width:8px;height:8px;border-radius:50%;background:var(--taupe-soft);transition:.2s}
+.gal-dots .gd.on{background:var(--maroon);width:22px;border-radius:4px}
+
 </style>
 </head>
 <body>
 <nav class="nav"><div class="wrap">
-  <a href="index.html" class="brand"><span class="dd">DD</span><span class="wm">DARLENE</span></a>
-  <div class="nav-links"><a href="index.html">Home</a><a href="koleksi.html" class="active">Koleksi</a><a href="about.html">About</a><a href="news.html">News</a><a href="order.html" class="btn btn-primary">Pesan Sekarang</a></div>
+  <a href="index.html" class="brand"><img class="dd-logo" src="images/brand/icon.png" alt="DD"><img class="brand-wm" src="images/brand/logo-wordmark.png" alt="Dear Darlene"></a>
+  <div class="nav-links"><a href="index.html">Home</a><a href="koleksi.html" class="active">Our Products</a><a href="about.html">About Us</a>
+      <a href="faq.html">F.A.Q</a><a href="news.html">News</a><a href="order.html" class="btn btn-primary">ORDER NOW</a></div>
   <button class="burger" onclick="location.href='order.html'">&#9776;</button>
 </div></nav>
 
 <main>
 <div class="pagehead">
   <div class="wrap">
-    <div class="crumb"><a href="index.html">Home</a> &nbsp;/&nbsp; Koleksi</div>
-    <span class="eyebrow">Our Collection</span>
-    <h1>Koleksi Dear Darlene</h1>
-    <p>Empat seri dengan ukuran &amp; karakter berbeda. Klik foto untuk memperbesar. Tulisan &amp; warna dapat dikustomisasi (min. H-2).</p>
+    <h1>Our Products</h1>
+    <p>Empat seri produk dengan ukuran &amp; desain berbeda. Klik foto untuk memperbesar. Tulisan &amp; warna dapat dicustom (minimal H-2).</p>
   </div>
 </div>
 
@@ -78,22 +87,65 @@
 <section class="series">
   <div class="wrap">
     <div class="s-media slide-l">
-      <img id="m-classic" class="big zoomable" src="images/products/tap00085.jpg" alt="Classic Series (tabletop)">
+      <div class="gal-wrap">
+        <img id="m-classic" class="big zoomable" src="images/products/classic-rosie-red.jpg" alt="Classic Series (tabletop)">
+        <div class="gal-nav" style="display:none">
+          <button class="gal-prev" aria-label="Foto sebelumnya">‹</button>
+          <button class="gal-next" aria-label="Foto berikutnya">›</button>
+        </div>
+        <div class="gal-dots"></div>
+      </div>
       <div class="s-thumbs">
-        <img class="zoomable" src="images/products/tap00082.jpg" alt="Classic">
-        <img class="zoomable" src="images/products/tap00098.jpg" alt="Classic">
-        <img class="zoomable" src="images/products/tap00100.jpg" alt="Classic">
+        <img class="zoomable" src="images/products/classic-rosie-blue.jpg" alt="Classic Rosie Blue">
+        <img class="zoomable" src="images/products/classic-rosie-brown.jpg" alt="Classic Rosie Brown">
+        <img class="zoomable" src="images/products/classic-rosie-yellow.jpg" alt="Classic Rosie Yellow">
       </div>
       <div class="zoom-note">🔍 <b>Klik foto untuk zoom.</b> Classic diletakkan di atas meja (tabletop).</div>
     </div>
     <div class="s-text slide-r">
       <span class="eyebrow">Seri 01</span>
       <h2>Classic</h2>
-      <div class="dim">Tabletop · di atas meja · 35–41 × 45–55 cm</div>
+      <div class="dim">Tabletop · di atas meja · Tripod 13 cm</div>
+      <div class="board-size">Ukuran papan: <b class="bsize-val">35×45 cm</b></div>
       <p>Papan bunga tabletop yang manis dan elegan. Sempurna diletakkan di meja sambutan, kasir, atau sudut estetik.</p>
-      <div class="s-price">Rp 290.000 <small>Mulai dari</small></div>
-      <div class="s-variants"><span class="chip">Jasmine</span><span class="chip">Orchid</span><span class="chip">Lily</span></div>
-      <a href="order.html?series=classic" class="btn btn-primary">Pesan Classic</a>
+      <div class="s-price">Rp 190.000 <small>Mulai dari</small></div>
+      <div class="variant-picker" data-series="classic">
+        <span class="vp-label">Pilih Variasi</span>
+        <div class="vp-opts" data-group="design">
+          <span class="vp-opt sel" data-v="Lite" data-design="Rosie" data-price="190000" data-custom="0" data-size-cm="35×45 cm">Rosie <small>(Lite)</small></span>
+          <span class="vp-opt" data-v="Bloom" data-design="Jasmine" data-price="290000" data-custom="1" data-size-cm="35×45 cm">Jasmine <small>(Bloom)</small></span>
+          <span class="vp-opt" data-v="Bloom" data-design="Orchid" data-price="290000" data-custom="1" data-size-cm="35×45 cm">Orchid <small>(Bloom)</small></span>
+          <span class="vp-opt" data-v="Bloom" data-design="Lily" data-price="290000" data-custom="1" data-size-cm="41×55 cm">Lily <small>(Bloom)</small></span>
+        </div>
+        <div class="vp-sub" data-group="color">
+          <span class="vp-label">Pilih Warna <small style="text-transform:none;letter-spacing:0;color:var(--taupe)">(Rosie tidak bisa custom warna)</small></span>
+          <div class="vp-opts">
+            <span class="vp-opt sel" data-color="Red">Red</span>
+            <span class="vp-opt" data-color="Brown">Brown</span>
+            <span class="vp-opt" data-color="Yellow">Yellow</span>
+            <span class="vp-opt" data-color="Blue">Blue</span>
+          </div>
+        </div>
+        <div class="vp-sub" data-group="bloomvar" style="display:none">
+          <span class="vp-label">Warna Variasi</span>
+          <div class="vp-opts">
+            <span class="vp-opt sel" data-var="Sesuai foto katalog">Sesuai foto katalog</span>
+            <span class="vp-opt" data-var="Custom warna (min. H-2)">Custom warna <small>(min. H-2)</small></span>
+          </div>
+        </div>
+        <div class="vp-sub" data-group="addon">
+          <span class="vp-label">Add-On</span>
+          <div class="vp-opts">
+            <span class="vp-opt sel" data-addon="0" data-addon-price="0">Tanpa Add-On</span>
+            <span class="vp-opt" data-addon="1" data-addon-price="20000">+ Logo 3D &amp; Lampu <small>(+Rp 20.000)</small></span>
+          </div>
+        </div>
+      </div>
+      <div class="addon-note">ℹ️ <b>Note:</b> Beberapa foto menampilkan produk dengan <b>Add-On Logo 3D + Lampu</b>. Versi TANPA Add-ON adalah polos tanpa logo timbul &amp; lampu.</div>
+      <div class="buy-row">
+        <button class="btn btn-primary add-cart-btn" data-series="classic" data-img="images/products/classic-rosie-red.jpg">+ Keranjang</button>
+        <a href="order.html?series=classic" class="btn btn-outline">Pesan Langsung</a>
+      </div>
     </div>
   </div>
 </section>
@@ -102,68 +154,156 @@
 <section class="series flip">
   <div class="wrap">
     <div class="s-media slide-r">
-      <img id="m-grande" class="big zoomable" src="images/products/tap00067.jpg" alt="Grande Series (standing)">
+      <div class="gal-wrap">
+        <img id="m-grande" class="big zoomable" src="images/products/grande-rosie-red.jpg" alt="Grande Series (standing)">
+        <div class="gal-nav" style="display:none">
+          <button class="gal-prev" aria-label="Foto sebelumnya">‹</button>
+          <button class="gal-next" aria-label="Foto berikutnya">›</button>
+        </div>
+        <div class="gal-dots"></div>
+      </div>
       <div class="s-thumbs">
-        <img class="zoomable" src="images/products/tap01748.jpg" alt="Grande">
-        <img class="zoomable" src="images/products/tap00107.jpg" alt="Grande">
-        <img class="zoomable" src="images/products/tap00128.jpg" alt="Grande">
+        <img class="zoomable" src="images/products/grande-rosie-brown.jpg" alt="Grande Rosie Brown">
+        <img class="zoomable" src="images/products/grande-rosie-yellow.jpg" alt="Grande Rosie Yellow">
+        <img class="zoomable" src="images/products/grande-rosie-blue.jpg" alt="Grande Rosie Blue">
       </div>
       <div class="zoom-note">🔍 <b>Klik foto untuk zoom.</b> Grande berdiri di atas easel kayu (standing).</div>
     </div>
     <div class="s-text slide-l">
       <span class="eyebrow">Seri 02</span>
       <h2>Grande</h2>
-      <div class="dim">Standing · easel kayu · 64–75 × 83–100 cm · tripod 75 cm</div>
-      <p>Papan bunga standing dengan easel kayu — hadir lebih tinggi &amp; menonjol untuk grand opening &amp; acara besar.</p>
+      <div class="dim">Standing · tripod kayu · 75 cm</div>
+      <div class="board-size">Ukuran papan: <b class="bsize-val">85×103 cm</b></div>
+      <p>Papan bunga standing dengan tripod kayu, cocok untuk segala jenis event.</p>
       <div class="s-price">Rp 590.000 <small>Mulai dari</small></div>
-      <div class="s-variants"><span class="chip">Jasmine</span><span class="chip">Orchid</span><span class="chip">Lily</span></div>
-      <div class="addon-mini">
-        <img class="zoomable" src="images/products/tap00069.jpg" alt="Contoh Add-On Logo 3D">
-        <div class="t"><b>Contoh Add-On:</b> Logo penerima 3D timbul + lampu di papan. Klik untuk zoom.</div>
+      <div class="variant-picker" data-series="grande">
+        <span class="vp-label">Pilih Variasi</span>
+        <div class="vp-opts" data-group="design">
+          <span class="vp-opt sel" data-v="Lite" data-design="Rosie" data-price="490000" data-custom="0" data-size-cm="85×103 cm">Rosie <small>(Lite)</small></span>
+          <span class="vp-opt" data-v="Bloom" data-design="Jasmine" data-price="590000" data-custom="1" data-size-cm="64×83 cm">Jasmine <small>(Bloom)</small></span>
+          <span class="vp-opt" data-v="Bloom" data-design="Orchid" data-price="590000" data-custom="1" data-size-cm="64×83 cm">Orchid <small>(Bloom)</small></span>
+          <span class="vp-opt" data-v="Bloom" data-design="Lily" data-price="590000" data-custom="1" data-size-cm="79×100 cm">Lily <small>(Bloom)</small></span>
+        </div>
+        <div class="vp-sub" data-group="color">
+          <span class="vp-label">Pilih Warna <small style="text-transform:none;letter-spacing:0;color:var(--taupe)">(Rosie tidak bisa custom warna)</small></span>
+          <div class="vp-opts">
+            <span class="vp-opt sel" data-color="Red">Red</span>
+            <span class="vp-opt" data-color="Brown">Brown</span>
+            <span class="vp-opt" data-color="Yellow">Yellow</span>
+            <span class="vp-opt" data-color="Blue">Blue</span>
+          </div>
+        </div>
+        <div class="vp-sub" data-group="bloomvar" style="display:none">
+          <span class="vp-label">Warna Variasi</span>
+          <div class="vp-opts">
+            <span class="vp-opt sel" data-var="Sesuai foto katalog">Sesuai foto katalog</span>
+            <span class="vp-opt" data-var="Custom warna (min. H-2)">Custom warna <small>(min. H-2)</small></span>
+          </div>
+        </div>
+        <div class="vp-sub" data-group="addon">
+          <span class="vp-label">Add-On</span>
+          <div class="vp-opts">
+            <span class="vp-opt sel" data-addon="0" data-addon-price="0">Tanpa Add-On</span>
+            <span class="vp-opt" data-addon="1" data-addon-price="30000">+ Logo 3D &amp; Lampu <small>(+Rp 30.000)</small></span>
+          </div>
+        </div>
       </div>
-      <a href="order.html?series=grande" class="btn btn-primary">Pesan Grande</a>
+      <div class="addon-note">ℹ️ <b>Note:</b> Beberapa foto menampilkan produk dengan <b>Add-On Logo 3D + Lampu</b>. Versi TANPA Add-ON adalah polos tanpa logo timbul &amp; lampu.</div>
+      <div class="buy-row">
+        <button class="btn btn-primary add-cart-btn" data-series="grande" data-img="images/products/grande-rosie-red.jpg">+ Keranjang</button>
+        <a href="order.html?series=grande" class="btn btn-outline">Pesan Langsung</a>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- ROYALE (biggest, landscape, full 3D floral) -->
+<!-- ROYALE (biggest, landscape, full illustrated floral / Rosie Lite) -->
 <section class="series">
   <div class="wrap">
     <div class="s-media slide-l">
-      <img id="m-royale" class="big zoomable" src="images/products/tap01771.jpg" alt="Royale Series (full 3D floral)">
+      <img id="m-royale" class="big zoomable" src="images/products/royale-rosie-red.jpg" alt="Royale Rosie (Lite)">
       <div class="s-thumbs">
-        <img class="zoomable" src="images/products/tap00306.jpg" alt="Royale">
-        <img class="zoomable" src="images/products/tap00342.jpg" alt="Royale">
-        <img class="zoomable" src="images/products/tap01285.jpg" alt="Royale">
+        <img class="zoomable" src="images/products/royale-rosie-brown.jpg" alt="Royale Rosie Brown">
+        <img class="zoomable" src="images/products/royale-rosie-yellow.jpg" alt="Royale Rosie Yellow">
+        <img class="zoomable" src="images/products/royale-rosie-blue.jpg" alt="Royale Rosie Blue">
       </div>
-      <div class="zoom-note">🔍 <b>Klik foto untuk zoom.</b> Royale paling besar dengan rangkaian bunga 3D penuh.</div>
+      <div class="zoom-note">🔍 <b>Klik foto untuk zoom.</b> Royale paling besar dengan ilustrasi bunga penuh.</div>
     </div>
     <div class="s-text slide-r">
       <span class="eyebrow">Seri 03</span>
       <h2>Royale</h2>
-      <div class="dim">Paling besar · bunga 3D penuh + pita · 110 × 90 cm · tripod 75 cm</div>
-      <p>Mahkota koleksi kami — rangkaian bunga 3D penuh dengan pita mewah. Statement piece yang tak terlupakan.</p>
+      <div class="dim">Paling besar · ilustrasi bunga penuh · 110 × 90 cm · tripod 75 cm</div>
+      <p>Papan indoor ukuran terbesar dengan ilustrasi rangkaian bunga yang penuh &amp; mewah.</p>
       <div class="s-price">Rp 680.000 <small>Mulai dari</small></div>
-      <div class="s-variants"><span class="chip">Red</span><span class="chip">Yellow</span><span class="chip">Blue</span><span class="chip">Brown</span></div>
-      <a href="order.html?series=royale" class="btn btn-primary">Pesan Royale</a>
+      <div class="variant-picker" data-series="royale">
+        <span class="vp-label">Variasi: Rosie (Lite)</span>
+        <div class="vp-opts" data-group="design" style="display:none">
+          <span class="vp-opt sel" data-v="Lite" data-design="Rosie" data-price="680000" data-custom="0">Rosie</span>
+        </div>
+        <div class="vp-sub" data-group="color">
+          <span class="vp-label">Pilih Warna <small style="text-transform:none;letter-spacing:0;color:var(--taupe)">(Rosie tidak bisa custom warna)</small></span>
+          <div class="vp-opts">
+            <span class="vp-opt sel" data-color="Red">Red</span>
+            <span class="vp-opt" data-color="Brown">Brown</span>
+            <span class="vp-opt" data-color="Yellow">Yellow</span>
+            <span class="vp-opt" data-color="Blue">Blue</span>
+          </div>
+        </div>
+        <div class="vp-sub" data-group="addon">
+          <span class="vp-label">Add-On</span>
+          <div class="vp-opts">
+            <span class="vp-opt sel" data-addon="0" data-addon-price="0">Tanpa Add-On</span>
+            <span class="vp-opt" data-addon="1" data-addon-price="40000">+ Logo 3D &amp; Lampu <small>(+Rp 40.000)</small></span>
+          </div>
+        </div>
+      </div>
+      <div class="addon-note">ℹ️ <b>Note:</b> Beberapa foto menampilkan produk dengan <b>Add-On Logo 3D + Lampu</b>. Versi TANPA Add-ON adalah polos tanpa logo timbul &amp; lampu.</div>
+      <div class="buy-row">
+        <button class="btn btn-primary add-cart-btn" data-series="royale" data-img="images/products/royale-rosie-red.jpg">+ Keranjang</button>
+        <a href="order.html?series=royale" class="btn btn-outline">Pesan Langsung</a>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- OUTDOOR (format only) -->
+<!-- OUTDOOR (papan klasik) -->
 <section class="series flip">
   <div class="wrap">
     <div class="s-media slide-r">
-      <div class="ph-ph"><div class="f">✿</div><span>Foto menyusul</span></div>
+      <div class="gal-wrap">
+        <img id="m-outdoor" class="big zoomable" src="images/products/outdoor-basic-elegant.jpg" alt="Outdoor (papan klasik)">
+        <div class="gal-nav" style="display:none">
+          <button class="gal-prev" aria-label="Foto sebelumnya">‹</button>
+          <button class="gal-next" aria-label="Foto berikutnya">›</button>
+        </div>
+        <div class="gal-dots"></div>
+      </div>
+      <div class="zoom-note">🔍 <b>Klik foto untuk zoom.</b> Pilih tipe untuk melihat Basic &amp; Deluxe.</div>
     </div>
     <div class="s-text slide-l">
       <span class="eyebrow">Seri 04</span>
       <h2>Outdoor</h2>
-      <div class="dim">Papan bunga klasik · Basic &amp; Deluxe · by request</div>
-      <p>Papan bunga papan klasik berukuran besar untuk outdoor. Tersedia Basic (2 titik) &amp; Deluxe (4 titik), ukuran Regular &amp; Medium.</p>
+      <div class="dim">Papan Bunga Outdoor</div>
+      <p>Papan bunga berukuran besar untuk outdoor. Tersedia Basic (2 titik) &amp; Deluxe (4 titik), ukuran Regular &amp; Medium.</p>
       <div class="s-price">Mulai Rp 500.000 <small>By request</small></div>
-      <div class="s-variants"><span class="chip">Basic 2×1.2m · 500rb</span><span class="chip">Basic 2×1.5m · 600rb</span><span class="chip">Deluxe 2×1.2m · 650rb</span><span class="chip">Deluxe 2×1.5m · 750rb</span></div>
-      <a href="order.html?series=outdoor" class="btn btn-primary">Tanya Outdoor</a>
+      <div class="variant-picker" data-series="outdoor">
+        <span class="vp-label">Pilih Tipe</span>
+        <div class="vp-opts" data-group="otype">
+          <span class="vp-opt sel" data-v="Basic" data-design="2 titik">Basic <small>(2 titik bunga)</small></span>
+          <span class="vp-opt" data-v="Deluxe" data-design="4 titik">Deluxe <small>(4 titik bunga)</small></span>
+        </div>
+        <div class="vp-sub" data-group="size">
+          <span class="vp-label">Pilih Ukuran</span>
+          <div class="vp-opts">
+            <span class="vp-opt sel" data-size="Regular 2×1.2m" data-price-basic="500000" data-price-deluxe="650000">Regular 2×1.2m</span>
+            <span class="vp-opt" data-size="Medium 2×1.5m" data-price-basic="600000" data-price-deluxe="750000">Medium 2×1.5m</span>
+          </div>
+        </div>
+      </div>
+      <div class="buy-row">
+        <button class="btn btn-primary add-cart-btn" data-series="outdoor" data-img="images/products/outdoor-basic-elegant.jpg">+ Keranjang</button>
+        <a href="order.html?series=outdoor" class="btn btn-outline">Pesan Langsung</a>
+      </div>
     </div>
   </div>
 </section>
@@ -184,19 +324,44 @@
   </div>
 </section>
 
-<!-- GALLERY -->
+<!-- OUR PORTFOLIO -->
 <section>
   <div class="wrap">
-    <div class="sec-head reveal"><span class="eyebrow">Galeri</span><h2>Contoh Produk Kami</h2><p>Klik foto untuk memperbesar.</p></div>
-    <div class="masonry reveal">
-      <img class="zoomable" src="images/products/tap01771.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00085.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00067.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00306.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap01748.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00342.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00107.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap01285.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00082.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00128.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap01803.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap01812.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00098.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap01313.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00370.jpg" loading="lazy" alt=""><img class="zoomable" src="images/products/tap00464.jpg" loading="lazy" alt="">
+    <div class="sec-head reveal"><span class="eyebrow">Portfolio</span><h2>Our Portfolio</h2><p>Beberapa karya papan bunga Dear Darlene untuk berbagai momen. Arahkan kursor untuk detail · klik foto untuk memperbesar.</p></div>
+    <div class="porto-grid reveal">
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-1.jpg" loading="lazy" alt="Grand Opening"><figcaption class="porto-cap"><span>Grand Opening</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-2.jpg" loading="lazy" alt="Grand Opening · Kibo"><figcaption class="porto-cap"><span>Grand Opening · Kibo</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-3.jpg" loading="lazy" alt="Grand Opening · HOLOHOLO"><figcaption class="porto-cap"><span>Grand Opening · HOLOHOLO</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-4.jpg" loading="lazy" alt="Grand Opening · Matchaya"><figcaption class="porto-cap"><span>Grand Opening · Matchaya</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-5.jpg" loading="lazy" alt="Grand Opening · Clubsol"><figcaption class="porto-cap"><span>Grand Opening · Clubsol</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-6.jpg" loading="lazy" alt="Grand Opening · bhc Chicken"><figcaption class="porto-cap"><span>Grand Opening · bhc Chicken</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-7.jpg" loading="lazy" alt="Grand Opening · Lash Culture"><figcaption class="porto-cap"><span>Grand Opening · Lash Culture</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-8.jpg" loading="lazy" alt="Grand Opening"><figcaption class="porto-cap"><span>Grand Opening</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-9.jpg" loading="lazy" alt="Grand Opening"><figcaption class="porto-cap"><span>Grand Opening</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-10.jpg" loading="lazy" alt="Grand Opening"><figcaption class="porto-cap"><span>Grand Opening</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-11.jpg" loading="lazy" alt="Grand Opening · Marée"><figcaption class="porto-cap"><span>Grand Opening · Marée</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-12.jpg" loading="lazy" alt="Wedding"><figcaption class="porto-cap"><span>Wedding</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-13.jpg" loading="lazy" alt="Grand Opening · Padel Studio"><figcaption class="porto-cap"><span>Grand Opening · Padel Studio</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-14.jpg" loading="lazy" alt="Grand Opening · Hongdae"><figcaption class="porto-cap"><span>Grand Opening · Hongdae</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-15.jpg" loading="lazy" alt="Grand Opening · KRU"><figcaption class="porto-cap"><span>Grand Opening · KRU</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-16.jpg" loading="lazy" alt="Grand Opening · Bootless Burgers"><figcaption class="porto-cap"><span>Grand Opening · Bootless Burgers</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-17.jpg" loading="lazy" alt="Grand Opening · URI"><figcaption class="porto-cap"><span>Grand Opening · URI</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-18.jpg" loading="lazy" alt="Wedding"><figcaption class="porto-cap"><span>Wedding</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-19.jpg" loading="lazy" alt="Grand Opening"><figcaption class="porto-cap"><span>Grand Opening</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-20.jpg" loading="lazy" alt="Grand Opening · Little Bloom Academy"><figcaption class="porto-cap"><span>Grand Opening · Little Bloom Academy</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-21.jpg" loading="lazy" alt="Grand Opening · Kalma Social Club"><figcaption class="porto-cap"><span>Grand Opening · Kalma Social Club</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-22.jpg" loading="lazy" alt="Birthday"><figcaption class="porto-cap"><span>Birthday</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-23.jpg" loading="lazy" alt="Grand Opening · The Cacao Club"><figcaption class="porto-cap"><span>Grand Opening · The Cacao Club</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-24.jpg" loading="lazy" alt="Wedding"><figcaption class="porto-cap"><span>Wedding</span></figcaption></figure>
+      <figure class="porto-item"><img class="zoomable" src="images/portfolio/porto-25.jpg" loading="lazy" alt="Grand Opening · pretty fast"><figcaption class="porto-cap"><span>Grand Opening · pretty fast</span></figcaption></figure>
     </div>
   </div>
 </section>
 </main>
 
 <footer class="footer" id="footer"></footer>
-<a class="fab" href="https://wa.me/628111344911?text=Halo%20Dear%20Darlene%20%F0%9F%8C%B8" target="_blank" aria-label="WhatsApp"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.2-1.7-.9-2-1-.3-.1-.5-.2-.7.1-.2.3-.7 1-.9 1.1-.2.2-.3.2-.6.1-1.7-.9-2.8-1.5-4-3.4-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5-.1-.2-.7-1.6-.9-2.2-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.4s1 2.8 1.2 3c.1.2 2 3.1 5 4.3 1.8.8 2.5.9 3.4.8.5-.1 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3zM12 2a10 10 0 00-8.6 15l-1.4 5 5.2-1.4A10 10 0 1012 2z"/></svg></a>
+<a class="fab" href="https://wa.me/628111344911?text=Halo%20Dear%20Darlene%20%F0%9F%8C%B8" target="_blank" aria-label="Chat WhatsApp CS"><span class="fab-tip">Chat CS</span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm0 18.15h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.2.84.85-3.12-.2-.32a8.18 8.18 0 01-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 012.41 5.83c0 4.54-3.7 8.24-8.24 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg></a>
 <script src="shared.js"></script>
+<script src="cart.js"></script>
 </body>
 </html>

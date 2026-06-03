@@ -38,6 +38,7 @@ body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:1;opac
 .brand{display:flex;align-items:center;gap:11px}
 .brand .dd{font-family:var(--pf);font-style:italic;font-weight:700;font-size:25px;color:var(--maroon);line-height:1}
 .brand .wm{font-family:var(--pf);letter-spacing:5px;font-size:16px;color:var(--maroon);font-weight:500}
+.brand-wm{height:30px;width:auto;display:block}
 .nav-links{display:flex;align-items:center;gap:30px}
 .nav-links a{font-size:11px;letter-spacing:1.8px;text-transform:uppercase;color:var(--ink);transition:.2s;position:relative;padding:4px 0;font-weight:500}
 .nav-links a:not(.btn):hover,.nav-links a:not(.btn).active{color:var(--maroon)}
@@ -55,12 +56,12 @@ section{padding:96px 0}
 .bg-paper{background:var(--paper)}
 .bg-paper2{background:var(--paper2)}
 
-.marquee{overflow:hidden;background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:18px 0}
+.marquee{overflow:hidden;background:var(--maroon);border-top:1px solid rgba(248,248,246,.15);border-bottom:1px solid rgba(248,248,246,.15);padding:18px 0}
 .marquee-track{display:flex;width:max-content;animation:scroll-left 26s linear infinite}
 .marquee:hover .marquee-track{animation-play-state:paused}
-.marquee-item{display:inline-flex;align-items:center;gap:10px;padding:0 38px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:var(--taupe);white-space:nowrap}
-.marquee-item b{color:var(--maroon);font-weight:600}
-.marquee-item .star{color:var(--wine)}
+.marquee-item{display:inline-flex;align-items:center;gap:10px;padding:0 38px;font-size:12px;letter-spacing:2px;text-transform:uppercase;color:#e4c7a2;white-space:nowrap}
+.marquee-item b{color:#fbeede;font-weight:600}
+.marquee-item .star{color:#d9a86a}
 @keyframes scroll-left{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 
 .reveal{opacity:0;transform:translateY(22px);transition:.7s cubic-bezier(.2,.7,.2,1)}
@@ -83,7 +84,10 @@ section{padding:96px 0}
 .foot-social{display:flex;gap:18px}.foot-social a{color:#fff}
 
 .fab{position:fixed;right:22px;bottom:22px;z-index:90;background:#25D366;color:#fff;width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 26px -6px rgba(0,0,0,.35);transition:.3s;animation:fabpulse 2.8s infinite}
-.fab:hover{transform:scale(1.08)}.fab svg{width:29px;height:29px}
+.fab:hover{transform:scale(1.08)}.fab svg{width:30px;height:30px}
+.fab-tip{position:absolute;right:64px;top:50%;transform:translateY(-50%);background:#fff;color:var(--ink);font-size:12px;font-weight:600;padding:7px 13px;border-radius:50px;white-space:nowrap;box-shadow:0 6px 18px -6px rgba(0,0,0,.3);opacity:0;pointer-events:none;transition:opacity .25s}
+.fab:hover .fab-tip{opacity:1}
+@media(max-width:600px){.fab-tip{display:none}}
 @keyframes fabpulse{0%{box-shadow:0 0 0 0 rgba(37,211,102,.45)}70%{box-shadow:0 0 0 15px rgba(37,211,102,0)}100%{box-shadow:0 0 0 0 rgba(37,211,102,0)}}
 
 .pagehead{background:var(--paper);text-align:center;padding:64px 0 56px;border-bottom:1px solid var(--line)}
@@ -107,3 +111,42 @@ section{padding:96px 0}
   section{padding:64px 0}.sec-head h2{font-size:30px}.pagehead h1{font-size:34px}
   .footer-grid{grid-template-columns:1fr;gap:30px}
 }
+
+.dd-logo{height:34px;width:auto;display:block}
+
+
+.foot-wordmark{height:64px;width:auto;margin-bottom:14px;display:block}
+
+.addon-note{background:rgba(111,91,82,.08);border:1px solid var(--line);border-radius:10px;padding:11px 13px;font-size:12.5px;color:var(--taupe);line-height:1.55;margin:4px 0 16px}
+.addon-note b{color:var(--ink)}
+
+
+/* ===== Our Portfolio (galeri hover elegan) ===== */
+.porto-grid{column-count:4;column-gap:14px}
+@media(max-width:1000px){.porto-grid{column-count:3}}
+@media(max-width:680px){.porto-grid{column-count:2}}
+@media(max-width:430px){.porto-grid{column-count:1}}
+.porto-item{position:relative;break-inside:avoid;margin:0 0 14px;border-radius:14px;overflow:hidden;cursor:pointer;box-shadow:0 8px 22px -12px rgba(84,11,20,.3)}
+.porto-item img{width:100%;display:block;transition:transform .55s ease}
+.porto-item:hover img{transform:scale(1.06)}
+.porto-cap{position:absolute;inset:0;display:flex;align-items:flex-end;padding:16px 16px 15px;background:linear-gradient(to top,rgba(53,40,37,.78),rgba(53,40,37,.12) 48%,transparent 72%);opacity:0;transition:opacity .4s ease;pointer-events:none}
+.porto-cap span{color:#fff;font-family:var(--pf);font-weight:600;font-size:15px;letter-spacing:.3px;line-height:1.25;transform:translateY(9px);transition:transform .4s ease;text-shadow:0 1px 6px rgba(0,0,0,.3)}
+.porto-item:hover .porto-cap{opacity:1}
+.porto-item:hover .porto-cap span{transform:translateY(0)}
+@media(hover:none){.porto-cap{opacity:1;background:linear-gradient(to top,rgba(53,40,37,.7),transparent 55%)}.porto-cap span{transform:none;font-size:13.5px}}
+
+/* ====== Multi-papan (form Pesan Langsung) ====== */
+#boardsWrap{margin-top:2px}
+.board-block{border:1px solid var(--line);border-radius:14px;padding:16px 16px 4px;margin:0 0 14px;background:rgba(255,255,255,.45);position:relative}
+.board-block .board-head{display:flex;align-items:center;justify-content:space-between;margin:0 0 12px}
+.board-block .board-num{font-family:var(--pf);font-size:13.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--maroon)}
+.board-block .board-del{background:none;border:none;color:var(--wine);font-size:12.5px;cursor:pointer;padding:4px 8px;border-radius:8px;font-family:var(--body)}
+.board-block .board-del:hover{background:rgba(141,59,70,.09);text-decoration:underline}
+.add-board-btn{width:100%;border:1.5px dashed var(--wine);background:rgba(141,59,70,.04);color:var(--maroon);font-family:var(--body);font-weight:600;font-size:13.5px;letter-spacing:.01em;padding:12px;border-radius:12px;cursor:pointer;margin:0 0 18px;transition:background .2s,border-color .2s}
+.add-board-btn:hover{background:rgba(141,59,70,.1);border-color:var(--maroon)}
+
+/* Ikon sosmed footer (klik -> app) */
+.foot-social{display:flex;gap:10px}
+.foot-social a{display:inline-flex;align-items:center;justify-content:center;width:34px;height:34px;border:1px solid rgba(248,248,246,.28);border-radius:50%;transition:.25s}
+.foot-social a:hover{background:rgba(248,248,246,.12);border-color:rgba(248,248,246,.65);transform:translateY(-2px)}
+.foot-social svg{width:17px;height:17px}
