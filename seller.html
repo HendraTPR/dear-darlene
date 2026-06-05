@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+  <html lang="id">
+  <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Seller — Dear Darlene</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+  *{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#faf7f5;color:#2b2b2b;padding:18px}
+h1{font-size:20px;color:#8d3b46;margin-bottom:4px}
+.sub{color:#888;font-size:13px;margin-bottom:18px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
+.card{background:#fff;border:1px solid #eee;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
+  .card .label{font-size:12px;color:#999;text-transform:uppercase;letter-spacing:.5px}
+.card .value{font-size:24px;font-weight:700;color:#8d3b46;margin-top:6px}
+.bar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
+.bar input{padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px}
+.bar button{padding:8px 14px;border:none;border-radius:8px;background:#8d3b46;color:#fff;font-size:13px;cursor:pointer}
+table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:13px}
+th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top}
+th{background:#8d3b46;color:#fff;font-size:12px;position:sticky;top:0}
+tr:hover td{background:#fcf6f7}
+  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;background:#ffeaa7;color:#7a5c00}
+.wrap{overflow-x:auto;border-radius:12px;border:1px solid #eee}
+.muted{color:#aaa}
+#status{font-size:13px;color:#888;margin:10px 0}
+</style>
+  </head>
+  <body>
+  <h1>Dashboard Seller — Dear Darlene</h1>
+  <div class="sub">Ringkasan pesanan masuk dari website</div>
+<div class="cards">
+<div class="card"><div class="label">Total Pesanan</div><div class="value" id="cTotal">-</div></div>
+  <div class="card"><div class="label">Total Nilai</div><div class="value" id="cRevenue">-</div></div>
+  <div class="card"><div class="label">Pesanan Hari Ini</div><div class="value" id="cToday">-</div></div>
+<div class="card"><div class="label">Status Baru</div><div class="value" id="cNew">-</div></div>
+  </div>
+  <div class="bar">
+  <input type="text" id="search" placeholder="Cari nama / kota / tulisan...">
+  <button onclick="render()">Cari</button>
+  <button onclick="loadData()">Muat Ulang</button>
+  </div>
+  <div id="status">Memuat data...</div>
+  <div class="wrap">
+  <table>
+  <thead><tr><th>Tanggal</th><th>Pengirim</th><th>Penerima</th><th>Kota</th><th>Kirim</th><th>Tulisan Papan</th><th>Total</th><th>Status</th></tr></thead>
+  <tbody id="rows"></tbody>
+  </table>
+  </div>
+  <script>
+  var SUPABASE_URL="https://vypzevhoafubnbqitmcl.supabase.co";
+var SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cHpldmhvYWZ1Ym5icWl0bWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTU0OTUsImV4cCI6MjA5NTY5MTQ5NX0.e8StQSN-s2kdOqVazqvqEXEyDSCdAEf7BHXIUvPIQDM";
+var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+var DATA=[];
+function rupiah(n){n=parseInt(n||0,10);return "Rp "+n.toLocaleString("id-ID");}
+function esc(s){s=(s==null?"":String(s));return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function fmtDate(s){if(!s)return "-";var d=new Date(s);if(isNaN(d))return esc(s);return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});}
+function loadData(){
+  document.getElementById("status").textContent="Memuat data...";
+sb.from("dd_orders").select("*").order("created_at",{ascending:false}).then(function(res){
+  if(res.error){document.getElementById("status").textContent="Gagal memuat: "+res.error.message;return;}
+DATA=res.data||[];
+updateCards();
+render();
+document.getElementById("status").textContent="Total "+DATA.length+" pesanan dimuat.";
+});
+}
+function updateCards(){
+  var total=DATA.length;
+var revenue=0,today=0,baru=0;
+var t0=new Date();t0.setHours(0,0,0,0);
+DATA.forEach(function(o){
+  revenue+=parseInt(o.total||0,10);
+if(o.created_at&&new Date(o.created_at)>=t0)today++;
+if((o.status||"")==="baru")baru++;
+});
+document.getElementById("cTotal").textContent=total;
+document.getElementById("cRevenue").textContent=rupiah(revenue);
+document.getElementById("cToday").textContent=today;
+document.getElementById("cNew").textContent=baru;
+}
+function render(){
+  var q=(document.getElementById("search").value||"").toLowerCase();
+var rows=document.getElementById("rows");
+var html="";
+DATA.filter(function(o){
+  if(!q)return true;
+var blob=[o.sender_name,o.rec_name,o.rec_city,o.board_text].join(" ").toLowerCase();
+return blob.indexOf(q)>-1;
+}).forEach(function(o){
+  html+="<tr>"+
+"<td>"+fmtDate(o.created_at)+"</td>"+
+"<td>"+esc(o.sender_name)+"<br><span class=muted>"+esc(o.sender_phone)+"</span></td>"+
+"<td>"+esc(o.rec_name)+"<br><span class=muted>"+esc(o.rec_phone)+"</span></td>"+
+"<td>"+esc(o.rec_city)+"</td>"+
+"<td>"+esc(o.del_date)+"</td>"+
+"<td>"+esc(o.board_text)+"</td>"+
+"<td>"+rupiah(o.total)+"</td>"+
+"<td><span class=badge>"+esc(o.status||"baru")+"</span></td>"+
+"</tr>";
+});
+if(!html)html="<tr><td colspan=8 class=muted style=text-align:center;padding:30px>Belum ada pesanan.</td></tr>";
+rows.innerHTML=html;
+}
+loadData();
+</script>
+  </body>
+  </html>
