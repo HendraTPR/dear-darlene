@@ -1,109 +1,419 @@
-<!DOCTYPE html>
-  <html lang="id">
-  <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Dashboard Seller — Dear Darlene</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-  *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#faf7f5;color:#2b2b2b;padding:18px}
-h1{font-size:20px;color:#8d3b46;margin-bottom:4px}
-.sub{color:#888;font-size:13px;margin-bottom:18px}
-.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:22px}
-.card{background:#fff;border:1px solid #eee;border-radius:14px;padding:16px;box-shadow:0 1px 4px rgba(0,0,0,.04)}
-  .card .label{font-size:12px;color:#999;text-transform:uppercase;letter-spacing:.5px}
-.card .value{font-size:24px;font-weight:700;color:#8d3b46;margin-top:6px}
-.bar{display:flex;gap:8px;align-items:center;margin-bottom:14px;flex-wrap:wrap}
-.bar input{padding:8px 10px;border:1px solid #ddd;border-radius:8px;font-size:13px}
-.bar button{padding:8px 14px;border:none;border-radius:8px;background:#8d3b46;color:#fff;font-size:13px;cursor:pointer}
-table{width:100%;border-collapse:collapse;background:#fff;border-radius:12px;overflow:hidden;font-size:13px}
-th,td{padding:10px 12px;text-align:left;border-bottom:1px solid #f0f0f0;vertical-align:top}
-th{background:#8d3b46;color:#fff;font-size:12px;position:sticky;top:0}
-tr:hover td{background:#fcf6f7}
-  .badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;background:#ffeaa7;color:#7a5c00}
-.wrap{overflow-x:auto;border-radius:12px;border:1px solid #eee}
-.muted{color:#aaa}
-#status{font-size:13px;color:#888;margin:10px 0}
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<meta name="robots" content="noindex,nofollow">
+<title>Dear Darlene — Seller Center</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{color-scheme:light;--maroon:#540B14;--wine:#8d3b46;--cream:#F8F8F6;--paper:#F1E9DD;--taupe:#6f5b52;--ink:#352825;--line:#e3d8c8;--pf:'Playfair Display',serif;--bd:'Poppins',sans-serif}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--bd);background:var(--paper);color:var(--ink);min-height:100vh;-webkit-font-smoothing:antialiased}
+
+/* ── LOGIN ── */
+.login-screen{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-card{background:var(--cream);border:1px solid var(--line);border-radius:20px;box-shadow:0 24px 64px rgba(53,40,37,.13);padding:40px 32px;max-width:380px;width:100%;text-align:center}
+.eyebrow{font-size:10.5px;letter-spacing:3px;text-transform:uppercase;color:var(--wine);display:block;margin-bottom:8px}
+.login-card h1{font-family:var(--pf);font-size:30px;color:var(--maroon);margin-bottom:4px}
+.login-card .sub{font-size:13px;color:var(--taupe);margin-bottom:26px}
+
+/* ── FIELDS ── */
+.field{text-align:left;margin-bottom:15px}
+.field label{display:block;font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--taupe);margin-bottom:6px;font-weight:600}
+.field input,.field select{width:100%;padding:12px 14px;border:1px solid var(--line);border-radius:10px;font-family:var(--bd);font-size:14px;background:#fff;color:var(--ink)}
+.field input:focus,.field select:focus{outline:none;border-color:var(--wine);box-shadow:0 0 0 3px rgba(141,59,70,.1)}
+
+/* ── BUTTONS ── */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;background:var(--maroon);color:var(--cream);border:none;border-radius:999px;padding:13px 26px;font-family:var(--bd);font-size:14px;font-weight:500;letter-spacing:.4px;cursor:pointer;transition:background .2s}
+.btn:hover{background:var(--wine)}
+.btn:disabled{opacity:.6;cursor:default}
+.btn-block{width:100%}
+.btn-ghost{background:transparent;color:var(--maroon);border:1px solid var(--line);border-radius:999px;padding:8px 16px;font-family:var(--bd);font-size:12.5px;cursor:pointer;transition:all .2s;white-space:nowrap}
+.btn-ghost:hover{background:var(--paper);border-color:var(--wine)}
+
+/* ── ALERTS ── */
+.err{color:#b53020;font-size:12.5px;padding:10px 13px;background:#fdefed;border-radius:8px;margin-top:10px}
+.ok-msg{color:#1e6e3f;font-size:12.5px;padding:10px 13px;background:#eafbf0;border-radius:8px;margin-top:10px}
+
+/* ── TOP BAR ── */
+.topbar{background:var(--maroon);color:#f3e6d6;display:flex;align-items:center;justify-content:space-between;padding:13px 24px;flex-wrap:wrap;gap:10px;position:sticky;top:0;z-index:10;box-shadow:0 2px 12px rgba(0,0,0,.15)}
+.topbar .brand{font-family:var(--pf);font-size:17px;letter-spacing:.4px}
+.topbar .brand b{color:#e4c7a2}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.user-tag{font-size:12px;color:rgba(248,248,246,.75);padding:5px 11px;background:rgba(255,255,255,.08);border-radius:999px}
+.topbar .btn-ghost{border-color:rgba(228,199,162,.35);color:#e4c7a2;font-size:12px;padding:6px 13px}
+.topbar .btn-ghost:hover{background:rgba(255,255,255,.12);border-color:rgba(228,199,162,.7)}
+
+/* ── LAYOUT ── */
+.wrap{max-width:1180px;margin:0 auto;padding:26px 20px 70px}
+
+/* ── STATS ── */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.scard{background:var(--cream);border:1px solid var(--line);border-radius:14px;padding:20px 18px}
+.scard.red{background:var(--maroon);border-color:var(--maroon)}
+.scard-label{font-size:10.5px;letter-spacing:1.5px;text-transform:uppercase;color:var(--taupe);margin-bottom:6px}
+.scard.red .scard-label{color:rgba(248,248,246,.65)}
+.scard-val{font-family:var(--pf);font-size:26px;color:var(--maroon);font-weight:700;line-height:1.1}
+.scard.red .scard-val{color:var(--cream)}
+.scard-val.sm{font-size:20px}
+
+/* ── TABLE CARD ── */
+.tcard{background:var(--cream);border:1px solid var(--line);border-radius:16px;overflow:hidden}
+.thead-row{display:flex;align-items:center;justify-content:space-between;padding:18px 22px;border-bottom:1px solid var(--line);flex-wrap:wrap;gap:12px}
+.thead-row h2{font-family:var(--pf);font-size:20px;color:var(--maroon)}
+.thead-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.search-inp{padding:9px 14px;border:1px solid var(--line);border-radius:999px;font-family:var(--bd);font-size:13px;background:#fff;min-width:220px}
+.search-inp:focus{outline:none;border-color:var(--wine)}
+.tscroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{text-align:left;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--taupe);padding:11px 14px;border-bottom:1px solid var(--line);background:var(--paper);white-space:nowrap}
+td{padding:12px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:rgba(241,233,221,.5)}
+.n1{font-weight:600;font-size:13.5px}
+.n2{font-size:11.5px;color:var(--taupe);margin-top:1px}
+.price{font-weight:600;color:var(--maroon);white-space:nowrap}
+.date{font-size:12px;color:var(--taupe);white-space:nowrap}
+.ssel{border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-family:var(--bd);font-size:12px;background:#fff;cursor:pointer}
+.pbtn{border:none;border-radius:999px;padding:5px 13px;font-size:11.5px;font-weight:600;cursor:pointer;font-family:var(--bd);white-space:nowrap;transition:all .15s}
+.pbtn.unpaid{background:#fce8e8;color:#a23a3a}
+.pbtn.paid{background:#e3f5eb;color:#1e6e3f}
+.pbtn:hover{opacity:.8}
+.dbtn{background:var(--paper);border:1px solid var(--line);border-radius:8px;padding:5px 11px;font-size:12px;cursor:pointer;font-family:var(--bd)}
+.dbtn:hover{border-color:var(--wine)}
+.empty-row td,.loading-row td{text-align:center;padding:42px;color:var(--taupe);font-style:italic;font-size:13px}
+.badge{display:inline-block;border-radius:8px;padding:3px 9px;font-size:11px;font-weight:600}
+.badge.baru{background:#e8f0ff;color:#2c4db5}
+.badge.diproses{background:#fff3e0;color:#a05c00}
+.badge.dikirim{background:#e8f0ff;color:#1a6fa8}
+.badge.selesai{background:#e3f5eb;color:#1e6e3f}
+
+/* ── MODAL ── */
+.overlay{display:none;position:fixed;inset:0;background:rgba(53,40,37,.48);z-index:50;align-items:center;justify-content:center;padding:20px}
+.overlay.on{display:flex}
+.modal{background:var(--cream);border-radius:18px;max-width:500px;width:100%;padding:28px;box-shadow:0 30px 80px rgba(0,0,0,.22);max-height:90vh;overflow:auto}
+.modal h3{font-family:var(--pf);font-size:22px;color:var(--maroon);margin-bottom:4px}
+.modal-hint{font-size:12.5px;color:var(--taupe);margin-bottom:20px}
+.modal-actions{display:flex;gap:10px;margin-top:20px}
+.dsec{margin-bottom:14px}
+.dsec h4{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--wine);margin-bottom:5px}
+.dsec p{font-size:13px;line-height:1.65;color:var(--ink);white-space:pre-wrap}
+.divider{border:none;border-top:1px solid var(--line);margin:16px 0}
+.refresh-btn{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--taupe);background:none;border:none;cursor:pointer;font-family:var(--bd)}
+.refresh-btn:hover{color:var(--maroon)}
+
+@media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.wrap{padding:18px 12px 60px}.topbar-right .user-tag{display:none}}
+@media(max-width:460px){.stats{grid-template-columns:1fr}.search-inp{min-width:0;width:100%}.thead-row{flex-direction:column;align-items:flex-start}}
 </style>
-  </head>
-  <body>
-  <h1>Dashboard Seller — Dear Darlene</h1>
-  <div class="sub">Ringkasan pesanan masuk dari website</div>
-<div class="cards">
-<div class="card"><div class="label">Total Pesanan</div><div class="value" id="cTotal">-</div></div>
-  <div class="card"><div class="label">Total Nilai</div><div class="value" id="cRevenue">-</div></div>
-  <div class="card"><div class="label">Pesanan Hari Ini</div><div class="value" id="cToday">-</div></div>
-<div class="card"><div class="label">Status Baru</div><div class="value" id="cNew">-</div></div>
+</head>
+<body>
+
+<!-- ═══ LOGIN SCREEN ═══ -->
+<div id="loginScreen" class="login-screen">
+  <div class="login-card">
+    <span class="eyebrow">Seller Center</span>
+    <h1>Dear Darlene</h1>
+    <div class="sub">Masuk untuk kelola pesanan 🌸</div>
+    <div class="field"><label>Email</label><input id="le" type="email" placeholder="email@kamu.com" autocomplete="email"></div>
+    <div class="field"><label>Password</label><input id="lp" type="password" placeholder="••••••••" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div id="lerr" style="display:none" class="err"></div>
+    <button class="btn btn-block" id="lbtn" onclick="doLogin()">Masuk</button>
   </div>
-  <div class="bar">
-  <input type="text" id="search" placeholder="Cari nama / kota / tulisan...">
-  <button onclick="render()">Cari</button>
-  <button onclick="loadData()">Muat Ulang</button>
+</div>
+
+<!-- ═══ DASHBOARD ═══ -->
+<div id="app" style="display:none">
+  <div class="topbar">
+    <div class="brand">Dear Darlene · <b>Seller Center</b></div>
+    <div class="topbar-right">
+      <span class="user-tag" id="userTag">—</span>
+      <button class="btn-ghost" onclick="openPw()">🔑 Password</button>
+      <button class="btn-ghost" onclick="doLogout()">Keluar</button>
+    </div>
   </div>
-  <div id="status">Memuat data...</div>
+
   <div class="wrap">
-  <table>
-  <thead><tr><th>Tanggal</th><th>Pengirim</th><th>Penerima</th><th>Kota</th><th>Kirim</th><th>Tulisan Papan</th><th>Total</th><th>Status</th></tr></thead>
-  <tbody id="rows"></tbody>
-  </table>
+    <!-- Stats -->
+    <div class="stats">
+      <div class="scard"><div class="scard-label">Total Pesanan</div><div class="scard-val" id="sTotal">—</div></div>
+      <div class="scard"><div class="scard-label">Total Nilai</div><div class="scard-val sm" id="sNilai">—</div></div>
+      <div class="scard"><div class="scard-label">Pesanan Hari Ini</div><div class="scard-val" id="sToday">—</div></div>
+      <div class="scard red"><div class="scard-label">Belum Bayar</div><div class="scard-val" id="sUnpaid">—</div></div>
+    </div>
+
+    <!-- Table -->
+    <div class="tcard">
+      <div class="thead-row">
+        <h2>Pesanan Masuk</h2>
+        <div class="thead-right">
+          <button class="refresh-btn" onclick="loadOrders()">↻ Refresh</button>
+          <input class="search-inp" id="sq" placeholder="🔍 Cari nama, kota, produk..." oninput="doFilter()">
+        </div>
+      </div>
+      <div class="tscroll">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Penerima</th>
+              <th>Pengirim</th>
+              <th>Produk</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Pembayaran</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr class="loading-row"><td colspan="8">Memuat pesanan...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
   </div>
-  <script>
-  var SUPABASE_URL="https://vypzevhoafubnbqitmcl.supabase.co";
-var SUPABASE_ANON_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cHpldmhvYWZ1Ym5icWl0bWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTU0OTUsImV4cCI6MjA5NTY5MTQ5NX0.e8StQSN-s2kdOqVazqvqEXEyDSCdAEf7BHXIUvPIQDM";
-var sb=window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-var DATA=[];
-function rupiah(n){n=parseInt(n||0,10);return "Rp "+n.toLocaleString("id-ID");}
-function esc(s){s=(s==null?"":String(s));return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
-function fmtDate(s){if(!s)return "-";var d=new Date(s);if(isNaN(d))return esc(s);return d.toLocaleDateString("id-ID",{day:"2-digit",month:"short",year:"numeric"})+" "+d.toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});}
-function loadData(){
-  document.getElementById("status").textContent="Memuat data...";
-sb.from("dd_orders").select("*").order("created_at",{ascending:false}).then(function(res){
-  if(res.error){document.getElementById("status").textContent="Gagal memuat: "+res.error.message;return;}
-DATA=res.data||[];
-updateCards();
-render();
-document.getElementById("status").textContent="Total "+DATA.length+" pesanan dimuat.";
+</div>
+
+<!-- ═══ PASSWORD MODAL ═══ -->
+<div id="pwModal" class="overlay" onclick="if(event.target===this)closePw()">
+  <div class="modal">
+    <h3>Ganti Password</h3>
+    <p class="modal-hint">Password baru berlaku langsung. Kamu tetap login setelah ganti.</p>
+    <div class="field"><label>Password Baru</label><input id="pw1" type="password" placeholder="Min. 6 karakter"></div>
+    <div class="field"><label>Konfirmasi Password</label><input id="pw2" type="password" placeholder="Ulangi password baru" onkeydown="if(event.key==='Enter')doChangePw()"></div>
+    <div id="pwerr" style="display:none" class="err"></div>
+    <div id="pwok" style="display:none" class="ok-msg">✅ Password berhasil diganti!</div>
+    <div class="modal-actions">
+      <button class="btn-ghost" style="flex:1" onclick="closePw()">Batal</button>
+      <button class="btn" style="flex:1" id="pwbtn" onclick="doChangePw()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ DETAIL MODAL ═══ -->
+<div id="detailModal" class="overlay" onclick="if(event.target===this)closeDetail()">
+  <div class="modal">
+    <h3>Detail Pesanan</h3>
+    <p class="modal-hint" id="ddate"></p>
+    <div id="dbody"></div>
+    <div class="modal-actions">
+      <button class="btn btn-block" onclick="closeDetail()">Tutup</button>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+const SB_URL = "https://vypzevhoafubnbqitmcl.supabase.co";
+const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cHpldmhvYWZ1Ym5icWl0bWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTU0OTUsImV4cCI6MjA5NTY5MTQ5NX0.e8StQSN-s2kdOqVazqvqEXEyDSCdAEf7BHXIUvPIQDM";
+const sb = supabase.createClient(SB_URL, SB_KEY);
+
+let allOrders = [];
+const orderMap = new Map();
+
+// ── AUTH ──
+sb.auth.onAuthStateChange((event, session) => {
+  if (session) {
+    document.getElementById('loginScreen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.getElementById('userTag').textContent = session.user.email;
+    loadOrders();
+  } else {
+    document.getElementById('loginScreen').style.display = 'flex';
+    document.getElementById('app').style.display = 'none';
+  }
 });
+
+async function doLogin() {
+  const email = document.getElementById('le').value.trim();
+  const pw = document.getElementById('lp').value;
+  const btn = document.getElementById('lbtn');
+  const err = document.getElementById('lerr');
+  err.style.display = 'none';
+  if (!email || !pw) { showEl(err, 'err', 'Email dan password wajib diisi.'); return; }
+  btn.textContent = 'Memuat...'; btn.disabled = true;
+  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+  btn.textContent = 'Masuk'; btn.disabled = false;
+  if (error) showEl(err, 'err', 'Login gagal: ' + (error.message.includes('Invalid') ? 'Email atau password salah.' : error.message));
 }
-function updateCards(){
-  var total=DATA.length;
-var revenue=0,today=0,baru=0;
-var t0=new Date();t0.setHours(0,0,0,0);
-DATA.forEach(function(o){
-  revenue+=parseInt(o.total||0,10);
-if(o.created_at&&new Date(o.created_at)>=t0)today++;
-if((o.status||"")==="baru")baru++;
-});
-document.getElementById("cTotal").textContent=total;
-document.getElementById("cRevenue").textContent=rupiah(revenue);
-document.getElementById("cToday").textContent=today;
-document.getElementById("cNew").textContent=baru;
+
+async function doLogout() {
+  if (!confirm('Yakin mau keluar?')) return;
+  await sb.auth.signOut();
 }
-function render(){
-  var q=(document.getElementById("search").value||"").toLowerCase();
-var rows=document.getElementById("rows");
-var html="";
-DATA.filter(function(o){
-  if(!q)return true;
-var blob=[o.sender_name,o.rec_name,o.rec_city,o.board_text].join(" ").toLowerCase();
-return blob.indexOf(q)>-1;
-}).forEach(function(o){
-  html+="<tr>"+
-"<td>"+fmtDate(o.created_at)+"</td>"+
-"<td>"+esc(o.sender_name)+"<br><span class=muted>"+esc(o.sender_phone)+"</span></td>"+
-"<td>"+esc(o.rec_name)+"<br><span class=muted>"+esc(o.rec_phone)+"</span></td>"+
-"<td>"+esc(o.rec_city)+"</td>"+
-"<td>"+esc(o.del_date)+"</td>"+
-"<td>"+esc(o.board_text)+"</td>"+
-"<td>"+rupiah(o.total)+"</td>"+
-"<td><span class=badge>"+esc(o.status||"baru")+"</span></td>"+
-"</tr>";
-});
-if(!html)html="<tr><td colspan=8 class=muted style=text-align:center;padding:30px>Belum ada pesanan.</td></tr>";
-rows.innerHTML=html;
+
+// ── ORDERS ──
+async function loadOrders() {
+  document.getElementById('tbody').innerHTML = '<tr class="loading-row"><td colspan="8">Memuat pesanan...</td></tr>';
+  const { data, error } = await sb.from('dd_orders').select('*').order('created_at', { ascending: false });
+  if (error) { alert('Gagal memuat: ' + error.message); return; }
+  allOrders = data || [];
+  allOrders.forEach(o => orderMap.set(o.id, o));
+  renderStats(allOrders);
+  renderRows(allOrders);
 }
-loadData();
+
+function doFilter() {
+  const q = (document.getElementById('sq').value || '').toLowerCase().trim();
+  if (!q) { renderRows(allOrders); return; }
+  renderRows(allOrders.filter(o =>
+    [o.rec_name, o.sender_name, o.rec_city, o.rec_phone, o.source, fmtItems(o.items)]
+      .some(v => (v||'').toLowerCase().includes(q))
+  ));
+}
+
+function renderStats(orders) {
+  const today = new Date().toISOString().slice(0,10);
+  const total = orders.reduce((s,o) => s + (o.total||0), 0);
+  const todayN = orders.filter(o => (o.created_at||'').slice(0,10)===today).length;
+  const unpaid = orders.filter(o => (o.payment_status||'Belum Bayar')!=='Sudah Bayar').length;
+  document.getElementById('sTotal').textContent = orders.length;
+  document.getElementById('sNilai').textContent = fmtRp(total, true);
+  document.getElementById('sToday').textContent = todayN;
+  document.getElementById('sUnpaid').textContent = unpaid;
+}
+
+function renderRows(orders) {
+  const tbody = document.getElementById('tbody');
+  if (!orders.length) {
+    tbody.innerHTML = '<tr class="empty-row"><td colspan="8">Tidak ada pesanan ditemukan.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = orders.map(o => {
+    const pay = o.payment_status || 'Belum Bayar';
+    const paid = pay === 'Sudah Bayar';
+    const st = o.status || 'baru';
+    const opts = ['baru','diproses','dikirim','selesai'].map(s =>
+      `<option value="${s}"${st===s?' selected':''}>${s.charAt(0).toUpperCase()+s.slice(1)}</option>`
+    ).join('');
+    return `<tr>
+      <td class="date">${fmtDate(o.created_at)}</td>
+      <td><div class="n1">${esc(o.rec_name||'—')}</div><div class="n2">${esc(o.rec_city||'')} ${esc(o.rec_phone||'')}</div></td>
+      <td><div class="n2">${esc(o.sender_name||'—')}</div><div class="n2">${esc(o.sender_phone||'')}</div></td>
+      <td style="max-width:160px"><span style="font-size:12.5px;white-space:normal">${esc(fmtItems(o.items))}</span></td>
+      <td class="price">${o.total ? fmtRp(o.total) : '—'}</td>
+      <td><select class="ssel" data-id="${o.id}" onchange="updStatus(this)">${opts}</select></td>
+      <td><button class="pbtn ${paid?'paid':'unpaid'}" data-id="${o.id}" data-pay="${pay}" onclick="togglePay(this)">${pay}</button></td>
+      <td><button class="dbtn" onclick="openDetail('${o.id}')">Lihat ›</button></td>
+    </tr>`;
+  }).join('');
+}
+
+async function updStatus(sel) {
+  const id = sel.dataset.id;
+  const status = sel.value;
+  const { error } = await sb.from('dd_orders').update({ status }).eq('id', id);
+  if (error) { alert('Gagal update status: ' + error.message); loadOrders(); return; }
+  const o = orderMap.get(id);
+  if (o) o.status = status;
+}
+
+async function togglePay(btn) {
+  const id = btn.dataset.id;
+  const cur = btn.dataset.pay;
+  const next = cur === 'Sudah Bayar' ? 'Belum Bayar' : 'Sudah Bayar';
+  btn.disabled = true;
+  const { error } = await sb.from('dd_orders').update({ payment_status: next }).eq('id', id);
+  if (error) { alert('Gagal update: ' + error.message); btn.disabled = false; return; }
+  const o = orderMap.get(id);
+  if (o) o.payment_status = next;
+  const idx = allOrders.findIndex(x => x.id === id);
+  if (idx >= 0) allOrders[idx].payment_status = next;
+  btn.textContent = next;
+  btn.className = 'pbtn ' + (next === 'Sudah Bayar' ? 'paid' : 'unpaid');
+  btn.dataset.pay = next;
+  btn.disabled = false;
+  renderStats(allOrders);
+}
+
+// ── DETAIL ──
+function openDetail(id) {
+  const o = orderMap.get(id);
+  if (!o) return;
+  document.getElementById('ddate').textContent = 'Masuk ' + fmtDate(o.created_at);
+  const b = document.getElementById('dbody');
+  const row = (label, val) => val ? `<div class="dsec"><h4>${label}</h4><p>${esc(val)}</p></div>` : '';
+  const items = fmtItems(o.items);
+  b.innerHTML = `
+    <div class="dsec"><h4>Penerima</h4><p>${esc(o.rec_name||'—')} · ${esc(o.rec_phone||'—')}<br>${esc(o.rec_addr||'—')}<br>${esc(o.rec_city||'—')}</p></div>
+    <div class="dsec"><h4>Pengirim</h4><p>${esc(o.sender_name||'—')} · ${esc(o.sender_phone||'—')}</p></div>
+    <div class="dsec"><h4>Jadwal Kirim</h4><p>Tanggal: ${esc(o.del_date||'—')}<br>Jam: ${esc(o.del_time||'—')}</p></div>
+    <hr class="divider">
+    <div class="dsec"><h4>Produk</h4><p>${esc(items)}</p></div>
+    ${row('Tulisan Papan', o.board_text)}${row('Tulisan From', o.from_text)}
+    ${(o.logo||o.logo2)?`<div class="dsec"><h4>Logo</h4><p>Penerima: ${esc(o.logo||'—')}<br>Pengirim: ${esc(o.logo2||'—')}</p></div>`:''}
+    <hr class="divider">
+    <div class="dsec"><h4>Total</h4><p>${o.total ? fmtRp(o.total) : '—'} · Status: ${esc(o.status||'baru')} · Bayar: ${esc(o.payment_status||'Belum Bayar')}</p></div>
+    ${row('Tau dari', o.source)}
+    ${o.raw_message ? `<div class="dsec"><h4>Pesan WA (ringkasan)</h4><p style="font-size:12px;background:var(--paper);padding:10px;border-radius:8px;max-height:160px;overflow:auto">${esc(o.raw_message.slice(0,600))}${o.raw_message.length>600?'…':''}</p></div>` : ''}
+  `;
+  document.getElementById('detailModal').classList.add('on');
+}
+function closeDetail() { document.getElementById('detailModal').classList.remove('on'); }
+
+// ── PASSWORD CHANGE ──
+function openPw() {
+  document.getElementById('pw1').value = '';
+  document.getElementById('pw2').value = '';
+  document.getElementById('pwerr').style.display = 'none';
+  document.getElementById('pwok').style.display = 'none';
+  document.getElementById('pwModal').classList.add('on');
+}
+function closePw() { document.getElementById('pwModal').classList.remove('on'); }
+
+async function doChangePw() {
+  const p1 = document.getElementById('pw1').value;
+  const p2 = document.getElementById('pw2').value;
+  const err = document.getElementById('pwerr');
+  const ok = document.getElementById('pwok');
+  const btn = document.getElementById('pwbtn');
+  err.style.display = 'none'; ok.style.display = 'none';
+  if (p1.length < 6) { showEl(err,'err','Password minimal 6 karakter.'); return; }
+  if (p1 !== p2) { showEl(err,'err','Konfirmasi password tidak cocok.'); return; }
+  btn.textContent = 'Menyimpan...'; btn.disabled = true;
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  btn.textContent = 'Simpan'; btn.disabled = false;
+  if (error) { showEl(err,'err','Gagal: ' + error.message); return; }
+  ok.style.display = 'block';
+  setTimeout(closePw, 2200);
+}
+
+// ── HELPERS ──
+function fmtDate(iso) {
+  if (!iso) return '—';
+  const d = new Date(iso);
+  const mo = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  return `${d.getDate()} ${mo[d.getMonth()]} ${d.getFullYear()}<br><span style="font-size:10.5px">${String(d.getHours()).padStart(2,'0')}.${String(d.getMinutes()).padStart(2,'0')}</span>`;
+}
+
+function fmtRp(n, short) {
+  if (short) {
+    if (n >= 1000000) return 'Rp ' + (n/1000000).toFixed(1).replace('.0','') + ' jt';
+    return 'Rp ' + Math.round(n/1000) + ' rb';
+  }
+  return 'Rp ' + Number(n).toLocaleString('id-ID');
+}
+
+function fmtItems(items) {
+  if (!items || !items.length) return '—';
+  return items.map(it => {
+    if (it.type === 'outdoor') return 'Outdoor ' + ((it.otype||'').split('(')[0].trim());
+    const serMap = {classic:'Classic',grande:'Grande',royale:'Royale'};
+    const name = [serMap[it.series]||it.series, it.design||it.variation].filter(Boolean).join(' ');
+    return it.color ? `${name} (${it.color.split('(')[0].trim()})` : name;
+  }).join(', ') || '—';
+}
+
+function esc(s) {
+  if (!s) return '';
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function showEl(el, cls, msg) {
+  el.textContent = msg; el.className = cls; el.style.display = 'block';
+}
 </script>
-  </body>
-  </html>
+</body>
+</html>
