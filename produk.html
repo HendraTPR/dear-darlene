@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Shop — Dear Darlene</title>
+<meta name="description" content="Belanja papan bunga Dear Darlene dengan mudah: pilih produk, pilih variasi, dan pesan langsung. Free delivery Jakarta & Tangerang.">
+<link rel="icon" href="images/brand/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Poppins:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* ====== SHOP GRID (ala marketplace) ====== */
+.shop-head{background:var(--paper);text-align:center;padding:54px 0 44px;border-bottom:1px solid var(--line)}
+.shop-head .eyebrow{display:block;margin-bottom:12px}
+.shop-head h1{font-size:42px}
+.shop-head p{color:var(--taupe);max-width:540px;margin:12px auto 0;font-size:15px}
+
+.shop-wrap{padding:40px 0 90px}
+/* PC: 4 kolom rapi. Tablet 3. HP 2 (tetap jelas, ala Shopee). */
+.shop-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+@media(max-width:1000px){.shop-grid{grid-template-columns:repeat(3,1fr);gap:18px}}
+@media(max-width:760px){.shop-grid{grid-template-columns:1fr 1fr;gap:13px}}
+
+.pcard{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;display:flex;flex-direction:column;cursor:pointer;transition:transform .3s,box-shadow .3s;text-align:left;-webkit-tap-highlight-color:transparent}
+.pcard:hover{transform:translateY(-5px);box-shadow:0 20px 42px -22px rgba(84,11,20,.28)}
+.pcard:active{transform:scale(.985)}
+.pcard .pc-ph{aspect-ratio:3/4;overflow:hidden;background:var(--paper);position:relative}
+.pcard .pc-ph img{width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.pcard:hover .pc-ph img{transform:scale(1.05)}
+.pc-tagline{position:absolute;top:9px;left:9px;background:rgba(84,11,20,.92);color:#fff;font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;font-weight:600;padding:4px 10px;border-radius:50px;backdrop-filter:blur(2px)}
+.pc-body{padding:13px 14px 15px;display:flex;flex-direction:column;flex:1}
+.pc-name{font-family:var(--pf);font-size:18px;font-weight:600;color:var(--maroon);line-height:1.2;margin-bottom:3px}
+.pc-meta{font-size:10.5px;letter-spacing:.4px;text-transform:uppercase;color:var(--taupe);margin-bottom:10px}
+.pc-price{font-family:var(--pf);font-size:17px;color:var(--wine);font-weight:600;margin-top:auto}
+.pc-price small{display:block;font-family:var(--body);font-size:9.5px;letter-spacing:.6px;text-transform:uppercase;color:var(--taupe);font-weight:500;margin-bottom:1px}
+.pc-cta{margin-top:11px;display:flex;align-items:center;justify-content:center;gap:7px;background:var(--maroon);color:#fff;border-radius:50px;padding:10px;font-size:11px;font-weight:600;letter-spacing:.8px;text-transform:uppercase;transition:background .25s}
+.pcard:hover .pc-cta{background:var(--wine)}
+.pc-cta svg{width:15px;height:15px}
+@media(max-width:760px){
+  .shop-head h1{font-size:30px}
+  .pc-name{font-size:15.5px}.pc-price{font-size:15px}
+  .pc-body{padding:11px 11px 13px}
+  .pc-cta{padding:9px;font-size:10.5px}
+}
+
+/* ====== BOTTOM SHEET (ala Shopee: variasi + beli) ====== */
+.sheet-ov{position:fixed;inset:0;background:rgba(53,40,37,.55);z-index:1500;opacity:0;visibility:hidden;transition:.3s}
+.sheet-ov.on{opacity:1;visibility:visible}
+.sheet{position:fixed;left:0;right:0;bottom:0;z-index:1501;background:var(--cream);border-radius:22px 22px 0 0;transform:translateY(100%);transition:transform .34s cubic-bezier(.32,.72,0,1);max-height:92vh;display:flex;flex-direction:column;box-shadow:0 -12px 40px rgba(0,0,0,.2)}
+.sheet.on{transform:translateY(0)}
+/* di PC tampil sebagai modal di tengah */
+@media(min-width:761px){
+  .sheet{left:50%;right:auto;bottom:auto;top:50%;transform:translate(-50%,-46%) scale(.96);width:560px;max-width:92vw;border-radius:18px;max-height:88vh;opacity:0;transition:transform .3s,opacity .3s}
+  .sheet.on{transform:translate(-50%,-50%) scale(1);opacity:1}
+}
+.sheet-grip{padding:10px 0 2px;display:flex;justify-content:center;flex-shrink:0}
+.sheet-grip span{width:42px;height:5px;border-radius:50px;background:var(--taupe-soft)}
+@media(min-width:761px){.sheet-grip{display:none}}
+.sheet-close{position:absolute;top:13px;right:15px;background:rgba(255,255,255,.85);border:1px solid var(--line);color:var(--maroon);width:32px;height:32px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;z-index:3;display:flex;align-items:center;justify-content:center}
+.sheet-body{overflow-y:auto;padding:6px 22px 8px;-webkit-overflow-scrolling:touch}
+.sheet-top{display:flex;gap:14px;align-items:flex-start;padding:8px 0 16px;border-bottom:1px solid var(--line);margin-bottom:16px}
+.sheet-img{width:104px;height:130px;border-radius:12px;object-fit:cover;flex-shrink:0;border:1px solid var(--line);background:var(--paper2)}
+.sheet-tt{flex:1;min-width:0;padding-top:2px}
+.sheet-tt h3{font-family:var(--pf);font-size:23px;color:var(--maroon);line-height:1.15;margin-bottom:4px}
+.sheet-tt .st-dim{font-size:11px;letter-spacing:.4px;text-transform:uppercase;color:var(--taupe);margin-bottom:9px;line-height:1.4}
+.sheet-price{font-family:var(--pf);font-size:25px;color:var(--wine);font-weight:600;line-height:1}
+.sheet-price small{display:block;font-family:var(--body);font-size:10px;letter-spacing:.5px;text-transform:uppercase;color:var(--taupe);font-weight:500;margin-top:2px}
+
+.sv-group{margin-bottom:16px}
+.sv-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--wine);font-weight:600;margin-bottom:9px;display:block}
+.sv-label .lite-note{text-transform:none;letter-spacing:0;color:var(--taupe);font-weight:400;font-size:11px}
+.sv-opts{display:flex;gap:8px;flex-wrap:wrap}
+.sv-opt{border:1.5px solid var(--line);background:#fff;border-radius:50px;padding:9px 17px;font-size:12.5px;color:var(--maroon);cursor:pointer;transition:.18s;font-weight:500;letter-spacing:.2px;-webkit-tap-highlight-color:transparent}
+.sv-opt small{color:inherit;opacity:.8;font-size:10.5px}
+.sv-opt:hover{border-color:var(--wine)}
+.sv-opt.sel{border-color:var(--maroon);background:var(--maroon);color:#fff}
+.sv-opt.sel small{opacity:.85}
+
+/* swatch warna */
+.sv-swatches{display:flex;gap:11px;flex-wrap:wrap}
+.sw{cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;-webkit-tap-highlight-color:transparent}
+.sw .dot{width:34px;height:34px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--line);transition:.2s}
+.sw.sel .dot{box-shadow:0 0 0 2px var(--maroon);transform:scale(1.06)}
+.sw .nm{font-size:10.5px;color:var(--taupe);letter-spacing:.2px}
+.sw.sel .nm{color:var(--maroon);font-weight:600}
+.sw-red .dot{background:#a8333f}.sw-brown .dot{background:#8a6a4f}.sw-yellow .dot{background:#dcab4c}.sw-blue .dot{background:#5d7e9c}
+
+.sheet-note{background:rgba(111,91,82,.08);border:1px solid var(--line);border-radius:10px;padding:10px 12px;font-size:11.5px;color:var(--taupe);line-height:1.5;margin-bottom:6px}
+.sheet-note b{color:var(--ink)}
+.sheet-warn{background:rgba(224,176,32,.13);border:1px solid rgba(224,176,32,.4);border-radius:10px;padding:10px 12px;font-size:11.5px;color:#7a5c00;line-height:1.5;margin-bottom:6px}
+.sheet-warn b{color:#5e4700}
+
+.sheet-foot{flex-shrink:0;border-top:1px solid var(--line);background:#fff;padding:13px 20px calc(13px + env(safe-area-inset-bottom,0px));display:flex;gap:11px}
+.sheet-foot .btn{flex:1;padding:14px 10px;font-size:12px}
+.sf-cart{background:#fff;color:var(--maroon);border:1.5px solid var(--maroon)}
+.sf-cart:hover{background:var(--paper)}
+.sf-buy{background:var(--maroon);color:#fff;border:1.5px solid var(--maroon)}
+.sf-buy:hover{background:var(--wine);border-color:var(--wine)}
+body.sheet-lock{overflow:hidden}
+</style>
+</head>
+<body>
+<nav class="nav"><div class="wrap">
+  <a href="index.html" class="brand"><img class="dd-logo" src="images/brand/icon.png" alt="DD"><img class="brand-wm" src="images/brand/logo-wordmark.png" alt="Dear Darlene"></a>
+  <div class="nav-links"><a href="index.html">Home</a><a href="produk.html" class="active">Shop</a><a href="koleksi.html">Our Products</a><a href="about.html">About Us</a>
+      <a href="faq.html">F.A.Q</a><a href="news.html">News</a><a href="order.html" class="btn btn-primary">ORDER NOW</a></div>
+  <button class="burger">&#9776;</button>
+</div></nav>
+
+<main>
+<div class="shop-head">
+  <div class="wrap">
+    <span class="eyebrow">Shop</span>
+    <h1>Belanja Papan Bunga</h1>
+    <p>Pilih produk, pilih variasi &amp; warna, lalu pesan langsung. Mudah seperti belanja online ✦ Free ongkir Jakarta &amp; Tangerang.</p>
+  </div>
+</div>
+
+<div class="shop-wrap">
+  <div class="wrap">
+    <div class="shop-grid" id="shopGrid"><!-- diisi via JS --></div>
+  </div>
+</div>
+</main>
+
+<!-- ====== BOTTOM SHEET (variasi + beli) ====== -->
+<div class="sheet-ov" id="sheetOv"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-label="Pilih variasi produk">
+  <div class="sheet-grip"><span></span></div>
+  <button class="sheet-close" id="sheetClose" aria-label="Tutup">&times;</button>
+  <div class="sheet-body" id="sheetBody"><!-- diisi via JS --></div>
+  <div class="sheet-foot">
+    <button class="btn sf-cart" id="sfCart">+ Keranjang</button>
+    <button class="btn sf-buy" id="sfBuy">Beli Sekarang</button>
+  </div>
+</div>
+
+<footer class="footer" id="footer"></footer>
+<a class="fab" href="https://wa.me/628111344911?text=Halo%20Dear%20Darlene%20%F0%9F%8C%B8" target="_blank" aria-label="Chat WhatsApp CS"><span class="fab-tip">Chat CS</span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm0 18.15h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.2.84.85-3.12-.2-.32a8.18 8.18 0 01-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 012.41 5.83c0 4.54-3.7 8.24-8.24 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg></a>
+
+<script src="shared.js"></script>
+<script src="cart.js"></script>
+<script>
+/* ====== DATA PRODUK (selaras dengan CATALOG 2026) ====== */
+var SHOP = [
+  {
+    series:'classic', name:'Classic', tagline:'Tabletop · Best Seller',
+    dim:'Tabletop · di atas meja · tripod 13 cm',
+    cover:'images/products/classic-rosie-red.jpg',
+    priceFrom:190000,
+    addonPrice:20000,
+    designs:[
+      {v:'Lite', design:'Rosie', label:'Rosie', sub:'Lite', price:190000, custom:false},
+      {v:'Bloom', design:'Jasmine', label:'Jasmine', sub:'Bloom', price:290000, custom:true},
+      {v:'Bloom', design:'Orchid', label:'Orchid', sub:'Bloom', price:290000, custom:true},
+      {v:'Bloom', design:'Lily', label:'Lily', sub:'Bloom', price:290000, custom:true}
+    ]
+  },
+  {
+    series:'grande', name:'Grande', tagline:'Standing Easel',
+    dim:'Standing · tripod kayu · 75 cm',
+    cover:'images/products/grande-rosie-red.jpg',
+    priceFrom:490000,
+    addonPrice:30000,
+    designs:[
+      {v:'Lite', design:'Rosie', label:'Rosie', sub:'Lite', price:490000, custom:false},
+      {v:'Bloom', design:'Jasmine', label:'Jasmine', sub:'Bloom', price:590000, custom:true},
+      {v:'Bloom', design:'Orchid', label:'Orchid', sub:'Bloom', price:590000, custom:true},
+      {v:'Bloom', design:'Lily', label:'Lily', sub:'Bloom', price:590000, custom:true}
+    ]
+  },
+  {
+    series:'royale', name:'Royale', tagline:'Paling Besar',
+    dim:'Ilustrasi bunga penuh · 110×90 cm · tripod 75 cm',
+    cover:'images/products/royale-rosie-red.jpg',
+    priceFrom:680000,
+    addonPrice:40000,
+    designs:[
+      {v:'Lite', design:'Rosie', label:'Rosie', sub:'Lite', price:680000, custom:false}
+    ]
+  },
+  {
+    series:'outdoor', name:'Outdoor', tagline:'Papan Outdoor',
+    dim:'Papan bunga besar untuk outdoor',
+    cover:'images/products/outdoor-basic-elegant.jpg',
+    priceFrom:500000,
+    addonPrice:0,
+    outdoor:true,
+    otypes:[
+      {v:'Basic', design:'2 titik', label:'Basic', sub:'2 titik bunga'},
+      {v:'Deluxe', design:'4 titik', label:'Deluxe', sub:'4 titik bunga'}
+    ],
+    osizes:[
+      {size:'Regular 2×1.2m', label:'Regular', sub:'2×1.2 m', basic:500000, deluxe:650000},
+      {size:'Medium 2×1.5m', label:'Medium', sub:'2×1.5 m', basic:600000, deluxe:750000}
+    ]
+  }
+];
+
+/* foto per variasi — Lite pakai WARNA, Bloom pakai DESIGN, Outdoor pakai TIPE */
+var SHOP_PHOTO = {
+  classic:{
+    'Lite|Red':'images/products/classic-rosie-red.jpg',
+    'Lite|Brown':'images/products/classic-rosie-brown.jpg',
+    'Lite|Yellow':'images/products/classic-rosie-yellow.jpg',
+    'Lite|Blue':'images/products/classic-rosie-blue.jpg',
+    'Bloom|Jasmine':'images/products/classic-bloom-jasmine-1.jpg',
+    'Bloom|Lily':'images/products/classic-bloom-lily-1.jpg',
+    'Bloom|Orchid':'images/products/classic-bloom-orchid-1.jpg',
+    '_default':'images/products/classic-rosie-red.jpg'
+  },
+  grande:{
+    'Lite|Red':'images/products/grande-rosie-red.jpg',
+    'Lite|Brown':'images/products/grande-rosie-brown.jpg',
+    'Lite|Yellow':'images/products/grande-rosie-yellow.jpg',
+    'Lite|Blue':'images/products/grande-rosie-blue.jpg',
+    'Bloom|Jasmine':'images/products/grande-bloom-jasmine.jpg',
+    'Bloom|Lily':'images/products/grande-bloom-lily.jpg',
+    'Bloom|Orchid':'images/products/grande-bloom-orchid.jpg',
+    '_default':'images/products/grande-rosie-red.jpg'
+  },
+  royale:{
+    'Lite|Red':'images/products/royale-rosie-red.jpg',
+    'Lite|Brown':'images/products/royale-rosie-brown.jpg',
+    'Lite|Yellow':'images/products/royale-rosie-yellow.jpg',
+    'Lite|Blue':'images/products/royale-rosie-blue.jpg',
+    '_default':'images/products/royale-rosie-red.jpg'
+  },
+  outdoor:{
+    'Basic':'images/products/outdoor-basic-elegant.jpg',
+    'Deluxe':'images/products/outdoor-deluxe-elegant.jpg',
+    '_default':'images/products/outdoor-basic-elegant.jpg'
+  }
+};
+
+var COLORS=['Red','Brown','Yellow','Blue'];
+function rp(n){return 'Rp '+Number(n).toLocaleString('id-ID');}
+
+/* ---------- render grid ---------- */
+(function renderGrid(){
+  var grid=document.getElementById('shopGrid');
+  var html='';
+  SHOP.forEach(function(p,i){
+    html+='<div class="pcard" data-i="'+i+'">'+
+      '<div class="pc-ph"><span class="pc-tagline">'+p.tagline+'</span>'+
+        '<img src="'+p.cover+'" alt="'+p.name+'" loading="'+(i<2?'eager':'lazy')+'"></div>'+
+      '<div class="pc-body">'+
+        '<div class="pc-name">'+p.name+'</div>'+
+        '<div class="pc-meta">'+(p.outdoor?'Basic & Deluxe':(p.series==='royale'?'4 warna':'4 design'))+'</div>'+
+        '<div class="pc-price"><small>'+(p.series==='royale'?'Harga':'Mulai dari')+'</small>'+rp(p.priceFrom)+'</div>'+
+        '<div class="pc-cta">Pilih &amp; Beli'+
+          '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+  });
+  grid.innerHTML=html;
+  grid.querySelectorAll('.pcard').forEach(function(c){
+    c.addEventListener('click',function(){openSheet(parseInt(c.getAttribute('data-i')));});
+  });
+})();
+
+/* ---------- bottom sheet ---------- */
+var ov=document.getElementById('sheetOv'),sheet=document.getElementById('sheet'),
+    body=document.getElementById('sheetBody'),closeBtn=document.getElementById('sheetClose');
+var STATE=null; // {p, idx, design, color, otype, osize}
+
+function photoFor(p,st){
+  var map=SHOP_PHOTO[p.series]||{};
+  if(p.outdoor){return map[st.otype.v]||map._default;}
+  if(st.design.v==='Lite'){return map['Lite|'+st.color]||map._default;}
+  return map['Bloom|'+st.design.design]||map._default;
+}
+function priceFor(p,st){
+  if(p.outdoor){var k=st.otype.v==='Deluxe'?'deluxe':'basic';return st.osize[k];}
+  return st.design.price;
+}
+function openSheet(i){
+  var p=SHOP[i];
+  STATE={p:p,i:i,design:(p.designs?p.designs[0]:null),color:'Red',
+         otype:(p.otypes?p.otypes[0]:null),osize:(p.osizes?p.osizes[0]:null),addon:false};
+  body.innerHTML=buildSheet(p);
+  wireSheet(p);
+  refreshSheet();
+  ov.classList.add('on');sheet.classList.add('on');document.body.classList.add('sheet-lock');
+}
+function closeSheet(){ov.classList.remove('on');sheet.classList.remove('on');document.body.classList.remove('sheet-lock');}
+ov.addEventListener('click',closeSheet);
+closeBtn.addEventListener('click',closeSheet);
+document.addEventListener('keydown',function(e){if(e.key==='Escape')closeSheet();});
+
+function buildSheet(p){
+  var h='';
+  h+='<div class="sheet-top">'+
+       '<img class="sheet-img" id="shImg" src="'+p.cover+'" alt="'+p.name+'">'+
+       '<div class="sheet-tt"><h3>'+p.name+'</h3>'+
+         '<div class="st-dim">'+p.dim+'</div>'+
+         '<div class="sheet-price" id="shPrice"></div>'+
+       '</div>'+
+     '</div>';
+
+  if(p.outdoor){
+    // Tipe
+    h+='<div class="sv-group"><span class="sv-label">Pilih Tipe</span><div class="sv-opts" id="grpOtype">';
+    p.otypes.forEach(function(o,k){h+='<span class="sv-opt'+(k===0?' sel':'')+'" data-k="'+k+'">'+o.label+' <small>('+o.sub+')</small></span>';});
+    h+='</div></div>';
+    // Ukuran
+    h+='<div class="sv-group"><span class="sv-label">Pilih Ukuran</span><div class="sv-opts" id="grpOsize">';
+    p.osizes.forEach(function(s,k){h+='<span class="sv-opt'+(k===0?' sel':'')+'" data-k="'+k+'">'+s.label+' <small>('+s.sub+')</small></span>';});
+    h+='</div></div>';
+    h+='<div class="sheet-note">ℹ️ <b>Harga final outdoor</b> dikonfirmasi via WhatsApp setelah cek lokasi pemasangan.</div>';
+    return h;
+  }
+
+  // Variasi/Design
+  h+='<div class="sv-group"><span class="sv-label">Pilih Variasi</span><div class="sv-opts" id="grpDesign">';
+  p.designs.forEach(function(d,k){h+='<span class="sv-opt'+(k===0?' sel':'')+'" data-k="'+k+'">'+d.label+' <small>('+d.sub+')</small></span>';});
+  h+='</div></div>';
+
+  // Warna (Lite) — swatch
+  h+='<div class="sv-group" id="grpColorWrap"><span class="sv-label">Pilih Warna <span class="lite-note">(Rosie tidak bisa custom warna)</span></span>'+
+       '<div class="sv-swatches" id="grpColor">';
+  COLORS.forEach(function(c,k){h+='<span class="sw sw-'+c.toLowerCase()+(k===0?' sel':'')+'" data-c="'+c+'"><span class="dot"></span><span class="nm">'+c+'</span></span>';});
+  h+='</div></div>';
+
+  // Warna Variasi (Bloom)
+  h+='<div class="sv-group" id="grpBloomVar" style="display:none"><span class="sv-label">Warna Variasi</span>'+
+       '<div class="sv-opts" id="grpBV">'+
+         '<span class="sv-opt sel" data-bv="Sesuai foto katalog">Sesuai foto katalog</span>'+
+         '<span class="sv-opt" data-bv="Custom warna (min. H-2)">Custom warna <small>(min. H-2)</small></span>'+
+       '</div></div>';
+
+  // Add-On
+  h+='<div class="sv-group"><span class="sv-label">Add-On</span><div class="sv-opts" id="grpAddon">'+
+       '<span class="sv-opt sel" data-addon="0">Tanpa Add-On</span>'+
+       '<span class="sv-opt" data-addon="1">+ Logo 3D &amp; Lampu <small>(+'+rp(p.addonPrice)+')</small></span>'+
+     '</div></div>';
+
+  h+='<div class="sheet-note" id="addonNote">ℹ️ <b>Note:</b> Beberapa foto menampilkan produk dengan <b>Add-On Logo 3D + Lampu</b>. Versi tanpa Add-On polos tanpa logo timbul &amp; lampu.</div>';
+  h+='<div class="sheet-warn" id="customWarn" style="display:none">⚠️ <b>Custom warna/tulisan:</b> minimal H-2 sebelum tanggal kirim. Kurang dari H-2 mengikuti foto katalog.</div>';
+  return h;
+}
+
+function pick(groupEl,el){if(!groupEl)return;groupEl.querySelectorAll('.sv-opt,.sw').forEach(function(o){o.classList.remove('sel');});el.classList.add('sel');}
+
+function wireSheet(p){
+  if(p.outdoor){
+    var go=document.getElementById('grpOtype'),gs=document.getElementById('grpOsize');
+    go.querySelectorAll('.sv-opt').forEach(function(el){el.addEventListener('click',function(){pick(go,el);STATE.otype=p.otypes[+el.getAttribute('data-k')];refreshSheet();});});
+    gs.querySelectorAll('.sv-opt').forEach(function(el){el.addEventListener('click',function(){pick(gs,el);STATE.osize=p.osizes[+el.getAttribute('data-k')];refreshSheet();});});
+    return;
+  }
+  var gd=document.getElementById('grpDesign');
+  gd.querySelectorAll('.sv-opt').forEach(function(el){el.addEventListener('click',function(){pick(gd,el);STATE.design=p.designs[+el.getAttribute('data-k')];refreshSheet();});});
+  var gc=document.getElementById('grpColor');
+  gc.querySelectorAll('.sw').forEach(function(el){el.addEventListener('click',function(){pick(gc,el);STATE.color=el.getAttribute('data-c');refreshSheet();});});
+  var gbv=document.getElementById('grpBV');
+  gbv.querySelectorAll('.sv-opt').forEach(function(el){el.addEventListener('click',function(){pick(gbv,el);STATE.bloomvar=el.getAttribute('data-bv');refreshSheet();});});
+  var ga=document.getElementById('grpAddon');
+  ga.querySelectorAll('.sv-opt').forEach(function(el){el.addEventListener('click',function(){pick(ga,el);STATE.addon=el.getAttribute('data-addon')==='1';refreshSheet();});});
+}
+
+function refreshSheet(){
+  var p=STATE.p;
+  var img=document.getElementById('shImg'),priceEl=document.getElementById('shPrice');
+  if(img){var src=photoFor(p,STATE);if(src)img.src=src;}
+  var price=priceFor(p,STATE);
+  var tag = p.outdoor ? 'By request' : (STATE.design&&STATE.design.custom ? 'Custom min H-2' : (p.series==='royale'?'Harga':'Mulai dari'));
+  if(priceEl)priceEl.innerHTML=rp(price)+' <small>'+tag+'</small>';
+  if(p.outdoor)return;
+
+  var isLite=(STATE.design.v==='Lite');
+  var colorWrap=document.getElementById('grpColorWrap'),bloomVar=document.getElementById('grpBloomVar'),
+      customWarn=document.getElementById('customWarn');
+  if(colorWrap)colorWrap.style.display=isLite?'block':'none';
+  if(bloomVar)bloomVar.style.display=isLite?'none':'block';
+  if(customWarn)customWarn.style.display=(!isLite && STATE.bloomvar && STATE.bloomvar.indexOf('Custom')===0)?'block':'none';
+}
+
+/* ---------- BELI SEKARANG → order.html dgn param (sistem checkout yg sudah ada) ---------- */
+function gotoCheckout(){
+  var p=STATE.p,q=new URLSearchParams();
+  q.set('series',p.series);
+  if(p.outdoor){
+    q.set('otype',STATE.otype.v);
+    q.set('osize',STATE.osize.size.indexOf('Medium')===0?'Medium':'Regular');
+  }else{
+    q.set('v',STATE.design.v);
+    q.set('design',STATE.design.design);
+    if(STATE.design.v==='Lite')q.set('color',STATE.color);
+    if(STATE.addon)q.set('addon','1');
+  }
+  window.location.href='order.html?'+q.toString();
+}
+document.getElementById('sfBuy').addEventListener('click',gotoCheckout);
+
+/* ---------- + KERANJANG → pakai ddCart dari cart.js ---------- */
+document.getElementById('sfCart').addEventListener('click',function(){
+  var p=STATE.p;
+  var item;
+  if(p.outdoor){
+    item={series:p.series,label:p.name,v:STATE.otype.v,design:STATE.otype.design,
+          size:STATE.osize.size,price:priceFor(p,STATE),addon:false,addonPrice:0,
+          img:photoFor(p,STATE),qty:1};
+  }else{
+    item={series:p.series,label:p.name,v:STATE.design.v,design:STATE.design.design,
+          color:(STATE.design.v==='Lite'?STATE.color:(STATE.bloomvar||'Sesuai foto katalog')),
+          price:STATE.design.price,addon:STATE.addon,addonPrice:p.addonPrice,
+          img:photoFor(p,STATE),qty:1};
+  }
+  closeSheet();
+  if(window.ddCart&&window.ddCart.add){window.ddCart.add(item);}
+});
+</script>
+</body>
+</html>
