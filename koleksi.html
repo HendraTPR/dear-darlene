@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
 <title>Koleksi — Dear Darlene</title>
 <meta name="description" content="Koleksi papan bunga Dear Darlene: Classic, Grande, Royale, Outdoor.">
 <link rel="icon" href="images/brand/icon.png">
@@ -49,8 +50,12 @@
 .masonry img{width:100%;margin-bottom:14px;border-radius:8px;break-inside:avoid;transition:.4s}
 .masonry img:hover{transform:scale(1.02);box-shadow:0 16px 38px -12px rgba(84,11,20,.3)}
 @media(max-width:880px){
-  .series .wrap{grid-template-columns:1fr;gap:26px}
+  .series .wrap{grid-template-columns:1fr;gap:18px;align-items:start}
   .series.flip .s-media{order:0}
+  .series:nth-child(even){background:var(--cream)}
+  .series .s-media{position:sticky;top:56px;z-index:5;background:var(--cream);padding:6px 0 6px;align-self:start}
+  .s-media .big{aspect-ratio:auto;height:38vh}
+  .s-thumbs{margin-top:8px}.s-thumbs img{width:60px;height:60px}
   .s-text h2{font-size:30px}
   .options .opt-grid{grid-template-columns:1fr}
   .masonry{columns:2}

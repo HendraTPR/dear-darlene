@@ -21,6 +21,25 @@
     document.addEventListener("click",function(e){if(nav.classList.contains("nav-open")&&!nav.contains(e.target))nav.classList.remove("nav-open");});
   })();
 
+  // Mobile bottom tab bar (ala Shopee)
+  (function(){
+    if(document.querySelector(".mobile-tabbar"))return;
+    var cur=(location.pathname.split("/").pop()||"index.html");
+    var items=[
+      ["index.html","Home","<svg viewBox=\"0 0 24 24\"><path d=\"M3 11l9-7 9 7\"/><path d=\"M5 10v10h14V10\"/></svg>"],
+      ["koleksi.html","Produk","<svg viewBox=\"0 0 24 24\"><path d=\"M4 7h16l-1.4 13H5.4z\"/><path d=\"M8.5 7a3.5 3.5 0 017 0\"/></svg>"],
+      ["order.html","Order","<svg viewBox=\"0 0 24 24\"><rect x=\"5\" y=\"3\" width=\"14\" height=\"18\" rx=\"2\"/><path d=\"M9 8h6M9 12h6M9 16h4\"/></svg>"],
+      ["wa","WhatsApp","<svg viewBox=\"0 0 24 24\"><path d=\"M12 2a10 10 0 00-8.6 15l-1.3 4.7 4.8-1.3A10 10 0 1012 2zm4.5 12c-.2-.1-1.4-.7-1.6-.8-.2-.1-.4-.1-.5.1-.2.2-.6.8-.7.9-.1.1-.3.2-.5.1-.2-.1-1-.4-1.9-1.2-.7-.6-1.2-1.4-1.3-1.6-.1-.2 0-.4.1-.5l.4-.4c.1-.1.1-.3.2-.4 0-.2 0-.3-.1-.4l-.7-1.7c-.2-.4-.4-.4-.5-.4h-.5c-.2 0-.4.1-.6.3-.2.2-.8.8-.8 2s.8 2.3.9 2.4c.1.2 1.6 2.5 4 3.4.5.2 1 .3 1.3.4.6.2 1.1.2 1.5.1.5-.1 1.4-.6 1.6-1.1.2-.6.2-1 .1-1.1z\"/></svg>"]
+    ];
+    var html="";
+    for(var i=0;i<items.length;i++){var it=items[i];
+      if(it[0]==="wa"){html+='<a class="tab-wa" href="https://wa.me/628111344911?text=Halo%20Dear%20Darlene%20%F0%9F%8C%B8" target="_blank">'+it[2]+"<span>"+it[1]+"</span></a>";}
+      else{var act=(it[0]===cur)?' class="active"':"";html+='<a href="'+it[0]+'"'+act+">"+it[2]+"<span>"+it[1]+"</span></a>";}
+    }
+    var bar=document.createElement("nav"); bar.className="mobile-tabbar"; bar.innerHTML=html;
+    document.body.appendChild(bar);
+  })();
+
   // reveal + slide
   var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add("in");io.unobserve(e.target);}});},{threshold:.12});
   document.querySelectorAll(".reveal,.slide-l,.slide-r").forEach(function(el){io.observe(el);});

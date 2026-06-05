@@ -1,3 +1,4 @@
+html{color-scheme:light}
 /* ===== DEAR DARLENE — shared styles (cream base, maroon accent, editorial) ===== */
 :root{
   --maroon:#540B14; --wine:#8d3b46; --deep:#3a1518;
@@ -106,6 +107,14 @@ section{padding:96px 0}
 @keyframes lbfade{from{opacity:0}to{opacity:1}}
 .zoomable{cursor:zoom-in}
 
+/* Mobile bottom tab bar (ala Shopee) */
+.mobile-tabbar{display:none;position:fixed;left:0;right:0;bottom:0;z-index:300;background:rgba(248,248,246,.97);backdrop-filter:blur(10px);border-top:1px solid var(--line);justify-content:space-around;align-items:center;padding:6px 4px 7px;box-shadow:0 -6px 18px rgba(53,40,37,.08)}
+.mobile-tabbar a{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:10px;letter-spacing:.4px;color:var(--taupe);text-transform:uppercase;flex:1;padding:3px 0;font-weight:600}
+.mobile-tabbar a svg{width:22px;height:22px;stroke:currentColor;fill:none;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.mobile-tabbar a.active{color:var(--maroon)}
+.mobile-tabbar a.tab-wa{color:#1FA855}
+.mobile-tabbar a.tab-wa svg{fill:currentColor;stroke:none}
+
 @media(max-width:880px){
   .nav-links{display:none}.burger{display:block}
   .nav.nav-open .nav-links{display:flex;flex-direction:column;align-items:stretch;gap:0;position:absolute;top:100%;left:0;right:0;background:var(--cream);border-bottom:1px solid var(--line);box-shadow:0 14px 26px rgba(53,40,37,.10);padding:4px 22px 16px}
@@ -114,6 +123,9 @@ section{padding:96px 0}
   .nav.nav-open .nav-links a.btn-primary{margin-top:14px;text-align:center;border-radius:999px;border-bottom:none;padding:14px}
   section{padding:64px 0}.sec-head h2{font-size:30px}.pagehead h1{font-size:34px}
   .footer-grid{grid-template-columns:1fr;gap:30px}
+  body{padding-bottom:70px}
+  .fab{display:none!important}
+  .mobile-tabbar{display:flex}
 }
 
 .dd-logo{height:34px;width:auto;display:block}
