@@ -208,6 +208,7 @@ tbody tr:hover td{background:#fcfbf9}
         <option value="diproses">Diproses</option>
         <option value="dikirim">Dikirim</option>
         <option value="selesai">Selesai</option>
+        <option value="dihapus">🗑 Dihapus</option>
       </select>
       <select class="fsel" id="fRange" onchange="applyFilters()">
         <option value="all">Semua waktu</option>
@@ -259,7 +260,7 @@ tbody tr:hover td{background:#fcfbf9}
     <h3>Detail Pesanan</h3>
     <p class="modal-hint" id="ddate"></p>
     <div id="dbody"></div>
-    <div class="modal-actions"><button class="btn btn-block" onclick="closeDetail()">Tutup</button></div>
+    <div class="modal-actions"><button class="btn-ghost" style="flex:1" id="delBtn" onclick="doDelete()">🗑 Hapus</button><button class="btn-ghost" style="flex:1;display:none" id="restoreBtn" onclick="doRestore()">↩ Pulihkan</button><button class="btn" style="flex:1" onclick="closeDetail()">Tutup</button></div>
   </div>
 </div>
 <div id="addOrderModal" class="overlay" onclick="if(event.target===this)closeAddOrder()">
@@ -290,6 +291,7 @@ sb.auth.onAuthStateChange((event, session) => {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
     document.getElementById('userTag').textContent = session.user.email;
+    window.__userEmail = session.user.email;
     loadOrders();
   } else {
     document.getElementById('loginScreen').style.display = 'flex';
@@ -319,6 +321,7 @@ async function loadOrders() {
   if (document.getElementById('tabInsight').style.display !== 'none') renderInsight();
 }
 function renderStats(orders) {
+  orders = orders.filter(o=>!o.deleted_at);
   const today = todayStr();
   const total = orders.reduce((s,o)=>s+(o.total||0),0);
   const paid = orders.filter(o=>isPaid(o));
@@ -336,6 +339,7 @@ function renderStats(orders) {
   document.getElementById('sToday').textContent = todayN;
 }
 function renderCharts(orders) {
+  orders = orders.filter(o=>!o.deleted_at);
   const days = [];
   for (let i = 13; i >= 0; i--) { const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i); days.push({ key: d.toISOString().slice(0,10), d, val: 0 }); }
   const map = {}; days.forEach(x => map[x.key] = x);
@@ -369,7 +373,8 @@ function applyFilters() {
   viewOrders = allOrders.filter(o => {
     if (payFilter==='paid' && !isPaid(o)) return false;
     if (payFilter==='unpaid' && isPaid(o)) return false;
-    if (status!=='all' && (o.status||'baru')!==status) return false;
+    if (status==='dihapus') { if (!o.deleted_at) return false; }
+    else { if (o.deleted_at) return false; if (status!=='all' && (o.status||'baru')!==status) return false; }
     if (cutoff!=null) { const t = new Date(o.created_at||0).getTime(); if (t < cutoff) return false; }
     if (q) { const hay=[o.rec_name,o.sender_name,o.rec_city,o.rec_phone,o.source,fmtItems(o.items)].map(v=>(v||'').toLowerCase()).join(' '); if (!hay.includes(q)) return false; }
     return true;
@@ -499,6 +504,10 @@ function openDetail(id) {
     '<hr class="divider">'+
     buildBuku(o);
   document.getElementById('detailModal').classList.add('on');
+  var _del = !!o.deleted_at;
+  document.getElementById('delBtn').style.display = _del ? 'none' : '';
+  document.getElementById('restoreBtn').style.display = _del ? '' : 'none';
+  if(_del){ document.getElementById('dbody').insertAdjacentHTML('afterbegin','<div class="dsec" style="background:#fbeaec;border-radius:8px;padding:10px 12px;margin-bottom:6px"><h4 style="color:var(--red)">🗑 Pesanan Dihapus</h4><p>Dihapus oleh '+esc(o.deleted_by||'—')+'<br>'+fmtDate2(o.deleted_at)+'</p></div>'); }
   recalcBuku();
 }
 function buildBuku(o) {
@@ -571,41 +580,47 @@ function openAddOrder(){
 function closeAddOrder(){ document.getElementById('addOrderModal').classList.remove('on'); }
 function parseRp(v){ if(!v) return 0; var d=(''+v).replace(/[^0-9]/g,''); return d?parseInt(d,10):0; }
 function parseWaOrder(text){
-  var lines=text.split(/\r?\n/), section='';
+  var lines=text.split(/\r?\n/), section='', lastKey='';
   var o={ status:'baru', payment_status:'Belum Bayar', source:'WhatsApp (manual)', total:0 };
   var d={};
   for(var i=0;i<lines.length;i++){
     var line=lines[i].trim(); if(!line) continue;
     var up=line.replace(/\*/g,'').trim().toUpperCase();
-    if(up==='DATA PENGIRIM'){section='pengirim';continue;}
-    if(up==='DATA PENERIMA'){section='penerima';continue;}
-    if(up==='DETAIL PESANAN'){section='detail';continue;}
-    if(up==='RINGKASAN'){section='ringkasan';continue;}
-    if(up.indexOf('FORM PEMESANAN')>=0) continue;
-    var ix=line.indexOf(':'); if(ix<0) continue;
+    var ix=line.indexOf(':');
+    if(ix<0){
+      if(up.indexOf('PENGIRIM')>=0){section='pengirim';lastKey='';continue;}
+      if(up.indexOf('PENERIMA')>=0){section='penerima';lastKey='';continue;}
+      if(up.indexOf('DETAIL')>=0){section='detail';lastKey='';continue;}
+      if(up.indexOf('RINGKASAN')>=0){section='ringkasan';lastKey='';continue;}
+      if(up.indexOf('FORM PEMESANAN')>=0){lastKey='';continue;}
+      if(lastKey && o[lastKey]){ o[lastKey]=(o[lastKey]+' '+line).trim(); }
+      continue;
+    }
     var key=line.slice(0,ix).replace(/\*/g,'').trim().toLowerCase();
     var val=line.slice(ix+1).trim();
     var nohp=(key.replace(/[\s.]/g,'')==='nohp');
+    lastKey='';
     if(section==='pengirim'){
-      if(key==='nama') o.sender_name=val;
-      else if(nohp||key.indexOf('telp')>=0||key.indexOf('telepon')>=0) o.sender_phone=val;
+      if(key==='nama'){ o.sender_name=val; lastKey='sender_name'; }
+      else if(nohp||key.indexOf('telp')>=0||key.indexOf('telepon')>=0){ o.sender_phone=val; lastKey='sender_phone'; }
     } else if(section==='penerima'){
-      if(key==='nama') o.rec_name=val;
-      else if(nohp) o.rec_phone=val;
-      else if(key.indexOf('alamat')>=0) o.rec_addr=val;
-      else if(key.indexOf('kota')>=0||key.indexOf('area')>=0) o.rec_city=val;
-      else if(key.indexOf('hari')>=0||key.indexOf('tanggal')>=0) o.del_date=val;
-      else if(key.indexOf('jam')>=0) o.del_time=val;
+      if(key==='nama'){ o.rec_name=val; lastKey='rec_name'; }
+      else if(nohp){ o.rec_phone=val; lastKey='rec_phone'; }
+      else if(key.indexOf('alamat')>=0){ o.rec_addr=val; lastKey='rec_addr'; }
+      else if(key.indexOf('kota')>=0||key.indexOf('area')>=0){ o.rec_city=val; lastKey='rec_city'; }
+      else if(key.indexOf('hari')>=0||key.indexOf('tanggal')>=0){ o.del_date=val; lastKey='del_date'; }
+      else if(key.indexOf('jam')>=0){ o.del_time=val; lastKey='del_time'; }
     } else if(section==='detail'){
-      if(key==='ukuran') d.ukuran=val;
-      else if(key==='variasi'||key==='variation') d.variasi=val;
-      else if(key==='design'||key==='desain') d.design=val;
-      else if(key==='warna') d.warna=val;
-      else if(key.indexOf('add-on')>=0||key.indexOf('add on')>=0||key.indexOf('addon')>=0) d.addon=/ya|yes|\u2713/i.test(val);
-      else if(key.indexOf('papan')>=0) o.board_text=val;
-      else if(key.indexOf('from')>=0) o.from_text=val;
-      else if(key.indexOf('logo penerima')>=0) o.logo=val;
-      else if(key.indexOf('logo pengirim')>=0) o.logo2=val;
+      if(key==='ukuran'){ d.ukuran=val; }
+      else if(key==='variasi'||key==='variation'){ d.variasi=val; }
+      else if(key==='design'||key==='desain'){ d.design=val; }
+      else if(key==='warna'){ d.warna=val; }
+      else if(key.indexOf('add')>=0){ d.addon = /tidak|no|enggak|ngga|nggak/i.test(val) ? false : (/ya|yes|iya|ada/i.test(val) ? true : false); }
+      else if(key.indexOf('from')>=0){ o.from_text=val; lastKey='from_text'; }
+      else if(key.indexOf('papan')>=0||key.indexOf('tulisan')>=0){ o.board_text=val; lastKey='board_text'; }
+      else if(key.indexOf('logo penerima')>=0){ o.logo=val; lastKey='logo'; }
+      else if(key.indexOf('logo pengirim')>=0){ o.logo2=val; lastKey='logo2'; }
+      else if(key.indexOf('logo')>=0){ o.logo=val; lastKey='logo'; }
     }
     if(key.indexOf('tau dear darlene')>=0||key.indexOf('darimana')>=0){ if(val) o.source=val; }
     if(key==='total'){ var t=parseRp(val); if(t) o.total=t; }
@@ -624,19 +639,20 @@ function cekWaOrder(){
   var err=document.getElementById('waErr');
   if(text.length<10){ err.textContent='Paste dulu pesan WhatsApp-nya ya.'; err.style.display=''; return; }
   var o; try{ o=parseWaOrder(text); }catch(e){ err.textContent='Gagal baca format: '+e.message; err.style.display=''; return; }
-  if(!o.rec_name && !o.sender_name && !o.total){ err.textContent='Format belum dikenali. Pastikan pakai format Form Pemesanan Dear Darlene.'; err.style.display=''; return; }
+  if(!o.rec_name && !o.sender_name){ err.textContent='Format belum dikenali. Pastikan ada DATA PENGIRIM / PENERIMA.'; err.style.display=''; return; }
   err.style.display='none'; waParsed=o;
   var r=function(l,v){ return '<div class="dsec"><h4>'+l+'</h4><p>'+(v||'\u2014')+'</p></div>'; };
   var prod=fmtItems(o.items)+(o._addon?' + Add-on Logo 3D+Lampu':'');
   document.getElementById('waPreview').innerHTML=
     '<div style="border-top:1px solid var(--line);margin:16px 0 0"></div>'+
-    '<p class="modal-hint" style="margin:12px 0">Cek dulu \u2014 kalau sudah benar, klik Simpan.</p>'+
+    '<p class="modal-hint" style="margin:12px 0">Cek datanya. <b>Total</b> bisa kamu isi/edit kalau kosong atau belum sesuai, lalu Simpan.</p>'+
     r('Produk', esc(prod))+
-    r('Total', o.total?('Rp '+Number(o.total).toLocaleString('id-ID')):'\u2014')+
+    '<div class="dsec"><h4>Total Bayar (Rp)</h4><div class="bin" style="max-width:220px"><span>Rp</span><input id="waTotal" type="text" inputmode="numeric" value="'+(o.total?Number(o.total).toLocaleString('id-ID'):'')+'" placeholder="0"></div></div>'+
     r('Penerima', esc(o.rec_name||'\u2014')+' \u00b7 '+esc(o.rec_phone||'\u2014')+'<br>'+esc(o.rec_addr||'\u2014')+'<br>'+esc(o.rec_city||'\u2014'))+
     r('Pengirim', esc(o.sender_name||'\u2014')+' \u00b7 '+esc(o.sender_phone||'\u2014'))+
     r('Kirim', 'Tgl: '+esc(o.del_date||'\u2014')+' \u00b7 Jam: '+esc(o.del_time||'\u2014'))+
     r('Tulisan papan', esc(o.board_text))+ r('From', esc(o.from_text))+
+    ((o.logo||o.logo2)?r('Logo', 'Penerima: '+esc(o.logo||'\u2014')+' \u00b7 Pengirim: '+esc(o.logo2||'\u2014')):'')+
     r('Sumber', esc(o.source));
   document.getElementById('waPreview').style.display='';
   document.getElementById('waSaveBtn').style.display='';
@@ -645,6 +661,7 @@ function cekWaOrder(){
 async function saveWaOrder(){
   if(!waParsed) return;
   var btn=document.getElementById('waSaveBtn'); var err=document.getElementById('waErr');
+  var totEl=document.getElementById('waTotal'); var tot=totEl?parseRp(totEl.value):(waParsed.total||0);
   btn.disabled=true; btn.textContent='Menyimpan...'; err.style.display='none';
   var p={ status:'baru', payment_status:'Belum Bayar', source:waParsed.source||'WhatsApp (manual)',
     sender_name:waParsed.sender_name||null, sender_phone:waParsed.sender_phone||null,
@@ -652,12 +669,27 @@ async function saveWaOrder(){
     del_date:waParsed.del_date||null, del_time:waParsed.del_time||null,
     board_text:waParsed.board_text||null, from_text:waParsed.from_text||null,
     logo:waParsed.logo||null, logo2:waParsed.logo2||null,
-    items:waParsed.items||[], total:waParsed.total||0, raw_message:waParsed.raw_message||null };
+    items:waParsed.items||[], total:tot||0, raw_message:waParsed.raw_message||null };
   var res=await sb.from('dd_orders').insert(p);
   if(res.error){ var m=res.error.message||''; err.textContent='Gagal simpan: '+m+(/(policy|permission|row-level|denied)/i.test(m)?' \u2014 perlu aktifkan izin INSERT di Supabase.':''); err.style.display=''; btn.disabled=false; btn.textContent='Simpan \u2713'; return; }
   btn.disabled=false; btn.textContent='Simpan \u2713';
   closeAddOrder();
   await loadOrders();
+}
+async function doDelete(){
+  if(!detailId) return;
+  if(!confirm('Hapus pesanan ini? Akan dipindah ke daftar "Dihapus" dan dicatat siapa yang menghapus. Bisa dipulihkan lagi.')) return;
+  var by=(window.__userEmail||'admin');
+  var res=await sb.from('dd_orders').update({ deleted_at:new Date().toISOString(), deleted_by:by }).eq('id', detailId);
+  if(res.error){ alert('Gagal hapus: '+res.error.message+(/(policy|permission|row-level|column|schema)/i.test(res.error.message||'')?'\n\n(Mungkin kolom deleted_at/deleted_by belum dibuat di Supabase)':'')); return; }
+  closeDetail(); loadOrders();
+}
+async function doRestore(){
+  if(!detailId) return;
+  if(!confirm('Pulihkan pesanan ini?')) return;
+  var res=await sb.from('dd_orders').update({ deleted_at:null, deleted_by:null }).eq('id', detailId);
+  if(res.error){ alert('Gagal pulihkan: '+res.error.message); return; }
+  closeDetail(); loadOrders();
 }
 function todayStr(){ return new Date().toISOString().slice(0,10); }
 function isPaid(o){ return (o.payment_status||'Belum Bayar')==='Sudah Bayar'; }
