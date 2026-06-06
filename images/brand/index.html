@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light">
+<title>Dear Darlene — Indo's First Timeless Elegance Flower Board</title>
+<meta name="description" content="Papan bunga modern, elegan & timeless untuk grand opening dan momen istimewa. Free delivery Jakarta & Tangerang.">
+<link rel="icon" href="images/brand/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Poppins:wght@300;400;500;600&family=Pinyon+Script&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* HERO */
+.hero{background:var(--cream);overflow:hidden}
+.hero .wrap{display:grid;grid-template-columns:1.02fr .98fr;gap:54px;align-items:center;padding:78px 26px 86px}
+.hero .eyebrow{margin-bottom:20px;display:block}
+.hero-script{font-family:var(--script);font-size:58px;color:var(--wine);line-height:.85;margin-bottom:6px}
+.hero h1{font-size:52px;font-weight:500;margin-bottom:22px;color:var(--maroon)}
+.hero p{color:var(--taupe);max-width:430px;margin-bottom:34px;font-size:15.5px}
+.hero .hero-sub{font-family:var(--pf);font-style:italic;font-size:19px;letter-spacing:.4px;color:var(--wine);margin-bottom:30px}
+.hero h1 i{font-style:italic;font-family:var(--pf)}
+.hero-cta{display:flex;gap:13px;flex-wrap:wrap}
+.hero-figure{position:relative}
+.hero-figure .main{border-radius:10px;width:100%;aspect-ratio:4/5;object-fit:cover;box-shadow:0 30px 60px -26px rgba(84,11,20,.35);transition:opacity .55s ease}
+.hero-figure .badge{position:absolute;left:-20px;bottom:30px;background:var(--cream);border:1px solid var(--line);border-radius:10px;padding:14px 20px;box-shadow:0 16px 36px -14px rgba(84,11,20,.3)}
+.hero-figure .badge .n{font-family:var(--pf);font-size:26px;color:var(--maroon);line-height:1}
+.hero-figure .badge .l{font-size:9px;letter-spacing:1.5px;text-transform:uppercase;color:var(--taupe);margin-top:2px}
+/* trust */
+.trust{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+.trust .wrap{display:flex;justify-content:center;gap:46px;flex-wrap:wrap;padding:20px 26px;font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--taupe);text-align:center}
+.trust b{color:var(--maroon);font-weight:500}
+/* collection preview */
+.cards{display:grid;grid-template-columns:repeat(4,1fr);gap:22px}
+.card{background:#fff;border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:.35s;display:flex;flex-direction:column}
+.card:hover{transform:translateY(-6px);box-shadow:0 22px 46px -22px rgba(84,11,20,.28)}
+.card .ph{aspect-ratio:3/4;overflow:hidden;background:var(--paper)}
+.card .ph img{width:100%;height:100%;object-fit:cover;transition:.5s}
+.card:hover .ph img{transform:scale(1.05)}
+.card .ph.ph-ph{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;background:var(--paper2);color:var(--taupe)}
+.card .ph.ph-ph .f{font-size:38px;color:var(--wine)}
+.card .ph.ph-ph span{font-size:10px;letter-spacing:1.5px;text-transform:uppercase}
+.card-body{padding:18px 20px 22px;text-align:center}
+.card-body h3{font-size:21px}
+.card-body .meta{font-size:10.5px;letter-spacing:1px;text-transform:uppercase;color:var(--taupe);margin:5px 0 9px}
+.card-body .price{font-family:var(--pf);font-size:19px;color:var(--wine)}
+.center-cta{text-align:center;margin-top:46px}
+/* why */
+.why-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:26px;text-align:center}
+.why-item .ic{width:62px;height:62px;border-radius:50%;border:1.5px solid var(--wine);display:flex;align-items:center;justify-content:center;margin:0 auto 16px;color:var(--maroon)}
+.why-item .ic svg{width:27px;height:27px}
+.why-item h4{font-size:16px;margin-bottom:5px}
+.why-item p{font-size:12.5px;color:var(--taupe)}
+/* news teaser */
+.news-teaser .wrap{display:grid;grid-template-columns:.9fr 1.1fr;gap:46px;align-items:center}
+.news-teaser .ph{border-radius:12px;overflow:hidden;border:1px solid var(--line);box-shadow:0 20px 44px -24px rgba(84,11,20,.3)}
+.news-teaser .tag{display:inline-block;background:var(--maroon);color:var(--cream);font-size:10px;letter-spacing:2px;text-transform:uppercase;padding:5px 14px;border-radius:50px;margin-bottom:16px}
+.news-teaser h2{font-size:32px;margin-bottom:12px}
+.news-teaser p{color:var(--taupe);font-size:14.5px;margin-bottom:22px;max-width:440px}
+/* CTA band (maroon accent block) */
+.cta-band{background:var(--maroon);color:var(--cream);text-align:center}
+.cta-band .script{font-family:var(--script);font-size:46px;color:var(--taupe-soft);line-height:1}
+.cta-band h2{color:var(--cream);font-size:36px;margin:8px 0 10px;font-weight:400}
+.cta-band p{color:#e6d4cf;max-width:440px;margin:0 auto 28px;font-size:14.5px}
+@media(max-width:880px){
+  .hero .wrap{grid-template-columns:1fr;padding:40px 26px 52px}
+  .hero .slide-l{order:0}
+  .hero-figure{order:1;max-width:340px;margin:26px auto 0}
+  .hero h1{font-size:34px;margin-bottom:14px}.hero-script{font-size:46px}
+  .hero .kontan-tag{margin-bottom:20px}
+  .hero-cta{margin-top:4px}
+  .cards{grid-template-columns:1fr 1fr}
+  .why-grid{grid-template-columns:1fr 1fr;gap:30px 16px}
+  .news-teaser .wrap{grid-template-columns:1fr;gap:26px}
+}
+@media(max-width:480px){.cards{grid-template-columns:1fr}}
+
+/* ===== HERO KONTAN tag ===== */
+.kontan-tag{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid var(--line);border-left:4px solid var(--maroon);border-radius:10px;padding:13px 16px;margin-bottom:26px;max-width:430px;box-shadow:0 8px 22px -14px rgba(84,11,20,.3)}
+.kontan-logo{font-family:var(--pf);font-weight:700;font-size:20px;color:var(--maroon);letter-spacing:1px;flex-shrink:0;border-right:1.5px solid var(--line);padding-right:13px;line-height:1}
+.kontan-txt{font-size:12.5px;color:var(--ink);line-height:1.45;font-style:italic}
+.kontan-txt small{font-style:normal;color:var(--taupe);font-size:11px}
+/* frame foto kontan */
+.kontan-frame{position:relative;display:block}
+.kontan-frame .main{border-radius:10px;width:100%;aspect-ratio:4/5;object-fit:cover;object-position:top;box-shadow:0 30px 60px -26px rgba(84,11,20,.35);border:1px solid var(--line)}
+.kontan-ribbon{position:absolute;bottom:16px;left:16px;background:var(--maroon);color:#fff;font-size:12px;font-weight:600;letter-spacing:.5px;padding:8px 16px;border-radius:50px;box-shadow:0 8px 20px -8px rgba(84,11,20,.5)}
+/* ===== STRIP REVIEW berjalan ===== */
+.review-strip{background:var(--paper);border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:26px 0 30px;overflow:hidden}
+.rs-head{text-align:center;margin-bottom:18px}
+.rs-track-wrap{overflow:hidden;width:100%}
+.rs-track{display:flex;gap:18px;width:max-content;animation:rs-scroll 45s linear infinite;padding:0 9px}
+.review-strip:hover .rs-track{animation-play-state:paused}
+@keyframes rs-scroll{from{transform:translateX(-50%)}to{transform:translateX(0)}}
+.rs-card{flex:0 0 auto;width:230px;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;box-shadow:0 10px 28px -18px rgba(84,11,20,.25);transition:transform .25s}
+.rs-card:hover{transform:translateY(-4px)}
+.rs-card img{width:100%;height:280px;object-fit:cover;object-position:top;display:block;background:var(--paper2)}
+.rs-quote{padding:12px 14px;font-size:12.5px;color:var(--ink);font-style:italic;line-height:1.45;font-weight:500}
+@media(max-width:760px){
+  .kontan-tag{max-width:100%}
+  .rs-card{width:180px}
+  .rs-card img{height:220px}
+}
+/* Kurir sepeda DD melewati kota kecil (satu tone krem, gerak kiri->kanan) */
+.bike-band{position:relative;overflow:hidden;height:205px;background:#EFECE5 url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20width%3D%27420%27%20height%3D%27190%27%20viewBox%3D%270%200%20420%20190%27%3E%3Cline%20x1%3D%270%27%20y1%3D%27169%27%20x2%3D%27420%27%20y2%3D%27169%27%20stroke%3D%27%238d3b46%27%20stroke-width%3D%272%27%20opacity%3D%27.45%27%2F%3E%3Cline%20x1%3D%270%27%20y1%3D%27174%27%20x2%3D%27420%27%20y2%3D%27174%27%20stroke%3D%27%238d3b46%27%20stroke-width%3D%271%27%20opacity%3D%27.18%27%2F%3E%3Cg%20stroke%3D%27%238d3b46%27%20stroke-width%3D%272%27%20fill%3D%27none%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%2734%27%20y%3D%27118%27%20width%3D%2766%27%20height%3D%2751%27%20fill%3D%27%23f5efe4%27%2F%3E%3Cpath%20d%3D%27M27%20119%20L67%2088%20L107%20119%20Z%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.82%27%2F%3E%3Crect%20x%3D%2742%27%20y%3D%27146%27%20width%3D%2717%27%20height%3D%2723%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.7%27%20stroke%3D%27none%27%2F%3E%3Crect%20x%3D%2774%27%20y%3D%27130%27%20width%3D%2716%27%20height%3D%2716%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%27.45%27%2F%3E%3Cline%20x1%3D%2782%27%20y1%3D%27130%27%20x2%3D%2782%27%20y2%3D%27146%27%2F%3E%3Cline%20x1%3D%2774%27%20y1%3D%27138%27%20x2%3D%2790%27%20y2%3D%27138%27%2F%3E%3C%2Fg%3E%3Cg%20stroke%3D%27%238d3b46%27%20stroke-width%3D%271.6%27%20stroke-linecap%3D%27round%27%3E%3Cline%20x1%3D%27132%27%20y1%3D%27169%27%20x2%3D%27132%27%20y2%3D%27150%27%2F%3E%3Cline%20x1%3D%27124%27%20y1%3D%27169%27%20x2%3D%27126%27%20y2%3D%27156%27%2F%3E%3Cline%20x1%3D%27140%27%20y1%3D%27169%27%20x2%3D%27138%27%20y2%3D%27154%27%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%27132%27%20cy%3D%27147%27%20r%3D%275.5%27%20fill%3D%27%238d3b46%27%2F%3E%3Ccircle%20cx%3D%27125%27%20cy%3D%27153%27%20r%3D%274%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.8%27%2F%3E%3Ccircle%20cx%3D%27139%27%20cy%3D%27151%27%20r%3D%274%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.8%27%2F%3E%3Cg%20stroke%3D%27%238d3b46%27%20stroke-width%3D%272%27%20fill%3D%27none%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%27178%27%20y%3D%27131%27%20width%3D%2754%27%20height%3D%2738%27%20fill%3D%27%23f5efe4%27%2F%3E%3Cpath%20d%3D%27M172%20132%20L205%20110%20L238%20132%20Z%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.82%27%2F%3E%3Crect%20x%3D%27186%27%20y%3D%27150%27%20width%3D%2714%27%20height%3D%2719%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.7%27%20stroke%3D%27none%27%2F%3E%3Crect%20x%3D%27210%27%20y%3D%27140%27%20width%3D%2713%27%20height%3D%2713%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%27.45%27%2F%3E%3C%2Fg%3E%3Cline%20x1%3D%27253%27%20y1%3D%27169%27%20x2%3D%27253%27%20y2%3D%27112%27%20stroke%3D%27%238d3b46%27%20stroke-width%3D%272.4%27%2F%3E%3Cline%20x1%3D%27245%27%20y1%3D%27169%27%20x2%3D%27261%27%20y2%3D%27169%27%20stroke%3D%27%238d3b46%27%20stroke-width%3D%272.6%27%2F%3E%3Cpath%20d%3D%27M246%20113%20L253%20104%20L260%20113%20Z%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.85%27%2F%3E%3Crect%20x%3D%27248.5%27%20y%3D%27112%27%20width%3D%279%27%20height%3D%2710%27%20rx%3D%272%27%20fill%3D%27%23e7b765%27%2F%3E%3Ccircle%20cx%3D%27253%27%20cy%3D%27117%27%20r%3D%2710%27%20fill%3D%27%23e7b765%27%20opacity%3D%27.20%27%2F%3E%3Cpath%20d%3D%27M268%20169%20L271%20156%20L289%20156%20L292%20169%20Z%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.65%27%2F%3E%3Cline%20x1%3D%27280%27%20y1%3D%27156%27%20x2%3D%27280%27%20y2%3D%27141%27%20stroke%3D%27%238d3b46%27%20stroke-width%3D%271.8%27%2F%3E%3Ccircle%20cx%3D%27280%27%20cy%3D%27131%27%20r%3D%2712%27%20fill%3D%27%23f5efe4%27%20stroke%3D%27%238d3b46%27%20stroke-width%3D%271.8%27%2F%3E%3Ccircle%20cx%3D%27276%27%20cy%3D%27128%27%20r%3D%273%27%20fill%3D%27%238d3b46%27%2F%3E%3Ccircle%20cx%3D%27284%27%20cy%3D%27133%27%20r%3D%273%27%20fill%3D%27%238d3b46%27%2F%3E%3Ccircle%20cx%3D%27281%27%20cy%3D%27125%27%20r%3D%272.6%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.8%27%2F%3E%3Cg%20stroke%3D%27%238d3b46%27%20stroke-width%3D%271.6%27%20stroke-linecap%3D%27round%27%3E%3Cline%20x1%3D%27308%27%20y1%3D%27169%27%20x2%3D%27308%27%20y2%3D%27152%27%2F%3E%3Cline%20x1%3D%27301%27%20y1%3D%27169%27%20x2%3D%27303%27%20y2%3D%27158%27%2F%3E%3Cline%20x1%3D%27315%27%20y1%3D%27169%27%20x2%3D%27313%27%20y2%3D%27157%27%2F%3E%3C%2Fg%3E%3Ccircle%20cx%3D%27308%27%20cy%3D%27149%27%20r%3D%275%27%20fill%3D%27%238d3b46%27%2F%3E%3Ccircle%20cx%3D%27302%27%20cy%3D%27156%27%20r%3D%273.5%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.8%27%2F%3E%3Ccircle%20cx%3D%27314%27%20cy%3D%27155%27%20r%3D%273.5%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.8%27%2F%3E%3Cg%20stroke%3D%27%238d3b46%27%20stroke-width%3D%272%27%20fill%3D%27none%27%20stroke-linejoin%3D%27round%27%3E%3Crect%20x%3D%27330%27%20y%3D%27124%27%20width%3D%2758%27%20height%3D%2745%27%20fill%3D%27%23f5efe4%27%2F%3E%3Cpath%20d%3D%27M324%20125%20L359%2099%20L394%20125%20Z%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.82%27%2F%3E%3Crect%20x%3D%27338%27%20y%3D%27148%27%20width%3D%2715%27%20height%3D%2721%27%20fill%3D%27%238d3b46%27%20fill-opacity%3D%27.7%27%20stroke%3D%27none%27%2F%3E%3Crect%20x%3D%27366%27%20y%3D%27135%27%20width%3D%2714%27%20height%3D%2714%27%20fill%3D%27%23ffffff%27%20fill-opacity%3D%27.45%27%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E") repeat-x bottom/auto 150px}
+.bike-track{position:absolute;bottom:15px;left:0;will-change:transform;animation:bike-ride 18s linear infinite}
+.bike-rider{display:block;height:136px;width:auto;transform-origin:50% 100%;animation:bike-bob .55s ease-in-out infinite alternate}
+@keyframes bike-ride{from{transform:translateX(-240px)}to{transform:translateX(calc(100vw + 60px))}}
+@keyframes bike-bob{from{transform:translateY(0) rotate(-1.1deg)}to{transform:translateY(-5px) rotate(1.3deg)}}
+.bike-sky{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.bk-cloud{position:absolute;opacity:.92;filter:drop-shadow(0 2px 3px rgba(84,11,20,.16))}
+.bk-c1{top:13px;width:92px;animation:bk-drift 42s linear infinite}
+.bk-c2{top:42px;width:66px;opacity:.82;animation:bk-drift 60s linear infinite 7s}
+@keyframes bk-drift{from{transform:translateX(calc(100vw + 120px))}to{transform:translateX(-180px)}}
+@media(max-width:760px){.bk-c2{display:none}}
+@media(max-width:760px){.bike-band{height:150px;background-size:auto 108px}.bike-track{bottom:12px}.bike-rider{height:94px}}
+
+
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a href="index.html" class="brand"><img class="dd-logo" src="images/brand/icon.png" alt="DD"><img class="brand-wm" src="images/brand/logo-wordmark.png" alt="Dear Darlene"></a>
+    <div class="nav-links">
+      <a href="index.html" class="active">Home</a>
+      <a href="produk.html">Shop</a>
+      <a href="koleksi.html">Collection</a>
+      <a href="about.html">About Us</a>
+      <a href="faq.html">F.A.Q</a>
+      <a href="news.html">News</a>
+      <a href="produk.html" class="btn btn-primary">ORDER NOW</a>
+    </div>
+    <button class="burger" onclick="location.href='produk.html'">☰</button>
+  </div>
+</nav>
+
+<main>
+<!-- HERO (Liputan KONTAN) -->
+<header class="hero">
+  <div class="wrap">
+    <div class="slide-l">
+      <div class="kontan-tag">
+        <span class="kontan-logo">KONTAN</span>
+        <span class="kontan-txt">"Cuan Terukir Indah di Papan Bunga"<br><small>Edisi 23 Feb – 1 Maret 2026</small></span>
+      </div>
+      <h1>#1 Indo's <i>Timeless Elegance</i> Flower Board</h1>
+      <p class="hero-sub">Modern, Elegant, Timeless</p>
+      <div class="hero-cta">
+        <a href="produk.html" class="btn btn-primary btn-lg">ORDER NOW</a>
+        <a href="news.html" class="btn btn-outline btn-lg">Baca Liputan</a>
+      </div>
+    </div>
+    <div class="hero-figure slide-r">
+      <a href="news.html" class="kontan-frame">
+        <img class="main" id="heroSlide" src="images/brand/hero-rosie-red.jpg" alt="Dear Darlene — papan bunga">
+        <span class="kontan-ribbon" id="kontanRibbon" style="display:none">📰 Liputan KONTAN 2026</span>
+      </a>
+    </div>
+  </div>
+</header>
+
+<!-- STRIP REVIEW BERJALAN -->
+<div class="review-strip">
+  <div class="rs-head"><span class="eyebrow">What They Say</span></div>
+  <div class="rs-track-wrap">
+    <div class="rs-track">
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review1.png" alt="Review pelanggan"><div class="rs-quote">"kak cantik bgttt! thank you ya 🥰"</div></a>
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review2.png" alt="Review pelanggan"><div class="rs-quote">"okee baguss, thankyou ka 🙏"</div></a>
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review3.png" alt="Review pelanggan"><div class="rs-quote">"Kak makasih ya, bagus banget 👍"</div></a>
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review4.png" alt="Review pelanggan"><div class="rs-quote">"Bagus bgt kak, love it ❤️"</div></a>
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review5.png" alt="Review pelanggan"><div class="rs-quote">"Cantik sekali kak, thank you 😍"</div></a>
+      <!-- duplikat utk loop mulus -->
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review1.png" alt="Review pelanggan"><div class="rs-quote">"kak cantik bgttt! thank you ya 🥰"</div></a>
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review2.png" alt="Review pelanggan"><div class="rs-quote">"okee baguss, thankyou ka 🙏"</div></a>
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review3.png" alt="Review pelanggan"><div class="rs-quote">"Kak makasih ya, bagus banget 👍"</div></a>
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review4.png" alt="Review pelanggan"><div class="rs-quote">"Bagus bgt kak, love it ❤️"</div></a>
+      <a class="rs-card" href="#" onclick="return false"><img src="images/reviews/review5.png" alt="Review pelanggan"><div class="rs-quote">"Cantik sekali kak, thank you 😍"</div></a>
+    </div>
+  </div>
+</div>
+
+<!-- TRUST MARQUEE (gerak ke kiri) -->
+<div class="marquee" aria-label="Keunggulan Dear Darlene">
+  <div class="marquee-track">
+    <span class="marquee-item"><span class="star">✦</span> Dipercaya <b>500+ Brands</b></span>
+    <span class="marquee-item"><span class="star">✦</span> <b>1 Jam</b> Same Day Service</span>
+    <span class="marquee-item"><span class="star">✦</span> <b>Free Delivery</b> Jakarta &amp; Tangerang</span>
+    <span class="marquee-item"><span class="star">✦</span> Bunga <b>Artificial Premium</b></span>
+    <span class="marquee-item"><span class="star">✦</span> Desain <b>Custom</b> &amp; Elegan</span>
+    <!-- duplikat untuk loop mulus -->
+    <span class="marquee-item"><span class="star">✦</span> Dipercaya <b>500+ Brands</b></span>
+    <span class="marquee-item"><span class="star">✦</span> <b>1 Jam</b> Same Day Service</span>
+    <span class="marquee-item"><span class="star">✦</span> <b>Free Delivery</b> Jakarta &amp; Tangerang</span>
+    <span class="marquee-item"><span class="star">✦</span> Bunga <b>Artificial Premium</b></span>
+    <span class="marquee-item"><span class="star">✦</span> Desain <b>Custom</b> &amp; Elegan</span>
+  </div>
+</div>
+
+<!-- WHY US (dipindah ke atas, sebelum Collection) -->
+<section class="bg-paper">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="eyebrow">Why Us</span><h2>Kenapa Dear Darlene</h2></div>
+    <div class="why-grid">
+      <div class="why-item reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></div><h4>1 Hour Service</h4><p>Same day order dikirim 1–2 jam setelah pembayaran.</p></div>
+      <div class="why-item reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"><path d="M12 3.2l2.6 5.27 5.82.85-4.21 4.1.99 5.79L12 16.99l-5.2 2.73.99-5.79-4.21-4.1 5.82-.85z"/></svg></div><h4>Elegant &amp; Customized</h4><p>Desain elegan &amp; bisa custom warna (order H-2).</p></div>
+      <div class="why-item reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 7h11v8H3zM14 10h4l3 3v2h-7z"/><circle cx="6.5" cy="17.5" r="1.5"/><circle cx="17.5" cy="17.5" r="1.5"/></svg></div><h4>Free Delivery</h4><p>Gratis ongkir untuk area Jakarta &amp; Tangerang.</p></div>
+      <div class="why-item reveal"><div class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="12" cy="9" r="6"/><path d="M9 14l-1 7 4-2 4 2-1-7"/></svg></div><h4>Quality Services</h4><p>Bunga artificial premium, hasil rapi &amp; tahan lama.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- KURIR SEPEDA DD melewati kota kecil (gerak kiri->kanan, satu tone) -->
+<div class="bike-band" aria-hidden="true">
+  <div class="bike-sky"><svg class="bk-cloud bk-c1" viewBox="0 0 78 38"><path d="M16 30 Q6 30 7 22 Q7 14 17 15 Q19 6 30 8 Q37 3 45 9 Q56 5 60 13 Q71 13 71 22 Q71 30 61 30 Z" fill="#fbf6ee" stroke="#8d3b46" stroke-width="1.4" stroke-opacity=".45" stroke-linejoin="round"/></svg><svg class="bk-cloud bk-c2" viewBox="0 0 78 38"><path d="M16 30 Q6 30 7 22 Q7 14 17 15 Q19 6 30 8 Q37 3 45 9 Q56 5 60 13 Q71 13 71 22 Q71 30 61 30 Z" fill="#fbf6ee" stroke="#8d3b46" stroke-width="1.4" stroke-opacity=".45" stroke-linejoin="round"/></svg></div>
+  <div class="bike-track"><img class="bike-rider" src="images/brand/bike-courier.png" alt=""></div>
+</div>
+
+<!-- KOLEKSI PREVIEW -->
+<section>
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <h2>Collection</h2>
+    </div>
+    <div class="cards">
+      <a href="koleksi.html" class="card reveal card-classic"><div class="ph"><img src="images/products/tap00085.jpg" alt="Classic"></div><div class="card-body"><h3>Classic Series</h3><div class="meta">Tabletop · 4 design</div><div class="price">start from Rp 190.000</div></div></a>
+      <a href="koleksi.html" class="card reveal card-grande"><div class="ph"><img src="images/products/grande-rosie-red.jpg" alt="Grande"></div><div class="card-body"><h3>Grande Series</h3><div class="meta">Standing · 4 design</div><div class="price">start from Rp 490.000</div></div></a>
+      <a href="koleksi.html" class="card reveal card-royale"><div class="ph"><img src="images/products/tap01771.jpg" alt="Royale"></div><div class="card-body"><h3>Royale Series</h3><div class="meta">Standing · 4 colour</div><div class="price">Rp 680.000</div></div></a>
+      <a href="koleksi.html" class="card reveal card-outdoor"><div class="ph"><img src="images/products/outdoor-basic-elegant.jpg" alt="Outdoor"></div><div class="card-body"><h3>Outdoor Series</h3><div class="meta">Papan outdoor</div><div class="price">start from Rp 500.000</div></div></a>
+    </div>
+    <div class="center-cta reveal"><a href="koleksi.html" class="btn btn-outline btn-lg">Lihat Semua Koleksi</a></div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="wrap reveal">
+    <div class="script">Ready to order?</div>
+    <p>Pilih seri favorit, isi detail, dan pesan dalam hitungan menit. Free ongkir Jakarta &amp; Tangerang.</p>
+    <a href="produk.html" class="btn btn-cream btn-lg">ORDER NOW</a>
+  </div>
+</section>
+</main>
+
+<footer class="footer" id="footer"></footer>
+<a class="fab" href="https://wa.me/628111344911?text=Halo%20Dear%20Darlene%20%F0%9F%8C%B8" target="_blank" aria-label="Chat WhatsApp CS"><span class="fab-tip">Chat CS</span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm0 18.15h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.2.84.85-3.12-.2-.32a8.18 8.18 0 01-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 012.41 5.83c0 4.54-3.7 8.24-8.24 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg></a>
+
+<script>
+(function(){
+  var slides=[
+    {src:'images/brand/hero-rosie-red.jpg',kontan:false},
+    {src:'images/brand/kontan.jpg',kontan:true},
+    {src:'images/brand/hero-bloom-lily.jpg',kontan:false}
+  ];
+  var i=0, img=document.getElementById('heroSlide'), rib=document.getElementById('kontanRibbon');
+  if(!img) return;
+  slides.forEach(function(s){ var p=new Image(); p.src=s.src; });
+  function show(n){ img.src=slides[n].src; if(rib) rib.style.display=slides[n].kontan?'':'none'; }
+  show(0);
+  setInterval(function(){ i=(i+1)%slides.length; img.style.opacity=0; setTimeout(function(){ show(i); img.style.opacity=1; },500); },2000);
+})();
+</script>
+<script src="shared.js"></script>
+<script src="cart.js"></script>
+</body>
+</html>
