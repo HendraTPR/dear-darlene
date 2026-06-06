@@ -107,9 +107,19 @@
         <div class="field"><label>Alamat Lengkap <span class="req">*</span></label><textarea id="recAddr" placeholder="Alamat lengkap pengiriman"></textarea></div>
         <div class="field"><label>Kota / Area Pengiriman <span class="req">*</span></label>
           <select id="recCity">
-            <option value="">— Pilih kota —</option>
-            <option value="Jakarta">Jakarta (FREE ongkir)</option>
-            <option value="Tangerang">Tangerang (FREE ongkir)</option>
+            <option value="">— Pilih kota / area —</option>
+            <optgroup label="Jakarta — FREE ongkir">
+              <option value="Jakarta Pusat">Jakarta Pusat (Menteng, Thamrin, Sudirman)</option>
+              <option value="Jakarta Utara">Jakarta Utara (PIK, Kelapa Gading, Sunter)</option>
+              <option value="Jakarta Barat">Jakarta Barat (Puri, Kebon Jeruk, Grogol)</option>
+              <option value="Jakarta Selatan">Jakarta Selatan (Kemang, SCBD, Pondok Indah)</option>
+              <option value="Jakarta Timur">Jakarta Timur (Rawamangun, Cawang, Cakung)</option>
+            </optgroup>
+            <optgroup label="Tangerang — FREE ongkir">
+              <option value="Kota Tangerang">Kota Tangerang (Karawaci, Ciledug, Cipondoh)</option>
+              <option value="Tangerang Selatan">Tangerang Selatan (BSD, Bintaro, Alam Sutera)</option>
+              <option value="Kabupaten Tangerang">Kab. Tangerang (Gading Serpong, Cisauk)</option>
+            </optgroup>
             <option value="Luar Jakarta & Tangerang">Di luar Jakarta &amp; Tangerang</option>
           </select>
         </div>
