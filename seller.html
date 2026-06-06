@@ -123,6 +123,23 @@ tbody tr:hover td{background:#fcfbf9}
 .blh{display:block;font-size:10.5px;color:var(--green);opacity:.75;margin-top:3px}
 .blv{font-size:22px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums}
 .bnote{font-size:11px;color:var(--taupe);margin-top:12px;line-height:1.5}
+.tabnav{display:flex;gap:6px;background:var(--paper);padding:5px;border-radius:999px;margin-bottom:24px;width:fit-content}
+.tabbtn{border:none;background:transparent;padding:9px 22px;border-radius:999px;font-family:var(--bd);font-size:13.5px;color:var(--taupe);cursor:pointer;transition:all .18s;font-weight:500}
+.tabbtn.active{background:var(--card);color:var(--maroon);font-weight:600;box-shadow:0 1px 5px rgba(53,40,37,.12)}
+.insight-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.mcard{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:20px}
+.mcard-month{font-family:var(--pf);font-size:18px;color:var(--maroon);margin-bottom:2px}
+.mcard-cnt{font-size:11.5px;color:var(--taupe);margin-bottom:16px}
+.mrow{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;border-top:1px solid var(--line)}
+.mrow:first-of-type{border-top:none}
+.mrow .ml{font-size:12.5px;color:var(--taupe)}
+.mrow .mv{font-size:14px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.mrow .mv.laba{color:var(--green)}
+.mrow .mv.biaya{color:var(--red)}
+.laba-cell{font-size:11px;margin-top:3px;font-variant-numeric:tabular-nums}
+.laba-cell.set{color:var(--green)}
+.laba-cell.unset{color:#b58a2e}
+@media(max-width:760px){.insight-grid{grid-template-columns:1fr}}
 .divider{border:none;border-top:1px solid var(--line);margin:16px 0}
 @media(max-width:900px){.charts{grid-template-columns:1fr}}
 @media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.wrap{padding:18px 14px 60px}.topbar{padding:12px 16px}.user-tag{display:none}.filterbar{flex-direction:column;align-items:stretch}.pills{justify-content:space-between}.fspacer{display:none}}
@@ -152,6 +169,11 @@ tbody tr:hover td{background:#fcfbf9}
     </div>
   </div>
   <div class="wrap">
+    <div class="tabnav">
+      <button class="tabbtn active" id="tabBtnPesanan" onclick="switchTab('pesanan')">Pesanan</button>
+      <button class="tabbtn" id="tabBtnInsight" onclick="switchTab('insight')">Insight Bulanan</button>
+    </div>
+    <div id="tabPesanan">
     <div class="stats">
       <div class="scard"><div class="scard-label">Total Pesanan</div><div class="scard-val" id="sTotal">—</div><div class="scard-sub" id="sTotalSub">&nbsp;</div></div>
       <div class="scard"><div class="scard-label">Total Nilai</div><div class="scard-val sm" id="sNilai">—</div><div class="scard-sub" id="sNilaiSub">&nbsp;</div></div>
@@ -202,6 +224,17 @@ tbody tr:hover td{background:#fcfbf9}
           <tbody id="tbody"><tr class="loading-row"><td colspan="8">Memuat pesanan...</td></tr></tbody>
         </table>
       </div>
+    </div>
+    </div><!-- /tabPesanan -->
+    <div id="tabInsight" style="display:none">
+      <p class="section-label">Insight Bulanan · 3 bulan terakhir</p>
+      <div id="insightCards" class="insight-grid"></div>
+      <div class="chart-card" style="margin-top:18px">
+        <h3>Tren Laba Kotor</h3>
+        <div class="chint">Perbandingan 3 bulan terakhir</div>
+        <div class="bars" id="insightBars"></div>
+      </div>
+      <p class="bnote" style="margin-top:14px">Laba kotor = total bayar customer − (ongkir subsidi + tips Gojek + biaya tol). Isi biaya tiap order lewat tombol "Lihat ›" → Pembukuan. HPP & laba bersih dihitung di pembukuan terpisah.</p>
     </div>
   </div>
 </div>
@@ -267,6 +300,7 @@ async function loadOrders() {
   orderMap.clear();
   allOrders.forEach(o => orderMap.set(o.id, o));
   renderStats(allOrders); renderCharts(allOrders); applyFilters();
+  if (document.getElementById('tabInsight').style.display !== 'none') renderInsight();
 }
 function renderStats(orders) {
   const today = todayStr();
@@ -325,6 +359,57 @@ function applyFilters() {
   const vv = viewOrders.reduce((s,o)=>s+(o.total||0),0);
   document.getElementById('fCount').textContent = viewOrders.length + ' pesanan · ' + fmtRp(vv,true);
 }
+function labaCell(o) {
+  const filled = (o.ongkir_subsidi||o.ongkir_cust||o.tips_gojek||o.biaya_tol||o.laba_kotor!=null);
+  if (o.laba_kotor!=null) return '<div class="laba-cell set">Laba '+fmtRp(o.laba_kotor,true)+'</div>';
+  if (filled) return '<div class="laba-cell set">Laba '+fmtRp((o.total||0)-(o.ongkir_subsidi||0)-(o.tips_gojek||0)-(o.biaya_tol||0),true)+'</div>';
+  return '<div class="laba-cell unset">• biaya belum diisi</div>';
+}
+function switchTab(name) {
+  const isP = name==='pesanan';
+  document.getElementById('tabPesanan').style.display = isP ? 'block' : 'none';
+  document.getElementById('tabInsight').style.display = isP ? 'none' : 'block';
+  document.getElementById('tabBtnPesanan').classList.toggle('active', isP);
+  document.getElementById('tabBtnInsight').classList.toggle('active', !isP);
+  if (!isP) renderInsight();
+}
+function renderInsight() {
+  const mo = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+  const months = [];
+  const now = new Date();
+  for (let i=2;i>=0;i--){
+    const d = new Date(now.getFullYear(), now.getMonth()-i, 1);
+    months.push({ y:d.getFullYear(), m:d.getMonth(), label:mo[d.getMonth()]+' '+d.getFullYear(), cnt:0, omzet:0, biaya:0, laba:0, unfilled:0 });
+  }
+  const idx = {}; months.forEach((x,i)=>idx[x.y+'-'+x.m]=i);
+  allOrders.forEach(o => {
+    const d = new Date(o.created_at||0);
+    const key = d.getFullYear()+'-'+d.getMonth();
+    if (idx[key]==null) return;
+    const x = months[idx[key]];
+    x.cnt++;
+    x.omzet += (o.total||0);
+    const biaya = (o.ongkir_subsidi||0)+(o.tips_gojek||0)+(o.biaya_tol||0);
+    x.biaya += biaya;
+    const filled = (o.ongkir_subsidi||o.ongkir_cust||o.tips_gojek||o.biaya_tol||o.laba_kotor!=null);
+    x.laba += (o.laba_kotor!=null) ? o.laba_kotor : ((o.total||0)-biaya);
+    if (!filled) x.unfilled++;
+  });
+  document.getElementById('insightCards').innerHTML = months.map(x =>
+    '<div class="mcard">'+
+      '<div class="mcard-month">'+x.label+'</div>'+
+      '<div class="mcard-cnt">'+x.cnt+' pesanan'+(x.unfilled?' · '+x.unfilled+' biaya belum diisi':'')+'</div>'+
+      '<div class="mrow"><span class="ml">Omzet</span><span class="mv">'+fmtRp(x.omzet)+'</span></div>'+
+      '<div class="mrow"><span class="ml">Total biaya kirim</span><span class="mv biaya">'+(x.biaya?'−'+fmtRp(x.biaya):'Rp 0')+'</span></div>'+
+      '<div class="mrow"><span class="ml">Laba kotor</span><span class="mv laba">'+fmtRp(x.laba)+'</span></div>'+
+    '</div>'
+  ).join('');
+  const max = Math.max(1, ...months.map(x=>x.laba));
+  document.getElementById('insightBars').innerHTML = months.map(x => {
+    const h = Math.round(Math.max(0,x.laba)/max*100);
+    return '<div class="bar-col"><div class="bar-tip">'+fmtRp(x.laba,true)+'</div><div class="bar" style="height:'+h+'%"></div><div class="bar-lbl">'+x.label.split(' ')[0]+'</div></div>';
+  }).join('');
+}
 function renderRows(orders) {
   const tbody = document.getElementById('tbody');
   if (!orders.length) { tbody.innerHTML = '<tr class="empty-row"><td colspan="8">Tidak ada pesanan yang cocok dengan filter.</td></tr>'; return; }
@@ -336,7 +421,7 @@ function renderRows(orders) {
       '<td><div class="n1">'+esc(o.rec_name||'—')+'</div><div class="n2">'+esc(o.rec_city||'')+' '+esc(o.rec_phone||'')+'</div></td>'+
       '<td><div class="n2">'+esc(o.sender_name||'—')+'</div><div class="n2">'+esc(o.sender_phone||'')+'</div></td>'+
       '<td style="max-width:160px"><span style="font-size:12.5px;white-space:normal">'+esc(fmtItems(o.items))+'</span></td>'+
-      '<td class="price">'+(o.total?fmtRp(o.total):'—')+'</td>'+
+      '<td class="price">'+(o.total?fmtRp(o.total):'—')+labaCell(o)+'</td>'+
       '<td><select class="ssel" data-id="'+o.id+'" onchange="updStatus(this)">'+opts+'</select></td>'+
       '<td><button class="pbtn '+(paid?'paid':'unpaid')+'" data-id="'+o.id+'" data-pay="'+pay+'" onclick="togglePay(this)">'+pay+'</button></td>'+
       '<td><button class="dbtn" onclick="openDetail(\''+o.id+'\')">Lihat ›</button></td>'+
@@ -435,7 +520,8 @@ async function saveBuku() {
   if (error) { alert('Gagal simpan pembukuan: ' + error.message); return; }
   if (o) { o.ongkir_subsidi=subsidi; o.ongkir_cust=cust; o.tips_gojek=tips; o.biaya_tol=tol; o.laba_kotor=laba; }
   msg.style.display='block'; setTimeout(()=>{ if(msg) msg.style.display='none'; }, 2200);
-  renderStats(allOrders);
+  renderStats(allOrders); applyFilters();
+  if (document.getElementById('tabInsight').style.display !== 'none') renderInsight();
 }
 function closeDetail(){ document.getElementById('detailModal').classList.remove('on'); }
 function openPw(){ ['pw1','pw2'].forEach(i=>document.getElementById(i).value=''); document.getElementById('pwerr').style.display='none'; document.getElementById('pwok').style.display='none'; document.getElementById('pwModal').classList.add('on'); }

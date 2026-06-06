@@ -51,6 +51,9 @@
 /* ===== Foto produk di ringkasan ===== */
 .sum-photo{margin-bottom:14px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.12);aspect-ratio:4/5;max-height:280px}
 .sum-photo img{width:100%;height:100%;object-fit:cover;display:block;transition:opacity .25s}
+.board-preview{margin:2px 0 18px;border-radius:12px;overflow:hidden;background:rgba(255,255,255,.08);max-width:230px;border:1px solid rgba(255,255,255,.1)}
+.board-preview img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;transition:opacity .2s}
+.board-preview .bp-cap{display:block;font-size:10px;color:var(--taupe);padding:7px 10px;letter-spacing:.3px;line-height:1.4}
 .sum-item{display:flex;align-items:center;gap:11px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.12)}
 .sum-item:last-child{border-bottom:none}
 .si-img{width:46px;height:58px;object-fit:cover;border-radius:7px;flex-shrink:0;background:rgba(255,255,255,.15)}
@@ -63,8 +66,8 @@
 <body>
 <nav class="nav"><div class="wrap">
   <a href="index.html" class="brand"><img class="dd-logo" src="images/brand/icon.png" alt="DD"><img class="brand-wm" src="images/brand/logo-wordmark.png" alt="Dear Darlene"></a>
-  <div class="nav-links"><a href="index.html">Home</a><a href="produk.html">Shop</a><a href="koleksi.html">Our Products</a><a href="about.html">About Us</a>
-      <a href="faq.html">F.A.Q</a><a href="news.html">News</a><a href="order.html" class="btn btn-primary active">ORDER NOW</a></div>
+  <div class="nav-links"><a href="index.html">Home</a><a href="koleksi.html">Our Products</a><a href="about.html">About Us</a>
+      <a href="faq.html">F.A.Q</a><a href="news.html">News</a><a href="order.html" class="btn btn-primary active">Pesan Sekarang</a></div>
   <button class="burger" onclick="document.getElementById('senderName').focus()">☰</button>
 </div></nav>
 
@@ -283,6 +286,12 @@ function boardPhoto(block){
   if(v==='Lite'){var col=bval(block,'bf-color')||'Red';return map['Lite|'+col]||map['_default']||'';}
   return map[bval(block,'bf-design')]||map['_default']||'';
 }
+function updateBlockPreview(block){
+  var box=block.querySelector('.board-preview'),img=block.querySelector('.bp-img');
+  if(!box||!img)return;
+  var src=boardPhoto(block);
+  if(src){if(img.getAttribute('src')!==src)img.src=src;box.style.display='block';}else{box.style.display='none';}
+}
 
 // ---------- template papan ----------
 function boardTemplate(n){
@@ -308,6 +317,7 @@ function boardTemplate(n){
       '<div class="field bf-outdoor" style="display:none"><label>Ukuran Outdoor</label>'+
         '<select class="bf-osize"><option value="Regular (2×1.2m)">Regular — 2×1.2 m</option><option value="Medium (2×1.5m)">Medium — 2×1.5 m</option></select></div>'+
     '</div>'+
+    '<div class="board-preview" style="display:none"><img class="bp-img" src="" alt="Foto produk"><span class="bp-cap">Contoh tampilan produk</span></div>'+
     '<div class="field bf-flower"><label>Add-On Logo 3D + Lampu</label>'+
       '<select class="bf-addon"><option value="tidak">Tidak</option><option value="ya">Ya (Classic +20rb · Grande +30rb · Royale +40rb)</option></select></div>'+
     '<div class="field"><label>Tulisan di Papan <span class="req">*</span> <span class="hint">(akan di-copy persis)</span></label><textarea class="bf-text" placeholder="Contoh: Congratulations for the opening of ..."></textarea></div>'+
@@ -362,6 +372,7 @@ function recalcAll(){
   if(!any){lines.innerHTML='<div class="sum-row"><span>Belum ada produk dipilih</span><b>—</b></div>';totalEl.textContent='Rp 0';}
   else {total+=CONFIG.ongkir;lines.innerHTML=html;totalEl.textContent=rupiah(total);}
   updateSummaryPhotoDirect(blocks);
+  blocks.forEach(function(b){updateBlockPreview(b);});
 }
 function updateSummaryPhotoDirect(blocks){
   var box=document.getElementById('sumPhoto'),img=document.getElementById('sumPhotoImg');
@@ -469,7 +480,7 @@ function saveOrderToDB(){
     items:ddOrderItems(), total:ddOrderTotal(),
     raw_message:buildMessage(), status:"baru"
   };
-  sb.from("dd_orders").insert(order).then(function(res){
+  sb.from("orders").insert(order).then(function(res){
     if(res&&res.error){console.warn("DD save order error:",res.error.message);}
     else{console.log("DD order tersimpan ke database \u2705");}
   }).catch(function(e){console.warn("DD save order gagal:",e);});
