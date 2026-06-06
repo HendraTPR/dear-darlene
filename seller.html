@@ -44,11 +44,11 @@ body{font-family:var(--bd);background:var(--bg);color:var(--ink);min-height:100v
 .user-tag{font-size:12px;color:var(--taupe);padding:5px 11px;background:var(--paper);border-radius:999px}
 .wrap{max-width:1200px;margin:0 auto;padding:28px 24px 80px}
 .section-label{font-size:10.5px;letter-spacing:2px;text-transform:uppercase;color:var(--taupe);margin:0 0 14px 2px;font-weight:600}
-.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:30px}
+.stats{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:30px}
 .scard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px 20px}
 .scard-label{font-size:10.5px;letter-spacing:1.2px;text-transform:uppercase;color:var(--taupe);margin-bottom:8px;display:flex;align-items:center;gap:6px}
 .scard-val{font-family:var(--pf);font-size:30px;color:var(--maroon);font-weight:700;line-height:1}
-.scard-val.sm{font-size:22px}
+.scard-val.sm{font-size:20px}
 .scard-sub{font-size:11px;color:var(--taupe);margin-top:6px}
 .dot{width:7px;height:7px;border-radius:50%;display:inline-block}
 .dot.r{background:var(--red)}.dot.g{background:var(--green)}
@@ -144,7 +144,8 @@ tbody tr:hover td{background:#fcfbf9}
 @media(max-width:900px){.charts{grid-template-columns:1fr}}
 @media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.wrap{padding:18px 14px 60px}.topbar{padding:12px 16px}.user-tag{display:none}.filterbar{flex-direction:column;align-items:stretch}.pills{justify-content:space-between}.fspacer{display:none}}
 @media(max-width:440px){.stats{grid-template-columns:1fr}}
-</style>
+.watxt{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--bd);font-size:12.5px;line-height:1.5;resize:vertical;box-sizing:border-box;color:var(--ink);background:var(--cream)}.watxt:focus{outline:none;border-color:var(--wine)}.addbtn{padding:10px 18px;font-size:13px;flex-shrink:0}.ordhdr{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:30px 0 8px}@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}}@media(max-width:480px){.stats{grid-template-columns:1fr}}
+  </style>
 </head>
 <body>
 <div id="loginScreen" class="login-screen">
@@ -177,8 +178,9 @@ tbody tr:hover td{background:#fcfbf9}
     <div class="stats">
       <div class="scard"><div class="scard-label">Total Pesanan</div><div class="scard-val" id="sTotal">—</div><div class="scard-sub" id="sTotalSub">&nbsp;</div></div>
       <div class="scard"><div class="scard-label">Total Nilai</div><div class="scard-val sm" id="sNilai">—</div><div class="scard-sub" id="sNilaiSub">&nbsp;</div></div>
+      <div class="scard"><div class="scard-label"><span class="dot g"></span> Sudah Dibayar</div><div class="scard-val sm" id="sPaid">—</div><div class="scard-sub" id="sPaidSub">&nbsp;</div></div>
+      <div class="scard"><div class="scard-label"><span class="dot r"></span> Belum Bayar</div><div class="scard-val sm" id="sUnpaid">—</div><div class="scard-sub" id="sUnpaidSub">&nbsp;</div></div>
       <div class="scard"><div class="scard-label">Pesanan Hari Ini</div><div class="scard-val" id="sToday">—</div><div class="scard-sub">&nbsp;</div></div>
-      <div class="scard"><div class="scard-label"><span class="dot r"></span> Belum Bayar</div><div class="scard-val" id="sUnpaid">—</div><div class="scard-sub" id="sUnpaidSub">&nbsp;</div></div>
     </div>
     <p class="section-label">Ringkasan</p>
     <div class="charts">
@@ -193,7 +195,7 @@ tbody tr:hover td{background:#fcfbf9}
         <div class="brk" id="statusBrk"></div>
       </div>
     </div>
-    <p class="section-label">Pesanan</p>
+    <div class="ordhdr"><p class="section-label" style="margin:0">Pesanan</p><button class="btn addbtn" onclick="openAddOrder()">+ Tambah Pesanan</button></div>
     <div class="filterbar">
       <div class="pills" id="payPills">
         <button class="pill active" data-pay="all" onclick="setPay(this,'all')">Semua</button>
@@ -260,6 +262,20 @@ tbody tr:hover td{background:#fcfbf9}
     <div class="modal-actions"><button class="btn btn-block" onclick="closeDetail()">Tutup</button></div>
   </div>
 </div>
+<div id="addOrderModal" class="overlay" onclick="if(event.target===this)closeAddOrder()">
+  <div class="modal">
+    <h3>Tambah Pesanan dari WhatsApp</h3>
+    <p class="modal-hint">Copy seluruh pesan <b>Form Pemesanan Dear Darlene</b> dari WhatsApp, paste di bawah, lalu klik Cek. Periksa datanya sebelum simpan.</p>
+    <textarea id="waText" class="watxt" rows="9" placeholder="Paste pesan WhatsApp di sini..."></textarea>
+    <div id="waErr" class="err" style="display:none;margin-top:10px"></div>
+    <div id="waPreview" style="display:none"></div>
+    <div class="modal-actions">
+      <button class="btn-ghost" style="flex:1" onclick="closeAddOrder()">Batal</button>
+      <button class="btn" style="flex:1" id="waCekBtn" onclick="cekWaOrder()">Cek</button>
+      <button class="btn" style="flex:1;display:none" id="waSaveBtn" onclick="saveWaOrder()">Simpan ✓</button>
+    </div>
+  </div>
+</div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 const SB_URL = "https://vypzevhoafubnbqitmcl.supabase.co";
@@ -305,16 +321,19 @@ async function loadOrders() {
 function renderStats(orders) {
   const today = todayStr();
   const total = orders.reduce((s,o)=>s+(o.total||0),0);
-  const paidTotal = orders.filter(o=>isPaid(o)).reduce((s,o)=>s+(o.total||0),0);
+  const paid = orders.filter(o=>isPaid(o));
+  const paidTotal = paid.reduce((s,o)=>s+(o.total||0),0);
   const todayN = orders.filter(o=>(o.created_at||'').slice(0,10)===today).length;
   const unpaid = orders.filter(o=>!isPaid(o));
   const unpaidVal = unpaid.reduce((s,o)=>s+(o.total||0),0);
   document.getElementById('sTotal').textContent = orders.length;
-  document.getElementById('sNilai').textContent = fmtRp(total,true);
-  document.getElementById('sNilaiSub').textContent = 'Terbayar: ' + fmtRp(paidTotal,true);
+  document.getElementById('sNilai').textContent = fmtRp(total);
+  document.getElementById('sNilaiSub').textContent = orders.length + ' pesanan';
+  document.getElementById('sPaid').textContent = fmtRp(paidTotal);
+  document.getElementById('sPaidSub').textContent = paid.length + ' pesanan lunas';
+  document.getElementById('sUnpaid').textContent = fmtRp(unpaidVal);
+  document.getElementById('sUnpaidSub').textContent = unpaid.length ? unpaid.length + ' pesanan belum bayar' : 'Semua lunas 🎉';
   document.getElementById('sToday').textContent = todayN;
-  document.getElementById('sUnpaid').textContent = unpaid.length;
-  document.getElementById('sUnpaidSub').textContent = unpaid.length ? fmtRp(unpaidVal,true) + ' belum masuk' : 'Semua lunas 🎉';
 }
 function renderCharts(orders) {
   const days = [];
@@ -537,6 +556,108 @@ async function doChangePw() {
   btn.textContent='Simpan'; btn.disabled=false;
   if (error){ showEl(err,'err','Gagal: '+error.message); return; }
   ok.style.display='block'; setTimeout(closePw,2200);
+}
+let waParsed = null;
+function openAddOrder(){
+  document.getElementById('waText').value='';
+  document.getElementById('waErr').style.display='none';
+  var pv=document.getElementById('waPreview'); pv.style.display='none'; pv.innerHTML='';
+  document.getElementById('waSaveBtn').style.display='none';
+  document.getElementById('waCekBtn').style.display=''; document.getElementById('waCekBtn').textContent='Cek';
+  waParsed=null;
+  document.getElementById('addOrderModal').classList.add('on');
+  setTimeout(function(){document.getElementById('waText').focus();},50);
+}
+function closeAddOrder(){ document.getElementById('addOrderModal').classList.remove('on'); }
+function parseRp(v){ if(!v) return 0; var d=(''+v).replace(/[^0-9]/g,''); return d?parseInt(d,10):0; }
+function parseWaOrder(text){
+  var lines=text.split(/\r?\n/), section='';
+  var o={ status:'baru', payment_status:'Belum Bayar', source:'WhatsApp (manual)', total:0 };
+  var d={};
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i].trim(); if(!line) continue;
+    var up=line.replace(/\*/g,'').trim().toUpperCase();
+    if(up==='DATA PENGIRIM'){section='pengirim';continue;}
+    if(up==='DATA PENERIMA'){section='penerima';continue;}
+    if(up==='DETAIL PESANAN'){section='detail';continue;}
+    if(up==='RINGKASAN'){section='ringkasan';continue;}
+    if(up.indexOf('FORM PEMESANAN')>=0) continue;
+    var ix=line.indexOf(':'); if(ix<0) continue;
+    var key=line.slice(0,ix).replace(/\*/g,'').trim().toLowerCase();
+    var val=line.slice(ix+1).trim();
+    var nohp=(key.replace(/[\s.]/g,'')==='nohp');
+    if(section==='pengirim'){
+      if(key==='nama') o.sender_name=val;
+      else if(nohp||key.indexOf('telp')>=0||key.indexOf('telepon')>=0) o.sender_phone=val;
+    } else if(section==='penerima'){
+      if(key==='nama') o.rec_name=val;
+      else if(nohp) o.rec_phone=val;
+      else if(key.indexOf('alamat')>=0) o.rec_addr=val;
+      else if(key.indexOf('kota')>=0||key.indexOf('area')>=0) o.rec_city=val;
+      else if(key.indexOf('hari')>=0||key.indexOf('tanggal')>=0) o.del_date=val;
+      else if(key.indexOf('jam')>=0) o.del_time=val;
+    } else if(section==='detail'){
+      if(key==='ukuran') d.ukuran=val;
+      else if(key==='variasi'||key==='variation') d.variasi=val;
+      else if(key==='design'||key==='desain') d.design=val;
+      else if(key==='warna') d.warna=val;
+      else if(key.indexOf('add-on')>=0||key.indexOf('add on')>=0||key.indexOf('addon')>=0) d.addon=/ya|yes|\u2713/i.test(val);
+      else if(key.indexOf('papan')>=0) o.board_text=val;
+      else if(key.indexOf('from')>=0) o.from_text=val;
+      else if(key.indexOf('logo penerima')>=0) o.logo=val;
+      else if(key.indexOf('logo pengirim')>=0) o.logo2=val;
+    }
+    if(key.indexOf('tau dear darlene')>=0||key.indexOf('darimana')>=0){ if(val) o.source=val; }
+    if(key==='total'){ var t=parseRp(val); if(t) o.total=t; }
+  }
+  var smap={classic:'classic',grande:'grande',royale:'royale',outdoor:'outdoor'};
+  var series=(d.ukuran||'').toLowerCase().trim(); series=smap[series]||series;
+  var isOut = series==='outdoor' || /outdoor/i.test(d.variasi||'') || /outdoor/i.test(d.design||'');
+  var item;
+  if(isOut){ item={ type:'outdoor', otype:[d.variasi,d.ukuran].filter(Boolean).join(' ')||(d.design||'Outdoor') }; }
+  else { item={ series:series||'', variation:d.variasi||'', design:d.design||'', color:d.warna||'', addon:!!d.addon }; }
+  o.items=[item]; o.raw_message=text; o._addon=!!d.addon;
+  return o;
+}
+function cekWaOrder(){
+  var text=document.getElementById('waText').value.trim();
+  var err=document.getElementById('waErr');
+  if(text.length<10){ err.textContent='Paste dulu pesan WhatsApp-nya ya.'; err.style.display=''; return; }
+  var o; try{ o=parseWaOrder(text); }catch(e){ err.textContent='Gagal baca format: '+e.message; err.style.display=''; return; }
+  if(!o.rec_name && !o.sender_name && !o.total){ err.textContent='Format belum dikenali. Pastikan pakai format Form Pemesanan Dear Darlene.'; err.style.display=''; return; }
+  err.style.display='none'; waParsed=o;
+  var r=function(l,v){ return '<div class="dsec"><h4>'+l+'</h4><p>'+(v||'\u2014')+'</p></div>'; };
+  var prod=fmtItems(o.items)+(o._addon?' + Add-on Logo 3D+Lampu':'');
+  document.getElementById('waPreview').innerHTML=
+    '<div style="border-top:1px solid var(--line);margin:16px 0 0"></div>'+
+    '<p class="modal-hint" style="margin:12px 0">Cek dulu \u2014 kalau sudah benar, klik Simpan.</p>'+
+    r('Produk', esc(prod))+
+    r('Total', o.total?('Rp '+Number(o.total).toLocaleString('id-ID')):'\u2014')+
+    r('Penerima', esc(o.rec_name||'\u2014')+' \u00b7 '+esc(o.rec_phone||'\u2014')+'<br>'+esc(o.rec_addr||'\u2014')+'<br>'+esc(o.rec_city||'\u2014'))+
+    r('Pengirim', esc(o.sender_name||'\u2014')+' \u00b7 '+esc(o.sender_phone||'\u2014'))+
+    r('Kirim', 'Tgl: '+esc(o.del_date||'\u2014')+' \u00b7 Jam: '+esc(o.del_time||'\u2014'))+
+    r('Tulisan papan', esc(o.board_text))+ r('From', esc(o.from_text))+
+    r('Sumber', esc(o.source));
+  document.getElementById('waPreview').style.display='';
+  document.getElementById('waSaveBtn').style.display='';
+  document.getElementById('waCekBtn').textContent='Cek ulang';
+}
+async function saveWaOrder(){
+  if(!waParsed) return;
+  var btn=document.getElementById('waSaveBtn'); var err=document.getElementById('waErr');
+  btn.disabled=true; btn.textContent='Menyimpan...'; err.style.display='none';
+  var p={ status:'baru', payment_status:'Belum Bayar', source:waParsed.source||'WhatsApp (manual)',
+    sender_name:waParsed.sender_name||null, sender_phone:waParsed.sender_phone||null,
+    rec_name:waParsed.rec_name||null, rec_phone:waParsed.rec_phone||null, rec_addr:waParsed.rec_addr||null, rec_city:waParsed.rec_city||null,
+    del_date:waParsed.del_date||null, del_time:waParsed.del_time||null,
+    board_text:waParsed.board_text||null, from_text:waParsed.from_text||null,
+    logo:waParsed.logo||null, logo2:waParsed.logo2||null,
+    items:waParsed.items||[], total:waParsed.total||0, raw_message:waParsed.raw_message||null };
+  var res=await sb.from('dd_orders').insert(p);
+  if(res.error){ var m=res.error.message||''; err.textContent='Gagal simpan: '+m+(/(policy|permission|row-level|denied)/i.test(m)?' \u2014 perlu aktifkan izin INSERT di Supabase.':''); err.style.display=''; btn.disabled=false; btn.textContent='Simpan \u2713'; return; }
+  btn.disabled=false; btn.textContent='Simpan \u2713';
+  closeAddOrder();
+  await loadOrders();
 }
 function todayStr(){ return new Date().toISOString().slice(0,10); }
 function isPaid(o){ return (o.payment_status||'Belum Bayar')==='Sudah Bayar'; }
