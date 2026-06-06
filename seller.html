@@ -473,8 +473,8 @@ async function togglePay(btn) {
 function exportCSV() {
   const rows = viewOrders.length ? viewOrders : allOrders;
   if (!rows.length) { alert('Tidak ada data untuk diexport.'); return; }
-  const cols = ['created_at','rec_name','rec_phone','rec_city','rec_addr','sender_name','sender_phone','del_date','del_time','board_text','from_text','status','payment_status','total','ongkir_subsidi','ongkir_cust','tips_gojek','biaya_tol','laba_kotor'];
-  const head = ['Tanggal','Penerima','HP Penerima','Kota','Alamat','Pengirim','HP Pengirim','Tgl Kirim','Jam','Tulisan Papan','From','Status','Pembayaran','Total','Ongkir Subsidi','Ongkir Cust','Tips Gojek','Biaya Tol','Laba Kotor','Produk'];
+  const cols = ['created_at','rec_name','rec_phone','rec_city','rec_addr','sender_name','sender_phone','del_date','del_time','board_text','from_text','status','payment_status','total','ongkir_subsidi','ongkir_cust','tips_gojek','biaya_tol','laba_kotor','deleted_by','deleted_at'];
+  const head = ['Tanggal','Penerima','HP Penerima','Kota','Alamat','Pengirim','HP Pengirim','Tgl Kirim','Jam','Tulisan Papan','From','Status','Pembayaran','Total','Ongkir Subsidi','Ongkir Cust','Tips Gojek','Biaya Tol','Laba Kotor','Dihapus Oleh','Tgl Dihapus','Produk'];
   const ce = v => { v = (v==null?'':String(v)).replace(/"/g,'""'); return /[",\n]/.test(v) ? '"'+v+'"' : v; };
   const lines = [head.join(',')];
   rows.forEach(o => { const vals = cols.map(c => ce(o[c])); vals.push(ce(fmtItems(o.items))); lines.push(vals.join(',')); });
