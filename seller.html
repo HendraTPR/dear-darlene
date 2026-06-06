@@ -108,6 +108,21 @@ tbody tr:hover td{background:#fcfbf9}
 .dsec{margin-bottom:14px}
 .dsec h4{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--wine);margin-bottom:5px}
 .dsec p{font-size:13px;line-height:1.65;color:var(--ink);white-space:pre-wrap}
+.brow{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:9px}
+.brow label{font-size:13px;color:var(--taupe)}
+.bin{display:flex;align-items:center;gap:6px}
+.bin span{font-size:12.5px;color:var(--taupe)}
+.bin input{width:120px;text-align:right;padding:8px 10px;border:1px solid var(--line);border-radius:8px;font-family:var(--bd);font-size:13.5px;background:#fff;color:var(--ink)}
+.bin input:focus{outline:none;border-color:var(--wine);box-shadow:0 0 0 3px rgba(141,59,70,.08)}
+.bsum{display:flex;align-items:center;justify-content:space-between;margin-top:14px;padding:12px 16px;background:var(--paper);border-radius:10px}
+.bsl{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--taupe)}
+.bsh{display:block;font-size:10.5px;color:var(--taupe);opacity:.8;margin-top:3px}
+.bsv{font-size:18px;font-weight:600;color:var(--ink);font-variant-numeric:tabular-nums}
+.blaba{display:flex;align-items:center;justify-content:space-between;margin-top:10px;padding:14px 16px;background:#eef4ef;border-radius:10px}
+.bll{display:block;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--green)}
+.blh{display:block;font-size:10.5px;color:var(--green);opacity:.75;margin-top:3px}
+.blv{font-size:22px;font-weight:700;color:var(--green);font-variant-numeric:tabular-nums}
+.bnote{font-size:11px;color:var(--taupe);margin-top:12px;line-height:1.5}
 .divider{border:none;border-top:1px solid var(--line);margin:16px 0}
 @media(max-width:900px){.charts{grid-template-columns:1fr}}
 @media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.wrap{padding:18px 14px 60px}.topbar{padding:12px 16px}.user-tag{display:none}.filterbar{flex-direction:column;align-items:stretch}.pills{justify-content:space-between}.fspacer{display:none}}
@@ -220,6 +235,7 @@ const sb = supabase.createClient(SB_URL, SB_KEY);
 let allOrders = [], viewOrders = [];
 const orderMap = new Map();
 let payFilter = 'all';
+let detailId = null;
 sb.auth.onAuthStateChange((event, session) => {
   if (session) {
     document.getElementById('loginScreen').style.display = 'none';
@@ -348,8 +364,8 @@ async function togglePay(btn) {
 function exportCSV() {
   const rows = viewOrders.length ? viewOrders : allOrders;
   if (!rows.length) { alert('Tidak ada data untuk diexport.'); return; }
-  const cols = ['created_at','rec_name','rec_phone','rec_city','rec_addr','sender_name','sender_phone','del_date','del_time','board_text','from_text','status','payment_status','total'];
-  const head = ['Tanggal','Penerima','HP Penerima','Kota','Alamat','Pengirim','HP Pengirim','Tgl Kirim','Jam','Tulisan Papan','From','Status','Pembayaran','Total','Produk'];
+  const cols = ['created_at','rec_name','rec_phone','rec_city','rec_addr','sender_name','sender_phone','del_date','del_time','board_text','from_text','status','payment_status','total','ongkir_subsidi','ongkir_cust','tips_gojek','biaya_tol','laba_kotor'];
+  const head = ['Tanggal','Penerima','HP Penerima','Kota','Alamat','Pengirim','HP Pengirim','Tgl Kirim','Jam','Tulisan Papan','From','Status','Pembayaran','Total','Ongkir Subsidi','Ongkir Cust','Tips Gojek','Biaya Tol','Laba Kotor','Produk'];
   const ce = v => { v = (v==null?'':String(v)).replace(/"/g,'""'); return /[",\n]/.test(v) ? '"'+v+'"' : v; };
   const lines = [head.join(',')];
   rows.forEach(o => { const vals = cols.map(c => ce(o[c])); vals.push(ce(fmtItems(o.items))); lines.push(vals.join(',')); });
@@ -360,6 +376,7 @@ function exportCSV() {
 }
 function openDetail(id) {
   const o = orderMap.get(id); if (!o) return;
+  detailId = id;
   document.getElementById('ddate').textContent = 'Masuk ' + fmtDate2(o.created_at);
   const row = (l,v)=>v?'<div class="dsec"><h4>'+l+'</h4><p>'+esc(v)+'</p></div>':'';
   document.getElementById('dbody').innerHTML =
@@ -371,10 +388,54 @@ function openDetail(id) {
     row('Tulisan Papan', o.board_text)+row('Tulisan From', o.from_text)+
     ((o.logo||o.logo2)?'<div class="dsec"><h4>Logo</h4><p>Penerima: '+esc(o.logo||'—')+'<br>Pengirim: '+esc(o.logo2||'—')+'</p></div>':'')+
     '<hr class="divider">'+
-    '<div class="dsec"><h4>Total</h4><p>'+(o.total?fmtRp(o.total):'—')+' · Status: '+esc(o.status||'baru')+' · Bayar: '+esc(o.payment_status||'Belum Bayar')+'</p></div>'+
+    '<div class="dsec"><h4>Total Bayar Customer</h4><p style="font-size:16px;font-weight:600;color:var(--maroon)">'+(o.total?fmtRp(o.total):'—')+'</p></div>'+
+    '<div class="dsec"><h4>Status · Pembayaran</h4><p>'+esc(o.status||'baru')+' · '+esc(o.payment_status||'Belum Bayar')+'</p></div>'+
     row('Tau dari', o.source)+
-    (o.raw_message?'<div class="dsec"><h4>Pesan WA</h4><p style="font-size:12px;background:var(--paper);padding:10px;border-radius:8px;max-height:160px;overflow:auto">'+esc(o.raw_message.slice(0,600))+(o.raw_message.length>600?'…':'')+'</p></div>':'');
+    (o.raw_message?'<div class="dsec"><h4>Pesan WA</h4><p style="font-size:12px;background:var(--paper);padding:10px;border-radius:8px;max-height:160px;overflow:auto">'+esc(o.raw_message.slice(0,600))+(o.raw_message.length>600?'…':'')+'</p></div>':'')+
+    '<hr class="divider">'+
+    buildBuku(o);
   document.getElementById('detailModal').classList.add('on');
+  recalcBuku();
+}
+function buildBuku(o) {
+  const v = k => (o[k]==null?'':fmtNum(o[k]));
+  const f = (id,label,key)=>'<div class="brow"><label>'+label+'</label><div class="bin"><span>Rp</span><input id="'+id+'" type="text" inputmode="numeric" value="'+v(key)+'" oninput="recalcBuku()"></div></div>';
+  return '<div class="dsec"><h4>Pembukuan · diisi admin</h4></div>'+
+    '<div id="bukuWrap">'+
+      f('b_subsidi','Ongkir subsidi','ongkir_subsidi')+
+      f('b_cust','Ongkir customer','ongkir_cust')+
+      f('b_tips','Tips Gojek','tips_gojek')+
+      f('b_tol','Biaya tol','biaya_tol')+
+    '</div>'+
+    '<div class="bsum"><div><span class="bsl">Total Biaya</span><span class="bsh">subsidi + tips + tol</span></div><span id="b_totbiaya" class="bsv">—</span></div>'+
+    '<div class="blaba"><div><span class="bll">Laba Kotor</span><span class="blh">bayar cust − total biaya</span></div><span id="b_laba" class="blv">—</span></div>'+
+    '<div class="bnote">Ongkir customer tidak mengurangi laba (hanya catatan). HPP &amp; laba bersih dihitung di pembukuan terpisah.</div>'+
+    '<button class="btn btn-block" id="bSaveBtn" style="margin-top:14px" onclick="saveBuku()">Simpan Pembukuan</button>'+
+    '<div id="bSaveMsg" style="display:none;margin-top:8px" class="ok-msg">✅ Pembukuan tersimpan!</div>';
+}
+function recalcBuku() {
+  const p = id => { const el=document.getElementById(id); return el?(parseInt((el.value||'').replace(/[^0-9]/g,''),10)||0):0; };
+  const subsidi=p('b_subsidi'), tips=p('b_tips'), tol=p('b_tol');
+  const o = orderMap.get(detailId) || {};
+  const bayar = o.total || 0;
+  const totBiaya = subsidi + tips + tol;
+  document.getElementById('b_totbiaya').textContent = fmtRp(totBiaya);
+  document.getElementById('b_laba').textContent = fmtRp(bayar - totBiaya);
+}
+async function saveBuku() {
+  const id = detailId; if (!id) return;
+  const p = el => parseInt((document.getElementById(el).value||'').replace(/[^0-9]/g,''),10) || 0;
+  const subsidi=p('b_subsidi'), cust=p('b_cust'), tips=p('b_tips'), tol=p('b_tol');
+  const o = orderMap.get(id) || {};
+  const laba = (o.total||0) - subsidi - tips - tol;
+  const btn=document.getElementById('bSaveBtn'), msg=document.getElementById('bSaveMsg');
+  btn.textContent='Menyimpan...'; btn.disabled=true;
+  const { error } = await sb.from('dd_orders').update({ ongkir_subsidi:subsidi, ongkir_cust:cust, tips_gojek:tips, biaya_tol:tol, laba_kotor:laba }).eq('id', id);
+  btn.textContent='Simpan Pembukuan'; btn.disabled=false;
+  if (error) { alert('Gagal simpan pembukuan: ' + error.message); return; }
+  if (o) { o.ongkir_subsidi=subsidi; o.ongkir_cust=cust; o.tips_gojek=tips; o.biaya_tol=tol; o.laba_kotor=laba; }
+  msg.style.display='block'; setTimeout(()=>{ if(msg) msg.style.display='none'; }, 2200);
+  renderStats(allOrders);
 }
 function closeDetail(){ document.getElementById('detailModal').classList.remove('on'); }
 function openPw(){ ['pw1','pw2'].forEach(i=>document.getElementById(i).value=''); document.getElementById('pwerr').style.display='none'; document.getElementById('pwok').style.display='none'; document.getElementById('pwModal').classList.add('on'); }
@@ -397,6 +458,7 @@ function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 function fmtDate(iso){ if(!iso)return '—'; const d=new Date(iso); const mo=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return d.getDate()+' '+mo[d.getMonth()]+' '+d.getFullYear()+'<br><span style="font-size:10.5px">'+String(d.getHours()).padStart(2,'0')+'.'+String(d.getMinutes()).padStart(2,'0')+'</span>'; }
 function fmtDate2(iso){ if(!iso)return '—'; const d=new Date(iso); const mo=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des']; return d.getDate()+' '+mo[d.getMonth()]+' '+d.getFullYear()+', '+String(d.getHours()).padStart(2,'0')+'.'+String(d.getMinutes()).padStart(2,'0'); }
 function fmtRp(n,short){ if(short){ if(n>=1000000)return 'Rp '+(n/1000000).toFixed(1).replace('.0','')+'jt'; if(n>=1000)return 'Rp '+Math.round(n/1000)+'rb'; return 'Rp '+n; } return 'Rp '+Number(n).toLocaleString('id-ID'); }
+function fmtNum(n){ return Number(n||0).toLocaleString('id-ID'); }
 function fmtItems(items){ if(!items||!items.length)return '—'; return items.map(it=>{ if(it.type==='outdoor')return 'Outdoor '+((it.otype||'').split('(')[0].trim()); const m={classic:'Classic',grande:'Grande',royale:'Royale'}; const name=[m[it.series]||it.series,it.design||it.variation].filter(Boolean).join(' '); return it.color?name+' ('+it.color.split('(')[0].trim()+')':name; }).join(', ')||'—'; }
 function esc(s){ if(!s)return ''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 function showEl(el,cls,msg){ el.textContent=msg; el.className=cls; el.style.display='block'; }
