@@ -478,9 +478,9 @@ function saveOrderToDB(){
     board_text:val("boardText"), from_text:val("fromText"),
     logo:val("logo"), logo2:val("logo2"), source:val("source"),
     items:ddOrderItems(), total:ddOrderTotal(),
-    raw_message:buildMessage(), status:"baru"
+    raw_message:buildMessage(), status:"baru", payment_status:"Belum Bayar"
   };
-  sb.from("orders").insert(order).then(function(res){
+  sb.from("dd_orders").insert(order).then(function(res){
     if(res&&res.error){console.warn("DD save order error:",res.error.message);}
     else{console.log("DD order tersimpan ke database \u2705");}
   }).catch(function(e){console.warn("DD save order gagal:",e);});
