@@ -115,9 +115,29 @@
 @media(max-width:760px){.bike-band{height:150px;background-size:auto 108px}.bike-track{bottom:12px}.bike-rider{height:94px}}
 
 
+/* ===== 🌸 SAKURA PETALS (samain dgn Our Products) ===== */
+@media (prefers-reduced-motion: reduce){
+  .petal{display:none!important}
+}
+.petal-sky{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.petal{position:absolute;top:-6%;will-change:transform,opacity;opacity:0;filter:drop-shadow(0 3px 4px rgba(84,11,20,.18))}
+.petal svg{display:block;width:100%;height:100%}
+.petal.p-a svg path{fill:#d97a87}
+.petal.p-b svg path{fill:#b8505f}
+.petal.p-c svg path{fill:#e7a3ac}
+.petal.p-d svg path{fill:#a8323f}
+@keyframes petalFall{
+  0%{opacity:0;transform:translate3d(0,-10vh,0) rotateZ(0deg) rotateY(0deg)}
+  8%{opacity:.85}
+  92%{opacity:.7}
+  100%{opacity:0;transform:translate3d(var(--drift,60px),110vh,0) rotateZ(var(--spin,420deg)) rotateY(360deg)}}
+/* pastikan semua konten di atas kelopak */
+.nav,main,.footer,.fab{position:relative;z-index:2}
+
 </style>
 </head>
 <body>
+<div class="petal-sky" id="petalSky" aria-hidden="true"></div>
 
 <nav class="nav">
   <div class="wrap">
@@ -125,7 +145,7 @@
     <div class="nav-links">
       <a href="index.html" class="active">Home</a>
       <a href="produk.html">Shop</a>
-      <a href="koleksi.html">Collection</a>
+      <a href="koleksi.html">Our Products</a>
       <a href="about.html">About Us</a>
       <a href="faq.html">F.A.Q</a>
       <a href="news.html">News</a>
@@ -197,7 +217,7 @@
   </div>
 </div>
 
-<!-- WHY US (dipindah ke atas, sebelum Collection) -->
+<!-- WHY US (dipindah ke atas, sebelum Our Products) -->
 <section class="bg-paper">
   <div class="wrap">
     <div class="sec-head reveal"><span class="eyebrow">Why Us</span><h2>Kenapa Dear Darlene</h2></div>
@@ -220,7 +240,7 @@
 <section>
   <div class="wrap">
     <div class="sec-head reveal">
-      <h2>Collection</h2>
+      <h2>Our Products</h2>
     </div>
     <div class="cards">
       <a href="koleksi.html" class="card reveal card-classic"><div class="ph"><img src="images/products/tap00085.jpg" alt="Classic"></div><div class="card-body"><h3>Classic Series</h3><div class="meta">Tabletop · 4 design</div><div class="price">start from Rp 190.000</div></div></a>
@@ -247,5 +267,31 @@
 
 <script src="shared.js"></script>
 <script src="cart.js"></script>
+
+<script>
+/* 🌸 Sakura petals — sama dgn Our Products */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var sky=document.getElementById('petalSky'); if(!sky||reduce) return;
+  var SHAPE='<svg viewBox="0 0 20 20"><path d="M10 1 C7 4 6 9 10 13 C14 9 13 4 10 1 Z"/></svg>';
+  var kinds=['p-a','p-b','p-c','p-d'];
+  var N = window.innerWidth<700 ? 14 : 26;
+  for(var i=0;i<N;i++){
+    var s=document.createElement('span');
+    s.className='petal '+kinds[i%kinds.length];
+    s.innerHTML=SHAPE;
+    var size=(8+Math.random()*12);
+    s.style.width=size+'px'; s.style.height=size+'px';
+    s.style.left=(Math.random()*100).toFixed(2)+'%';
+    var dur=(9+Math.random()*10).toFixed(2);
+    var delay=(-Math.random()*18).toFixed(2);
+    s.style.setProperty('--drift',((Math.random()*160-40)).toFixed(0)+'px');
+    s.style.setProperty('--spin',((Math.random()*540+180)).toFixed(0)+'deg');
+    s.style.animation='petalFall '+dur+'s linear '+delay+'s infinite';
+    sky.appendChild(s);
+  }
+})();
+</script>
+
 </body>
 </html>

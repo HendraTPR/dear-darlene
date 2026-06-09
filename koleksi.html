@@ -70,20 +70,149 @@
 .gal-dots .gd{width:8px;height:8px;border-radius:50%;background:var(--taupe-soft);transition:.2s}
 .gal-dots .gd.on{background:var(--maroon);width:22px;border-radius:4px}
 
+/* =========================================================================
+   ✦  OUR PRODUCTS — FULLY ANIMATED · DEAR DARLENE THEME (cream/maroon)  ✦
+   Sakura petals falling page-wide + elegant scroll/hover motion.
+   ========================================================================= */
+@media (prefers-reduced-motion: reduce){
+  *{animation:none!important;transition-duration:.01ms!important}
+  .reveal,.slide-l,.slide-r,.stg>*,.porto-item{opacity:1!important;transform:none!important}
+}
+
+/* ---- scroll progress (maroon) ---- */
+.scroll-prog{position:fixed;top:0;left:0;height:3px;width:0;z-index:300;
+  background:linear-gradient(90deg,var(--maroon),var(--wine),#cf9aa1);box-shadow:0 0 10px rgba(141,59,70,.45)}
+
+/* ---- SAKURA PETALS (fixed, page-wide, behind content) ---- */
+.petal-sky{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+.petal{position:absolute;top:-6%;will-change:transform,opacity;opacity:0;filter:drop-shadow(0 3px 4px rgba(84,11,20,.18))}
+.petal svg{display:block;width:100%;height:100%}
+.petal.p-a svg path{fill:#d97a87}
+.petal.p-b svg path{fill:#b8505f}
+.petal.p-c svg path{fill:#e7a3ac}
+.petal.p-d svg path{fill:#a8323f}
+@keyframes petalFall{
+  0%{opacity:0;transform:translate3d(0,-10vh,0) rotateZ(0deg) rotateY(0deg)}
+  8%{opacity:.85}
+  92%{opacity:.7}
+  100%{opacity:0;transform:translate3d(var(--drift,60px),110vh,0) rotateZ(var(--spin,420deg)) rotateY(360deg)}}
+/* content sits above petals */
+.nav,main,.footer,.fab{position:relative;z-index:2}
+.pagehead{position:relative;z-index:2}
+
+/* ---- PAGE HEADER: shimmer + script flourish ---- */
+.pagehead{overflow:hidden}
+.pagehead h1{background:linear-gradient(100deg,var(--maroon) 0%,var(--wine) 30%,#c98b93 50%,var(--wine) 70%,var(--maroon) 100%);
+  background-size:220% auto;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  animation:ddShine 7s linear infinite}
+@keyframes ddShine{to{background-position:-220% center}}
+.pagehead .ph-script{font-family:var(--script);color:var(--wine);font-size:clamp(28px,5vw,46px);line-height:1;margin-bottom:2px;display:block;
+  opacity:0;animation:headUp .9s ease .05s forwards}
+.pagehead h1,.pagehead p{opacity:0;animation:headUp .9s cubic-bezier(.2,.7,.2,1) both}
+.pagehead h1{animation-delay:.18s}.pagehead p{animation-delay:.34s}
+@keyframes headUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+
+/* ---- SECTION reveal: text cascade ---- */
+.series{position:relative;overflow:hidden}
+.stg>*{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.series.in .stg>*{opacity:1;transform:none}
+.series.in .stg>*:nth-child(1){transition-delay:.06s}
+.series.in .stg>*:nth-child(2){transition-delay:.12s}
+.series.in .stg>*:nth-child(3){transition-delay:.18s}
+.series.in .stg>*:nth-child(4){transition-delay:.24s}
+.series.in .stg>*:nth-child(5){transition-delay:.30s}
+.series.in .stg>*:nth-child(6){transition-delay:.36s}
+.series.in .stg>*:nth-child(7){transition-delay:.42s}
+.series.in .stg>*:nth-child(8){transition-delay:.48s}
+.series.in .stg>*:nth-child(9){transition-delay:.54s}
+
+/* eyebrow underline draw */
+.s-text .eyebrow{position:relative;padding-bottom:8px}
+.s-text .eyebrow::after{content:"";position:absolute;left:0;bottom:0;height:2px;width:0;background:var(--wine);transition:width .7s ease .45s}
+.series.in .s-text .eyebrow::after{width:46px}
+
+/* media: soft float + reveal + glow ring + tilt */
+.s-media{position:relative}
+.s-media .big,.s-media .gal-wrap{transition:transform .5s cubic-bezier(.2,.7,.2,1),box-shadow .5s}
+.s-media .gal-wrap,.s-media>.big{will-change:transform}
+.float-soft{animation:ddFloat 7.5s ease-in-out infinite}
+@keyframes ddFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+.s-media::before{content:"";position:absolute;inset:-14px;z-index:-1;border-radius:22px;
+  background:radial-gradient(60% 55% at 50% 45%,rgba(141,59,70,.16),transparent 70%);filter:blur(10px);opacity:0;transition:opacity .8s}
+.series.in .s-media::before{opacity:1}
+.tilt{transition:transform .25s ease}
+
+/* thumbnails pop-in + hover */
+.s-thumbs img{opacity:0;transform:translateY(14px) scale(.92)}
+.series.in .s-thumbs img{animation:ddPop .55s cubic-bezier(.2,.8,.2,1) both}
+.series.in .s-thumbs img:nth-child(1){animation-delay:.4s}
+.series.in .s-thumbs img:nth-child(2){animation-delay:.5s}
+.series.in .s-thumbs img:nth-child(3){animation-delay:.6s}
+@keyframes ddPop{to{opacity:1;transform:none}}
+
+/* price count-up */
+.s-price{position:relative;display:inline-block}
+.s-price .cu{font-variant-numeric:tabular-nums}
+
+/* chips hover + shine */
+.chip{position:relative;overflow:hidden;transition:transform .25s ease,border-color .25s,background .25s,color .25s}
+.chip:hover{transform:translateY(-3px);border-color:var(--wine);color:var(--maroon)}
+
+/* variant options micro-interactions + ripple */
+.vp-opt{position:relative;overflow:hidden;transition:transform .18s ease,background .2s,border-color .2s,color .2s,box-shadow .2s}
+.vp-opt:hover{transform:translateY(-2px)}
+.vp-opt.sel{box-shadow:0 8px 20px -10px rgba(84,11,20,.5)}
+.vp-opt .rip{position:absolute;border-radius:50%;background:rgba(141,59,70,.22);transform:translate(-50%,-50%) scale(0);pointer-events:none;animation:ddRip .55s ease-out}
+@keyframes ddRip{to{transform:translate(-50%,-50%) scale(7);opacity:0}}
+
+/* buttons: shine sweep + magnetic */
+.buy-row .btn{position:relative;overflow:hidden;will-change:transform}
+.buy-row .btn::before{content:"";position:absolute;top:0;left:-130%;width:55%;height:100%;
+  background:linear-gradient(120deg,transparent,rgba(255,255,255,.5),transparent);transform:skewX(-20deg)}
+.buy-row .btn:hover::before{animation:ddSweep .75s ease}
+@keyframes ddSweep{to{left:150%}}
+
+/* animated floral divider between products */
+.flor-div{display:flex;align-items:center;justify-content:center;gap:18px;padding:4px 0;margin:0 auto;max-width:360px}
+.flor-div .ln{height:1px;flex:1;background:linear-gradient(90deg,transparent,var(--taupe-soft))}
+.flor-div .ln.r{background:linear-gradient(270deg,transparent,var(--taupe-soft))}
+.flor-div svg{width:34px;height:34px;color:var(--wine);flex-shrink:0;transform-box:fill-box;transform-origin:center}
+.flor-div svg path,.flor-div svg circle{stroke:currentColor;stroke-width:1.4;fill:none;stroke-dasharray:130;stroke-dashoffset:130}
+.flor-div.in svg path,.flor-div.in svg circle{animation:ddDraw 1.4s ease forwards}
+.flor-div.in svg .pt{animation:ddSpin 10s linear infinite 1.1s}
+@keyframes ddDraw{to{stroke-dashoffset:0}}
+@keyframes ddSpin{to{transform:rotate(360deg)}}
+
+/* option cards lift */
+.opt-card{transition:transform .4s cubic-bezier(.2,.7,.2,1),box-shadow .4s,border-color .4s}
+.opt-card:hover{transform:translateY(-8px);box-shadow:0 26px 50px -26px rgba(84,11,20,.4);border-color:var(--wine)}
+.opt-card .tag{transition:transform .3s}.opt-card:hover .tag{transform:scale(1.05)}
+.opt-card .addon-img{transition:transform .5s}.opt-card:hover .addon-img{transform:scale(1.05)}
+
+/* portfolio staggered reveal + sheen */
+.porto-item{opacity:0;transform:translateY(26px) scale(.97);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.porto-item.shown{opacity:1;transform:none}
+.porto-item::after{content:"";position:absolute;inset:0;background:linear-gradient(120deg,transparent 30%,rgba(255,255,255,.3),transparent 70%);transform:translateX(-130%);pointer-events:none}
+.porto-item:hover::after{animation:ddSheen .9s ease}
+@keyframes ddSheen{to{transform:translateX(130%)}}
+
 </style>
 </head>
 <body>
 <nav class="nav"><div class="wrap">
   <a href="index.html" class="brand"><img class="dd-logo" src="images/brand/icon.png" alt="DD"><img class="brand-wm" src="images/brand/logo-wordmark.png" alt="Dear Darlene"></a>
-  <div class="nav-links"><a href="index.html">Home</a><a href="produk.html">Shop</a><a href="koleksi.html" class="active">Collection</a><a href="about.html">About Us</a>
+  <div class="nav-links"><a href="index.html">Home</a><a href="produk.html">Shop</a><a href="koleksi.html" class="active">Our Products</a><a href="about.html">About Us</a>
       <a href="faq.html">F.A.Q</a><a href="news.html">News</a><a href="order.html" class="btn btn-primary">ORDER NOW</a></div>
-  <button class="burger" onclick="location.href='order.html'">&#9776;</button>
+  <button class="burger" onclick="location.href='produk.html'">&#9776;</button>
 </div></nav>
 
+<div class="petal-sky" id="petalSky" aria-hidden="true"></div>
+<div class="scroll-prog" id="scrollProg"></div>
 <main>
 <div class="pagehead">
   <div class="wrap">
-    <h1>Collection</h1>
+    <span class="ph-script">our</span>
+    <h1>Our Products</h1>
     <p>Empat seri produk dengan ukuran &amp; desain berbeda. Klik foto untuk memperbesar. Tulisan &amp; warna dapat dicustom (minimal H-2).</p>
   </div>
 </div>
@@ -92,7 +221,7 @@
 <section class="series">
   <div class="wrap">
     <div class="s-media slide-l">
-      <div class="gal-wrap">
+      <div class="gal-wrap tilt float-soft">
         <img id="m-classic" class="big zoomable" src="images/products/classic-rosie-red.jpg" alt="Classic Series (tabletop)">
         <div class="gal-nav" style="display:none">
           <button class="gal-prev" aria-label="Foto sebelumnya">‹</button>
@@ -107,13 +236,13 @@
       </div>
       <div class="zoom-note">🔍 <b>Klik foto untuk zoom.</b> Classic diletakkan di atas meja (tabletop).</div>
     </div>
-    <div class="s-text slide-r">
+    <div class="s-text slide-r stg">
       <span class="eyebrow">Seri 01</span>
       <h2>Classic</h2>
       <div class="dim">Tabletop · di atas meja · Tripod 13 cm</div>
       <div class="board-size">Ukuran papan: <b class="bsize-val">35×45 cm</b></div>
       <p>Papan bunga tabletop yang manis dan elegan. Sempurna diletakkan di meja sambutan, kasir, atau sudut estetik.</p>
-      <div class="s-price">Rp 190.000 <small>Mulai dari</small></div>
+      <div class="s-price" data-cu="190000"><span class="cu">Rp 190.000</span> <small>Mulai dari</small></div>
       <div class="variant-picker" data-series="classic">
         <span class="vp-label">Pilih Variasi</span>
         <div class="vp-opts" data-group="design">
@@ -155,11 +284,21 @@
   </div>
 </section>
 
+
+<div class="flor-div"><span class="ln"></span>
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <g class="pt"><path d="M20 8 C16 12,16 18,20 20 C24 18,24 12,20 8 Z"/>
+    <path d="M32 20 C28 16,22 16,20 20 C22 24,28 24,32 20 Z"/>
+    <path d="M20 32 C24 28,24 22,20 20 C16 22,16 28,20 32 Z"/>
+    <path d="M8 20 C12 24,18 24,20 20 C18 16,12 16,8 20 Z"/></g>
+    <circle cx="20" cy="20" r="2.6"/></svg>
+<span class="ln r"></span></div>
+
 <!-- GRANDE (standing easel) -->
 <section class="series flip">
   <div class="wrap">
     <div class="s-media slide-r">
-      <div class="gal-wrap">
+      <div class="gal-wrap tilt float-soft">
         <img id="m-grande" class="big zoomable" src="images/products/grande-rosie-red.jpg" alt="Grande Series (standing)">
         <div class="gal-nav" style="display:none">
           <button class="gal-prev" aria-label="Foto sebelumnya">‹</button>
@@ -174,13 +313,13 @@
       </div>
       <div class="zoom-note">🔍 <b>Klik foto untuk zoom.</b> Grande berdiri di atas easel kayu (standing).</div>
     </div>
-    <div class="s-text slide-l">
+    <div class="s-text slide-l stg">
       <span class="eyebrow">Seri 02</span>
       <h2>Grande</h2>
       <div class="dim">Standing · tripod kayu · 75 cm</div>
       <div class="board-size">Ukuran papan: <b class="bsize-val">85×103 cm</b></div>
       <p>Papan bunga standing dengan tripod kayu, cocok untuk segala jenis event.</p>
-      <div class="s-price">Rp 590.000 <small>Mulai dari</small></div>
+      <div class="s-price" data-cu="590000"><span class="cu">Rp 590.000</span> <small>Mulai dari</small></div>
       <div class="variant-picker" data-series="grande">
         <span class="vp-label">Pilih Variasi</span>
         <div class="vp-opts" data-group="design">
@@ -222,11 +361,21 @@
   </div>
 </section>
 
+
+<div class="flor-div"><span class="ln"></span>
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <g class="pt"><path d="M20 8 C16 12,16 18,20 20 C24 18,24 12,20 8 Z"/>
+    <path d="M32 20 C28 16,22 16,20 20 C22 24,28 24,32 20 Z"/>
+    <path d="M20 32 C24 28,24 22,20 20 C16 22,16 28,20 32 Z"/>
+    <path d="M8 20 C12 24,18 24,20 20 C18 16,12 16,8 20 Z"/></g>
+    <circle cx="20" cy="20" r="2.6"/></svg>
+<span class="ln r"></span></div>
+
 <!-- ROYALE (biggest, landscape, full illustrated floral / Rosie Lite) -->
 <section class="series">
   <div class="wrap">
     <div class="s-media slide-l">
-      <img id="m-royale" class="big zoomable" src="images/products/royale-rosie-red.jpg" alt="Royale Rosie (Lite)">
+      <img id="m-royale" class="big zoomable tilt float-soft" src="images/products/royale-rosie-red.jpg" alt="Royale Rosie (Lite)">
       <div class="s-thumbs">
         <img class="zoomable" src="images/products/royale-rosie-brown.jpg" alt="Royale Rosie Brown">
         <img class="zoomable" src="images/products/royale-rosie-yellow.jpg" alt="Royale Rosie Yellow">
@@ -234,12 +383,12 @@
       </div>
       <div class="zoom-note">🔍 <b>Klik foto untuk zoom.</b> Royale paling besar dengan ilustrasi bunga penuh.</div>
     </div>
-    <div class="s-text slide-r">
+    <div class="s-text slide-r stg">
       <span class="eyebrow">Seri 03</span>
       <h2>Royale</h2>
       <div class="dim">Paling besar · ilustrasi bunga penuh · 110 × 90 cm · tripod 75 cm</div>
       <p>Papan indoor ukuran terbesar dengan ilustrasi rangkaian bunga yang penuh &amp; mewah.</p>
-      <div class="s-price">Rp 680.000 <small>Mulai dari</small></div>
+      <div class="s-price" data-cu="680000"><span class="cu">Rp 680.000</span> <small>Mulai dari</small></div>
       <div class="variant-picker" data-series="royale">
         <span class="vp-label">Variasi: Rosie (Lite)</span>
         <div class="vp-opts" data-group="design" style="display:none">
@@ -271,11 +420,21 @@
   </div>
 </section>
 
+
+<div class="flor-div"><span class="ln"></span>
+  <svg viewBox="0 0 40 40" aria-hidden="true">
+    <g class="pt"><path d="M20 8 C16 12,16 18,20 20 C24 18,24 12,20 8 Z"/>
+    <path d="M32 20 C28 16,22 16,20 20 C22 24,28 24,32 20 Z"/>
+    <path d="M20 32 C24 28,24 22,20 20 C16 22,16 28,20 32 Z"/>
+    <path d="M8 20 C12 24,18 24,20 20 C18 16,12 16,8 20 Z"/></g>
+    <circle cx="20" cy="20" r="2.6"/></svg>
+<span class="ln r"></span></div>
+
 <!-- OUTDOOR (papan klasik) -->
 <section class="series flip">
   <div class="wrap">
     <div class="s-media slide-r">
-      <div class="gal-wrap">
+      <div class="gal-wrap tilt float-soft">
         <img id="m-outdoor" class="big zoomable" src="images/products/outdoor-basic-elegant.jpg" alt="Outdoor (papan klasik)">
         <div class="gal-nav" style="display:none">
           <button class="gal-prev" aria-label="Foto sebelumnya">‹</button>
@@ -285,12 +444,12 @@
       </div>
       <div class="zoom-note">🔍 <b>Klik foto untuk zoom.</b> Pilih tipe untuk melihat Basic &amp; Deluxe.</div>
     </div>
-    <div class="s-text slide-l">
+    <div class="s-text slide-l stg">
       <span class="eyebrow">Seri 04</span>
       <h2>Outdoor</h2>
       <div class="dim">Papan Bunga Outdoor</div>
       <p>Papan bunga berukuran besar untuk outdoor. Tersedia Basic (2 titik) &amp; Deluxe (4 titik), ukuran Regular &amp; Medium.</p>
-      <div class="s-price">Mulai Rp 500.000 <small>By request</small></div>
+      <div class="s-price" data-cu="500000" data-pre="Mulai "><span class="cu">Mulai Rp 500.000</span> <small>By request</small></div>
       <div class="variant-picker" data-series="outdoor">
         <span class="vp-label">Pilih Tipe</span>
         <div class="vp-opts" data-group="otype">
@@ -368,5 +527,106 @@
 <a class="fab" href="https://wa.me/628111344911?text=Halo%20Dear%20Darlene%20%F0%9F%8C%B8" target="_blank" aria-label="Chat WhatsApp CS"><span class="fab-tip">Chat CS</span><svg viewBox="0 0 24 24" fill="currentColor"><path d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2 22l5.25-1.38c1.45.79 3.08 1.21 4.79 1.21h.01c5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0012.04 2zm0 18.15h-.01c-1.52 0-3.01-.41-4.31-1.18l-.31-.18-3.2.84.85-3.12-.2-.32a8.18 8.18 0 01-1.26-4.36c0-4.54 3.7-8.24 8.25-8.24 2.2 0 4.27.86 5.82 2.42a8.18 8.18 0 012.41 5.83c0 4.54-3.7 8.24-8.24 8.24zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.16.25-.64.81-.78.97-.14.17-.29.19-.54.06-.25-.12-1.05-.39-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.41.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43-.14-.01-.31-.01-.48-.01-.17 0-.43.06-.66.31-.22.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28z"/></svg></a>
 <script src="shared.js"></script>
 <script src="cart.js"></script>
+
+<script>
+/* ===== ✦ Our Products — Fully-Animated Floral Engine ✦ ===== */
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---- Sakura petals (page-wide) ---- */
+  (function petals(){
+    var sky=document.getElementById('petalSky'); if(!sky||reduce) return;
+    var SHAPE='<svg viewBox="0 0 20 20"><path d="M10 1 C7 4 6 9 10 13 C14 9 13 4 10 1 Z"/></svg>';
+    var kinds=['p-a','p-b','p-c','p-d'];
+    var N = window.innerWidth<700 ? 14 : 26;
+    for(var i=0;i<N;i++){
+      var s=document.createElement('span');
+      s.className='petal '+kinds[i%kinds.length];
+      s.innerHTML=SHAPE;
+      var size=(8+Math.random()*12);
+      s.style.width=size+'px'; s.style.height=size+'px';
+      s.style.left=(Math.random()*100).toFixed(2)+'%';
+      var dur=(9+Math.random()*10).toFixed(2);
+      var delay=(-Math.random()*18).toFixed(2);
+      s.style.setProperty('--drift',((Math.random()*160-40)).toFixed(0)+'px');
+      s.style.setProperty('--spin',((Math.random()*540+180)).toFixed(0)+'deg');
+      s.style.animation='petalFall '+dur+'s linear '+delay+'s infinite';
+      sky.appendChild(s);
+    }
+  })();
+
+  /* ---- scroll progress ---- */
+  (function(){var b=document.getElementById('scrollProg');if(!b)return;
+    function up(){var h=document.documentElement,m=(h.scrollHeight-h.clientHeight)||1;b.style.width=(h.scrollTop/m*100)+'%';}
+    window.addEventListener('scroll',up,{passive:true});up();})();
+
+  /* ---- reveal: .series + .flor-div + .reveal ---- */
+  (function(){
+    var els=document.querySelectorAll('.series,.flor-div,.reveal');
+    if(reduce||!('IntersectionObserver' in window)){els.forEach(function(e){e.classList.add('in');});return;}
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.16});
+    els.forEach(function(e){io.observe(e);});
+  })();
+
+  /* ---- price count-up ---- */
+  (function(){
+    function fmt(n){return Number(n).toLocaleString('id-ID');}
+    function run(el){var span=el.querySelector('.cu');if(!span||span.dataset.done)return;span.dataset.done='1';
+      var t=parseInt(el.getAttribute('data-cu'),10),pre=el.getAttribute('data-pre')||'';
+      if(reduce){span.textContent=pre+'Rp '+fmt(t);return;}
+      var dur=1100,t0=null;
+      function step(ts){if(!t0)t0=ts;var k=Math.min((ts-t0)/dur,1);var e=1-Math.pow(1-k,3);
+        span.textContent=pre+'Rp '+fmt(Math.round(t*e));if(k<1)requestAnimationFrame(step);}
+      requestAnimationFrame(step);}
+    var ps=document.querySelectorAll('.s-price[data-cu]');
+    if(reduce||!('IntersectionObserver' in window)){ps.forEach(run);return;}
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){run(e.target);io.unobserve(e.target);}});},{threshold:.5});
+    ps.forEach(function(p){io.observe(p);});
+  })();
+
+  /* ---- soft 3D tilt on framed photos (desktop pointer) ---- */
+  (function(){
+    if(reduce||window.matchMedia('(hover:none)').matches)return;
+    document.querySelectorAll('.tilt').forEach(function(card){
+      var raf=null;
+      card.addEventListener('mousemove',function(ev){var r=card.getBoundingClientRect();
+        var px=(ev.clientX-r.left)/r.width-.5,py=(ev.clientY-r.top)/r.height-.5;
+        if(raf)cancelAnimationFrame(raf);
+        raf=requestAnimationFrame(function(){card.style.transform='perspective(900px) rotateY('+(px*6).toFixed(2)+'deg) rotateX('+(-py*6).toFixed(2)+'deg)';});});
+      card.addEventListener('mouseleave',function(){card.style.transform='';});
+    });
+  })();
+
+  /* ---- ripple on variant options ---- */
+  document.addEventListener('click',function(ev){
+    var opt=ev.target.closest('.vp-opt');if(!opt||reduce)return;
+    var r=opt.getBoundingClientRect();var rip=document.createElement('span');rip.className='rip';
+    rip.style.left=(ev.clientX-r.left)+'px';rip.style.top=(ev.clientY-r.top)+'px';rip.style.width=rip.style.height='14px';
+    opt.appendChild(rip);setTimeout(function(){rip.remove();},560);
+  });
+
+  /* ---- magnetic buy buttons ---- */
+  (function(){
+    if(reduce||window.matchMedia('(hover:none)').matches)return;
+    document.querySelectorAll('.buy-row .btn').forEach(function(b){
+      b.addEventListener('mousemove',function(e){var r=b.getBoundingClientRect();
+        var x=(e.clientX-r.left-r.width/2)/r.width,y=(e.clientY-r.top-r.height/2)/r.height;
+        b.style.transform='translate('+(x*5).toFixed(1)+'px,'+(y*5-2).toFixed(1)+'px)';});
+      b.addEventListener('mouseleave',function(){b.style.transform='';});
+    });
+  })();
+
+  /* ---- portfolio staggered reveal ---- */
+  (function(){
+    var items=document.querySelectorAll('.porto-item');if(!items.length)return;
+    if(reduce||!('IntersectionObserver' in window)){items.forEach(function(i){i.classList.add('shown');});return;}
+    var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){
+      var idx=[].indexOf.call(e.target.parentNode.children,e.target);
+      e.target.style.transitionDelay=((idx%5)*0.07).toFixed(2)+'s';
+      e.target.classList.add('shown');io.unobserve(e.target);}});},{threshold:.12});
+    items.forEach(function(i){io.observe(i);});
+  })();
+})();
+</script>
 </body>
 </html>
