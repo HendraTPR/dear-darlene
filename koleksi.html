@@ -13,7 +13,7 @@
 <style>
 .series{padding:90px 0}
 .series .wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center}
-.series:nth-child(even){background:var(--paper)}
+.series:nth-child(even){background:transparent}
 .series.flip .s-media{order:2}
 .s-media .big{border-radius:12px;width:100%;aspect-ratio:4/5;object-fit:cover;box-shadow:0 26px 54px -28px rgba(84,11,20,.35)}
 .s-media .ph-ph{border-radius:12px;width:100%;aspect-ratio:4/5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:var(--paper2);color:var(--taupe);border:1px solid var(--line)}
@@ -37,6 +37,7 @@
 .addon-mini img{width:58px;height:58px;object-fit:cover;border-radius:8px;flex-shrink:0}
 .addon-mini .t{font-size:12px;color:var(--taupe);line-height:1.45}
 .addon-mini .t b{color:var(--maroon)}
+.options{background:transparent}
 .options .opt-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px}
 .opt-card{background:#fff;border:1px solid var(--line);border-radius:12px;padding:26px 24px}
 .opt-card .tag{display:inline-block;background:var(--maroon);color:#fff;font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:50px;margin-bottom:12px;font-weight:600}
@@ -52,7 +53,7 @@
 @media(max-width:880px){
   .series .wrap{grid-template-columns:1fr;gap:18px;align-items:start}
   .series.flip .s-media{order:0}
-  .series:nth-child(even){background:var(--cream)}
+  .series:nth-child(even){background:transparent}
   .series .s-media{position:sticky;top:56px;z-index:5;background:var(--cream);padding:6px 0 6px;align-self:start}
   .s-media .big{aspect-ratio:auto;height:38vh}
   .s-thumbs{margin-top:8px}.s-thumbs img{width:60px;height:60px}
@@ -84,7 +85,8 @@
   background:linear-gradient(90deg,var(--maroon),var(--wine),#cf9aa1);box-shadow:0 0 10px rgba(141,59,70,.45)}
 
 /* ---- SAKURA PETALS (fixed, page-wide, behind content) ---- */
-.petal-sky{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
+body{background:var(--cream)}
+.petal-sky{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
 .petal{position:absolute;top:-6%;will-change:transform,opacity;opacity:0;filter:drop-shadow(0 3px 4px rgba(84,11,20,.18))}
 .petal svg{display:block;width:100%;height:100%}
 .petal.p-a svg path{fill:#d97a87}
@@ -98,6 +100,8 @@
   100%{opacity:0;transform:translate3d(var(--drift,60px),110vh,0) rotateZ(var(--spin,420deg)) rotateY(360deg)}}
 /* content sits above petals */
 .nav,main,.footer,.fab{position:relative;z-index:2}
+main{background:transparent}
+.series,.options,.porto-sec{background:transparent!important}
 .pagehead{position:relative;z-index:2}
 
 /* ---- PAGE HEADER: shimmer + script flourish ---- */
@@ -196,12 +200,36 @@
 .porto-item:hover::after{animation:ddSheen .9s ease}
 @keyframes ddSheen{to{transform:translateX(130%)}}
 
+/* ===== MUSEUM GALLERY HEADER ===== */
+.gallery-head{position:relative;z-index:2;text-align:center;padding:84px 26px 60px}
+.gallery-head .wrap{display:flex;flex-direction:column;align-items:center;gap:18px}
+.gallery-head .gh-line{width:1px;height:54px;background:linear-gradient(var(--wine),transparent);opacity:.5}
+.gallery-head .gh-eyebrow{font-size:11px;letter-spacing:5px;text-transform:uppercase;color:var(--taupe);font-weight:600;
+  opacity:0;animation:headUp .9s ease .1s forwards}
+.gallery-head .gh-script{font-family:var(--script);color:var(--maroon);font-size:clamp(46px,8vw,92px);line-height:.9;
+  opacity:0;animation:headUp 1s cubic-bezier(.2,.7,.2,1) .25s forwards}
+
+/* Museum-style: each product is a framed exhibit with a plaque feel */
+.series{padding:64px 0!important}
+.series .wrap{position:relative}
+/* subtle gallery "wall" frame around media */
+.s-media .gal-wrap, .s-media>.big{border:1px solid var(--line);background:#fff;padding:0;border-radius:14px;overflow:hidden}
+.s-media::after{content:"";position:absolute}
+/* plaque-like series number */
+.s-text .eyebrow{position:relative}
+/* refined separators already present via flor-div */
+
+@media(max-width:880px){
+  .gallery-head{padding:64px 22px 40px}
+  .series{padding:40px 0!important}
+}
+
 </style>
 </head>
 <body>
 <nav class="nav"><div class="wrap">
   <a href="index.html" class="brand"><img class="dd-logo" src="images/brand/icon.png" alt="DD"><img class="brand-wm" src="images/brand/logo-wordmark.png" alt="Dear Darlene"></a>
-  <div class="nav-links"><a href="index.html">Home</a><a href="produk.html">Shop</a><a href="koleksi.html" class="active">Our Products</a><a href="about.html">About Us</a>
+  <div class="nav-links"><a href="index.html">Home</a><a href="produk.html">Shop</a><a href="koleksi.html" class="active">Collection</a><a href="about.html">About Us</a>
       <a href="faq.html">F.A.Q</a><a href="news.html">News</a><a href="order.html" class="btn btn-primary">ORDER NOW</a></div>
   <button class="burger" onclick="location.href='produk.html'">&#9776;</button>
 </div></nav>
@@ -209,11 +237,12 @@
 <div class="petal-sky" id="petalSky" aria-hidden="true"></div>
 <div class="scroll-prog" id="scrollProg"></div>
 <main>
-<div class="pagehead">
+<div class="gallery-head">
   <div class="wrap">
-    <span class="ph-script">our</span>
-    <h1>Our Products</h1>
-    <p>Empat seri produk dengan ukuran &amp; desain berbeda. Klik foto untuk memperbesar. Tulisan &amp; warna dapat dicustom (minimal H-2).</p>
+    <div class="gh-line"></div>
+    <span class="gh-eyebrow">Dear Darlene · Gallery</span>
+    <div class="gh-script">la collezione</div>
+    <div class="gh-line"></div>
   </div>
 </div>
 
