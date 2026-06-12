@@ -236,6 +236,7 @@ tbody tr:hover td{background:#fcfbf9}
 .cal-ev.task{display:flex;align-items:center;gap:4px}
 .cal-ev.done{opacity:.5;text-decoration:line-through}
 .cal-ev.maroon{background:#540B14}.cal-ev.blue{background:#2c5f8a}.cal-ev.green{background:#1d7a4f}.cal-ev.orange{background:#c2701c}.cal-ev.purple{background:#6b3b8d}
+.cal-ev.kiriman{background:#1f6f8b;border-left:3px solid #0d4d63}
 .cal-more{font-size:9.5px;color:#6f5b52;padding:1px 5px}
 /* modal extras */
 .cal-type-toggle{display:flex;gap:8px;margin-bottom:14px}
@@ -470,6 +471,7 @@ tbody tr:hover td{background:#fcfbf9}
         <div id="calErr" class="err" style="display:none"></div>
         <div class="modal-actions">
           <button class="btn-ghost" id="calDeleteBtn" onclick="deleteCalItem()" style="display:none;color:#b3261e">🗑 Hapus</button>
+          <button class="btn-ghost" id="calDoneBtn" onclick="toggleCalDone()" style="display:none">✓ Tandai Selesai</button>
           <span style="flex:1"></span>
           <button class="btn-ghost" onclick="closeCalForm()">Batal</button>
           <button class="btn" onclick="saveCalItem()">Simpan</button>
@@ -880,17 +882,43 @@ function drawCalGrid() {
 
   grid.innerHTML = cells.map(function(c){
     if (c.other) return '<div class="cal-cell other"><div class="cd-num">'+c.day+'</div></div>';
+    // agenda manual (event/task) di tanggal ini
     const items = calData.filter(function(it){ return it.tanggal === c.date; });
-    let evHtml = items.slice(0,3).map(function(it){
+    // order (kiriman) di tanggal ini — baca langsung dari allOrders by del_date
+    let ordersToday = [];
+    try { ordersToday = (allOrders||[]).filter(function(o){ return !o.deleted_at && o.del_date === c.date; }); } catch(e){ ordersToday = []; }
+    // gabungkan: tampilkan order sebagai item "kiriman" + agenda manual
+    let allItems = [];
+    ordersToday.forEach(function(o){
+      const prod = (Array.isArray(o.items)&&o.items[0]) ? (o.items[0].nama||o.items[0].name||'Pesanan') : 'Pesanan';
+      allItems.push({ _order:true, _o:o, judul:'🚚 '+(o.rec_name||prod), jam:o.del_time });
+    });
+    items.forEach(function(it){ allItems.push(it); });
+
+    let evHtml = allItems.slice(0,3).map(function(it){
+      if (it._order) {
+        return '<div class="cal-ev kiriman" onclick="event.stopPropagation();viewOrderFromCal(\''+it._o.id+'\')">'+(it.jam?it.jam.slice(0,5)+' ':'')+esc(it.judul)+'</div>';
+      }
       const cls = it.warna || 'maroon';
       if (it.tipe === 'task') {
-        return '<div class="cal-ev task '+cls+(it.selesai?' done':'')+'">'+(it.selesai?'✓':'○')+' '+esc(it.judul)+'</div>';
+        return '<div class="cal-ev task '+cls+(it.selesai?' done':'')+'" onclick="event.stopPropagation();openCalForm('+jsonAttr(it)+')">'+(it.selesai?'✓':'○')+' '+esc(it.judul)+'</div>';
       }
-      return '<div class="cal-ev '+cls+'">'+(it.jam?it.jam.slice(0,5)+' ':'')+esc(it.judul)+'</div>';
+      return '<div class="cal-ev '+cls+'" onclick="event.stopPropagation();openCalForm('+jsonAttr(it)+')">'+(it.jam?it.jam.slice(0,5)+' ':'')+esc(it.judul)+'</div>';
     }).join('');
-    if (items.length > 3) evHtml += '<div class="cal-more">+'+(items.length-3)+' lagi</div>';
+    if (allItems.length > 3) evHtml += '<div class="cal-more">+'+(allItems.length-3)+' lagi</div>';
     return '<div class="cal-cell'+(c.today?' today':'')+'" onclick="openCalDay(\''+c.date+'\')"><div class="cd-num">'+c.day+'</div>'+evHtml+'</div>';
   }).join('');
+}
+
+// helper: encode item jadi atribut onclick aman
+function jsonAttr(obj){ return "JSON.parse(decodeURIComponent('"+encodeURIComponent(JSON.stringify(obj))+"'))"; }
+
+// klik order di kalender → buka detail order yang sudah ada (openDetail)
+function viewOrderFromCal(orderId){
+  try {
+    if (typeof openDetail === 'function') { openDetail(orderId); return; }
+    alert('Detail order tidak tersedia.');
+  } catch(e){ alert('Detail order tidak tersedia.'); }
 }
 
 function calMove(dir){ calMonth += dir; if(calMonth<0){calMonth=11;calYear--;} if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
@@ -915,6 +943,17 @@ function openCalForm(item, presetDate){
   document.getElementById('calHandle').value = item ? (item.handle||'') : '';
   document.getElementById('calCatatan').value = item ? (item.catatan||'') : '';
   pickColor(item ? (item.warna||'maroon') : 'maroon');
+  // tombol "Tandai Selesai" hanya untuk TASK yang sudah tersimpan
+  const doneBtn = document.getElementById('calDoneBtn');
+  if (doneBtn) {
+    if (item && item.tipe === 'task') {
+      doneBtn.style.display = 'inline-block';
+      doneBtn.innerHTML = item.selesai ? '↩ Batalkan Selesai' : '✓ Tandai Selesai';
+      doneBtn.style.color = item.selesai ? '#6f5b52' : '#1d7a4f';
+    } else {
+      doneBtn.style.display = 'none';
+    }
+  }
   document.getElementById('calErr').style.display = 'none';
   document.getElementById('calModal').classList.add('on');
 }
@@ -951,6 +990,17 @@ async function deleteCalItem(){
   if (!confirm('Hapus agenda ini?')) return;
   const { error } = await sb.from('dd_calendar').delete().eq('id', calEditId);
   if (error) { alert('Gagal hapus: '+error.message); return; }
+  closeCalForm(); renderCalendar();
+}
+
+// Tandai task selesai / batalkan selesai
+async function toggleCalDone(){
+  if (!calEditId) return;
+  // cari status sekarang dari data
+  const cur = calData.find(function(it){ return it.id === calEditId; });
+  const newStatus = cur ? !cur.selesai : true;
+  const { error } = await sb.from('dd_calendar').update({ selesai: newStatus }).eq('id', calEditId);
+  if (error) { alert('Gagal update: '+error.message); return; }
   closeCalForm(); renderCalendar();
 }
 function renderInsight() {
