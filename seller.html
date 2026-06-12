@@ -479,6 +479,25 @@ tbody tr:hover td{background:#fcfbf9}
       </div>
     </div>
 
+    <!-- Modal Ubah Tanggal Kirim -->
+    <div id="editDelivModal" class="overlay" onclick="if(event.target===this)closeEditDelivery()">
+      <div class="modal">
+        <h3>Ubah Tanggal Kirim</h3>
+        <p class="modal-hint" id="edDelInfo" style="margin:0 0 14px;color:#6f5b52;font-size:13px">—</p>
+        <div class="field-row">
+          <div class="field"><label>Tanggal Kirim</label><input id="edDelDate" type="date"></div>
+          <div class="field"><label>Jam Kirim</label><input id="edDelTime" type="time"></div>
+        </div>
+        <div id="edDelErr" class="err" style="display:none"></div>
+        <p class="modal-hint" style="font-size:11.5px;color:#8d3b46;margin-top:6px">⚠️ Perubahan ini langsung mengubah data pesanan asli & tersinkron ke kalender.</p>
+        <div class="modal-actions">
+          <span style="flex:1"></span>
+          <button class="btn-ghost" onclick="closeEditDelivery()">Batal</button>
+          <button class="btn" onclick="saveDelivery()">Simpan Perubahan</button>
+        </div>
+      </div>
+    </div>
+
   </div>
   </main>
 </div>
@@ -1003,6 +1022,51 @@ async function toggleCalDone(){
   if (error) { alert('Gagal update: '+error.message); return; }
   closeCalForm(); renderCalendar();
 }
+
+// cek apakah user boleh edit pesanan
+function canEditOrder(){
+  try {
+    const p = window.__myPerms;
+    if (!p) return false;
+    return p.role === 'super_admin' || p.perm_edit_hapus_pesanan === true;
+  } catch(e){ return false; }
+}
+
+// buka form ubah tanggal/jam kirim
+function openEditDelivery(orderId){
+  const o = (typeof orderMap!=='undefined') ? orderMap.get(orderId) : null;
+  if (!o) { alert('Order tidak ditemukan.'); return; }
+  window.__editDelivId = orderId;
+  document.getElementById('edDelDate').value = o.del_date || '';
+  document.getElementById('edDelTime').value = o.del_time ? o.del_time.slice(0,5) : '';
+  document.getElementById('edDelInfo').textContent = (o.rec_name||'—') + ' · ' + (Array.isArray(o.items)&&o.items[0]?(o.items[0].nama||o.items[0].name||''):'');
+  document.getElementById('edDelErr').style.display = 'none';
+  document.getElementById('editDelivModal').classList.add('on');
+}
+function closeEditDelivery(){ document.getElementById('editDelivModal').classList.remove('on'); }
+
+async function saveDelivery(){
+  const err = document.getElementById('edDelErr'); err.style.display='none';
+  const id = window.__editDelivId;
+  const newDate = document.getElementById('edDelDate').value;
+  const newTime = document.getElementById('edDelTime').value;
+  if (!newDate) { err.textContent='Tanggal kirim wajib diisi.'; err.style.display='block'; return; }
+  const o = orderMap.get(id) || {};
+  // konfirmasi
+  if (!confirm('Ubah tanggal kirim untuk '+(o.rec_name||'order ini')+'?\n\nDari: '+(o.del_date||'—')+' '+(o.del_time?o.del_time.slice(0,5):'')+'\nJadi: '+newDate+' '+(newTime||'')+'\n\nIni akan mengubah data pesanan asli.')) return;
+  const patch = { del_date: newDate, del_time: newTime || null };
+  const { error } = await sb.from('dd_orders').update(patch).eq('id', id);
+  if (error) { err.textContent='Gagal simpan: '+error.message; err.style.display='block'; return; }
+  // update data lokal biar langsung sinkron tanpa reload
+  if (o) { o.del_date = newDate; o.del_time = newTime || null; }
+  closeEditDelivery();
+  // refresh tampilan order + kalender
+  if (typeof applyFilters === 'function') applyFilters();
+  if (typeof renderCalendar === 'function' && document.getElementById('tabKalender').style.display !== 'none') renderCalendar();
+  // refresh detail popup kalau masih kebuka
+  if (typeof openDetail === 'function' && document.getElementById('detailModal').classList.contains('on')) openDetail(id);
+  alert('✅ Tanggal kirim berhasil diubah & tersinkron ke pesanan.');
+}
 function renderInsight() {
   const mo = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   const months = [];
@@ -1097,7 +1161,7 @@ function openDetail(id) {
   document.getElementById('dbody').innerHTML =
     '<div class="dsec"><h4>Penerima</h4><p>'+esc(o.rec_name||'—')+' · '+esc(o.rec_phone||'—')+'<br>'+esc(o.rec_addr||'—')+'<br>'+esc(o.rec_city||'—')+'</p></div>'+
     '<div class="dsec"><h4>Pengirim</h4><p>'+esc(o.sender_name||'—')+' · '+esc(o.sender_phone||'—')+'</p></div>'+
-    '<div class="dsec"><h4>Jadwal Kirim</h4><p>Tanggal: '+esc(o.del_date||'—')+'<br>Jam: '+esc(o.del_time||'—')+'</p></div>'+
+    '<div class="dsec"><h4>Jadwal Kirim '+(canEditOrder()?'<button onclick="openEditDelivery(&quot;'+o.id+'&quot;)" style="font-size:11px;padding:3px 10px;border:1px solid var(--line);border-radius:6px;background:#fff;cursor:pointer;margin-left:8px;color:var(--maroon)">✏️ Ubah</button>':'')+'</h4><p>Tanggal: '+esc(o.del_date||'—')+'<br>Jam: '+esc(o.del_time||'—')+'</p></div>'+
     '<hr class="divider">'+
     '<div class="dsec"><h4>Produk</h4><p>'+esc(fmtItems(o.items))+'</p></div>'+
     row('Tulisan Papan', o.board_text)+row('Tulisan From', o.from_text)+
