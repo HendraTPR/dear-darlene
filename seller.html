@@ -145,6 +145,26 @@ tbody tr:hover td{background:#fcfbf9}
 @media(max-width:760px){.stats{grid-template-columns:1fr 1fr}.wrap{padding:18px 14px 60px}.topbar{padding:12px 16px}.user-tag{display:none}.filterbar{flex-direction:column;align-items:stretch}.pills{justify-content:space-between}.fspacer{display:none}}
 @media(max-width:440px){.stats{grid-template-columns:1fr}}
 .watxt{width:100%;border:1px solid var(--line);border-radius:10px;padding:12px;font-family:var(--bd);font-size:12.5px;line-height:1.5;resize:vertical;box-sizing:border-box;color:var(--ink);background:var(--cream)}.watxt:focus{outline:none;border-color:var(--wine)}.addbtn{padding:10px 18px;font-size:13px;flex-shrink:0}.ordhdr{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:30px 0 8px}@media(max-width:900px){.stats{grid-template-columns:1fr 1fr}}@media(max-width:480px){.stats{grid-template-columns:1fr}}
+/* ===== KELOLA PEGAWAI ===== */
+.staff-wrap{display:grid;grid-template-columns:1fr 1fr;gap:20px;align-items:start}
+@media(max-width:860px){.staff-wrap{grid-template-columns:1fr}}
+.staff-form-card,.staff-list-card{background:#fff;border:1px solid var(--line,#e3d8c8);border-radius:14px;padding:20px}
+.perm-grid{display:flex;flex-direction:column;gap:10px}
+.perm-item{display:flex;align-items:center;gap:10px;font-size:14px;color:#352825;cursor:pointer;padding:8px 10px;border:1px solid #eee;border-radius:8px;transition:.15s}
+.perm-item:hover{background:#faf7f2}
+.perm-item input{width:17px;height:17px;accent-color:#540B14;cursor:pointer;flex-shrink:0}
+.staff-row{border:1px solid #eee;border-radius:10px;padding:12px 14px;margin-bottom:10px}
+.staff-row .sr-top{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap}
+.staff-row .sr-name{font-weight:600;color:#540B14}
+.staff-row .sr-email{font-size:12px;color:#6f5b52}
+.staff-row .sr-badge{font-size:10px;letter-spacing:.5px;text-transform:uppercase;padding:3px 9px;border-radius:50px;font-weight:600}
+.sr-badge.admin{background:#540B14;color:#fff}
+.sr-badge.staff{background:#EAE0D2;color:#540B14}
+.sr-badge.off{background:#ddd;color:#888}
+.sr-perms{font-size:11.5px;color:#6f5b52;margin-top:7px;line-height:1.5}
+.sr-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.sr-actions button{font-size:12px;padding:6px 12px;border-radius:7px;border:1px solid #ccc;background:#fff;cursor:pointer;transition:.15s}
+.sr-actions button:hover{background:#f5f0e8}
   </style>
 </head>
 <body>
@@ -173,6 +193,7 @@ tbody tr:hover td{background:#fcfbf9}
     <div class="tabnav">
       <button class="tabbtn active" id="tabBtnPesanan" onclick="switchTab('pesanan')">Pesanan</button>
       <button class="tabbtn" id="tabBtnInsight" onclick="switchTab('insight')">Insight Bulanan</button>
+      <button class="tabbtn" id="tabBtnStaff" onclick="switchTab('staff')" style="display:none">Kelola Pegawai</button>
     </div>
     <div id="tabPesanan">
     <div class="stats">
@@ -239,6 +260,37 @@ tbody tr:hover td{background:#fcfbf9}
       </div>
       <p class="bnote" style="margin-top:14px">Laba kotor = total bayar customer − (ongkir subsidi + tips Gojek + biaya tol). Isi biaya tiap order lewat tombol "Lihat ›" → Pembukuan. HPP & laba bersih dihitung di pembukuan terpisah.</p>
     </div>
+
+    <!-- ====== TAB KELOLA PEGAWAI ====== -->
+    <div id="tabStaff" style="display:none">
+      <p class="section-label">Kelola Akun Pegawai</p>
+      <div class="staff-wrap">
+        <div class="staff-form-card">
+          <h3 style="margin:0 0 4px">Buat Akun Pegawai Baru</h3>
+          <p class="modal-hint" style="margin:0 0 14px">Pegawai login di halaman terpisah (staff.html) pakai email &amp; password ini.</p>
+          <div class="field"><label>Nama Pegawai</label><input id="stNama" type="text" placeholder="cth: Budi"></div>
+          <div class="field"><label>Email</label><input id="stEmail" type="email" placeholder="email@pegawai.com" autocomplete="off"></div>
+          <div class="field"><label>Password</label><input id="stPass" type="text" placeholder="Min. 6 karakter (kasih ke pegawai)"></div>
+          <p class="section-label" style="margin:16px 0 8px">Izin Akses (centang yang boleh)</p>
+          <div class="perm-grid">
+            <label class="perm-item"><input type="checkbox" id="perm_lihat_pesanan" checked> Lihat pesanan</label>
+            <label class="perm-item"><input type="checkbox" id="perm_update_status"> Update status pengiriman</label>
+            <label class="perm-item"><input type="checkbox" id="perm_input_pembayaran"> Input pembayaran &amp; konfirmasi lunas</label>
+            <label class="perm-item"><input type="checkbox" id="perm_lihat_keuangan"> Lihat keuangan / laba</label>
+            <label class="perm-item"><input type="checkbox" id="perm_lihat_data_customer"> Lihat data customer (HP &amp; alamat)</label>
+            <label class="perm-item"><input type="checkbox" id="perm_edit_hapus_pesanan"> Edit / hapus pesanan</label>
+          </div>
+          <div id="stErr" class="err" style="display:none;margin-top:12px"></div>
+          <div id="stOk" class="ok-msg" style="display:none;margin-top:12px"></div>
+          <button class="btn" style="width:100%;margin-top:14px" id="stCreateBtn" onclick="createStaff()">+ Buat Akun Pegawai</button>
+        </div>
+        <div class="staff-list-card">
+          <h3 style="margin:0 0 14px">Daftar Pegawai</h3>
+          <div id="staffList"><p class="modal-hint">Memuat...</p></div>
+        </div>
+      </div>
+    </div>
+    <!-- ====== /TAB KELOLA PEGAWAI ====== -->
   </div>
 </div>
 <div id="pwModal" class="overlay" onclick="if(event.target===this)closePw()">
@@ -292,12 +344,124 @@ sb.auth.onAuthStateChange((event, session) => {
     document.getElementById('app').style.display = 'block';
     document.getElementById('userTag').textContent = session.user.email;
     window.__userEmail = session.user.email;
+    loadMyPermissions();
     loadOrders();
   } else {
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
   }
 });
+
+// ===== IZIN & KELOLA PEGAWAI =====
+const FUNC_URL = SB_URL + "/functions/v1/kelola-staff";
+window.__myPerms = null;
+window.__myRole = null;
+
+// Panggil Edge Function dengan token login + apikey
+async function callStaffFunc(payload) {
+  const { data: { session } } = await sb.auth.getSession();
+  const token = session ? session.access_token : SB_KEY;
+  const res = await fetch(FUNC_URL, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token, "apikey": SB_KEY },
+    body: JSON.stringify(payload)
+  });
+  let body = {};
+  try { body = await res.json(); } catch(e){}
+  return { status: res.status, body };
+}
+
+// Saat login, ambil izin user dari dd_staff -> tampilkan tab Kelola Pegawai kalau boleh
+async function loadMyPermissions() {
+  try {
+    const email = window.__userEmail;
+    const { data, error } = await sb.from('dd_staff').select('*').eq('email', email).single();
+    if (error || !data) { window.__myPerms = null; return; }
+    window.__myPerms = data;
+    window.__myRole = data.role;
+    // tombol tab Kelola Pegawai hanya untuk yang punya izin kelola_staff
+    const stBtn = document.getElementById('tabBtnStaff');
+    if (stBtn) stBtn.style.display = data.perm_kelola_staff ? 'inline-block' : 'none';
+  } catch(e) { window.__myPerms = null; }
+}
+
+// Buat akun pegawai baru
+async function createStaff() {
+  const err = document.getElementById('stErr');
+  const ok  = document.getElementById('stOk');
+  const btn = document.getElementById('stCreateBtn');
+  err.style.display = 'none'; ok.style.display = 'none';
+  const nama = document.getElementById('stNama').value.trim();
+  const email = document.getElementById('stEmail').value.trim();
+  const password = document.getElementById('stPass').value;
+  if (!email || !password || password.length < 6) {
+    err.textContent = 'Email & password (min 6 karakter) wajib diisi.'; err.style.display = 'block'; return;
+  }
+  const perms = {
+    lihat_pesanan: document.getElementById('perm_lihat_pesanan').checked,
+    update_status: document.getElementById('perm_update_status').checked,
+    input_pembayaran: document.getElementById('perm_input_pembayaran').checked,
+    lihat_keuangan: document.getElementById('perm_lihat_keuangan').checked,
+    lihat_data_customer: document.getElementById('perm_lihat_data_customer').checked,
+    edit_hapus_pesanan: document.getElementById('perm_edit_hapus_pesanan').checked,
+  };
+  btn.disabled = true; btn.textContent = 'Membuat...';
+  const { status, body } = await callStaffFunc({ action: 'create', email, password, nama, perms });
+  btn.disabled = false; btn.textContent = '+ Buat Akun Pegawai';
+  if (status === 200 && body.ok) {
+    ok.textContent = '✅ ' + (body.message || 'Pegawai dibuat.') + ' (' + email + ')';
+    ok.style.display = 'block';
+    document.getElementById('stNama').value = '';
+    document.getElementById('stEmail').value = '';
+    document.getElementById('stPass').value = '';
+    loadStaffList();
+  } else {
+    err.textContent = '❌ ' + (body.error || ('Gagal (status ' + status + ').'));
+    err.style.display = 'block';
+  }
+}
+
+// Tampilkan daftar pegawai
+async function loadStaffList() {
+  const box = document.getElementById('staffList');
+  if (!box) return;
+  box.innerHTML = '<p class="modal-hint">Memuat...</p>';
+  const { status, body } = await callStaffFunc({ action: 'list' });
+  if (status !== 200 || !body.ok) {
+    box.innerHTML = '<p class="err">Gagal memuat: ' + (body.error || status) + '</p>'; return;
+  }
+  const permLabels = [
+    ['perm_lihat_pesanan','Lihat pesanan'],
+    ['perm_update_status','Update status'],
+    ['perm_input_pembayaran','Input bayar'],
+    ['perm_lihat_keuangan','Keuangan'],
+    ['perm_lihat_data_customer','Data customer'],
+    ['perm_edit_hapus_pesanan','Edit/hapus'],
+  ];
+  box.innerHTML = (body.staff || []).map(function(u){
+    const isAdmin = u.role === 'super_admin';
+    const badge = isAdmin ? '<span class="sr-badge admin">Super Admin</span>'
+                : (u.aktif ? '<span class="sr-badge staff">Pegawai</span>' : '<span class="sr-badge off">Nonaktif</span>');
+    const perms = isAdmin ? 'Semua izin'
+                : permLabels.filter(function(pl){return u[pl[0]];}).map(function(pl){return pl[1];}).join(', ') || '—';
+    let actions = '';
+    if (!isAdmin) {
+      const act = u.aktif
+          ? '<button onclick="setStaffActive(&quot;'+u.email+'&quot;,false)">Nonaktifkan</button>'
+          : '<button onclick="setStaffActive(&quot;'+u.email+'&quot;,true)">Aktifkan</button>';
+      actions = '<div class="sr-actions">' + act + '</div>';
+    }
+    return '<div class="staff-row"><div class="sr-top"><div><div class="sr-name">'+(u.nama||u.email)+'</div><div class="sr-email">'+u.email+'</div></div>'+badge+'</div><div class="sr-perms">🔑 '+perms+'</div>'+actions+'</div>';
+  }).join('') || '<p class="modal-hint">Belum ada pegawai.</p>';
+}
+
+// Aktif / nonaktif pegawai
+async function setStaffActive(email, aktif) {
+  if (!confirm((aktif?'Aktifkan':'Nonaktifkan')+' pegawai '+email+'?')) return;
+  const { status, body } = await callStaffFunc({ action: 'set_active', email, aktif });
+  if (status === 200 && body.ok) { loadStaffList(); }
+  else alert('Gagal: ' + (body.error || status));
+}
 async function doLogin() {
   const email = document.getElementById('le').value.trim();
   const pw = document.getElementById('lp').value;
@@ -390,12 +554,15 @@ function labaCell(o) {
   return '<div class="laba-cell unset">• biaya belum diisi</div>';
 }
 function switchTab(name) {
-  const isP = name==='pesanan';
-  document.getElementById('tabPesanan').style.display = isP ? 'block' : 'none';
-  document.getElementById('tabInsight').style.display = isP ? 'none' : 'block';
-  document.getElementById('tabBtnPesanan').classList.toggle('active', isP);
-  document.getElementById('tabBtnInsight').classList.toggle('active', !isP);
-  if (!isP) renderInsight();
+  const tabs = ['pesanan','insight','staff'];
+  tabs.forEach(t => {
+    const pane = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
+    const btn  = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+    if (pane) pane.style.display = (t === name) ? 'block' : 'none';
+    if (btn)  btn.classList.toggle('active', t === name);
+  });
+  if (name === 'insight') renderInsight();
+  if (name === 'staff') loadStaffList();
 }
 function renderInsight() {
   const mo = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
