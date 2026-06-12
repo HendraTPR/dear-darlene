@@ -215,6 +215,39 @@ tbody tr:hover td{background:#fcfbf9}
 .ov-bars .b{flex:1;background:linear-gradient(180deg,#8d3b46,#540B14);border-radius:5px 5px 0 0;opacity:.85;min-height:4px;transition:.3s}
 .ov-blbl{display:flex;gap:6px;font-size:9px;color:#6f5b52;padding:6px 2px 0}
 .ov-blbl span{flex:1;text-align:center}
+/* ===== KALENDER ===== */
+.cal-head{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:12px;margin-bottom:16px}
+.cal-nav{display:flex;align-items:center;gap:10px}
+.cal-nav h2{font-family:var(--pf,serif);font-size:20px;color:#540B14;font-weight:600;min-width:170px;text-align:center}
+.cal-arrow{width:34px;height:34px;border-radius:9px;border:1px solid var(--line,#e8e0d4);background:#fff;cursor:pointer;font-size:18px;color:#540B14;transition:.15s}
+.cal-arrow:hover{background:#faf7f2}
+.cal-today{padding:7px 14px;border-radius:9px;border:1px solid var(--line,#e8e0d4);background:#fff;cursor:pointer;font-size:12px;color:#6f5b52;font-family:inherit;transition:.15s}
+.cal-today:hover{background:#faf7f2;color:#540B14}
+.cal-weekdays{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin-bottom:6px}
+.cal-weekdays span{text-align:center;font-size:10.5px;letter-spacing:.8px;text-transform:uppercase;color:#6f5b52;font-weight:600;padding:4px}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.cal-cell{background:#fff;border:1px solid var(--line,#e8e0d4);border-radius:10px;min-height:96px;padding:7px;cursor:pointer;transition:.15s;overflow:hidden}
+.cal-cell:hover{border-color:#8d3b46;box-shadow:0 2px 8px rgba(84,11,20,.06)}
+.cal-cell.other{background:#faf8f5;opacity:.55}
+.cal-cell.today{border-color:#540B14;border-width:2px}
+.cal-cell .cd-num{font-size:12.5px;font-weight:600;color:#352825;margin-bottom:4px}
+.cal-cell.today .cd-num{color:#540B14}
+.cal-ev{font-size:10.5px;padding:3px 6px;border-radius:5px;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#fff;line-height:1.3}
+.cal-ev.task{display:flex;align-items:center;gap:4px}
+.cal-ev.done{opacity:.5;text-decoration:line-through}
+.cal-ev.maroon{background:#540B14}.cal-ev.blue{background:#2c5f8a}.cal-ev.green{background:#1d7a4f}.cal-ev.orange{background:#c2701c}.cal-ev.purple{background:#6b3b8d}
+.cal-more{font-size:9.5px;color:#6f5b52;padding:1px 5px}
+/* modal extras */
+.cal-type-toggle{display:flex;gap:8px;margin-bottom:14px}
+.cal-type{flex:1;padding:9px;border-radius:9px;border:1px solid var(--line,#e8e0d4);background:#fff;cursor:pointer;font-size:13px;font-family:inherit;transition:.15s}
+.cal-type.active{background:#540B14;color:#fff;border-color:#540B14}
+.field-row{display:flex;gap:12px}.field-row .field{flex:1}
+.cal-colors{display:flex;gap:10px;padding:4px 0}
+.cdot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:3px solid transparent;transition:.15s}
+.cdot.active{border-color:#352825}
+.cdot.maroon{background:#540B14}.cdot.blue{background:#2c5f8a}.cdot.green{background:#1d7a4f}.cdot.orange{background:#c2701c}.cdot.purple{background:#6b3b8d}
+.modal-actions{display:flex;align-items:center;gap:8px;margin-top:18px}
+@media(max-width:640px){.cal-cell{min-height:70px;padding:4px}.cal-ev{font-size:9px}}
   </style>
 </head>
 <body>
@@ -239,6 +272,7 @@ tbody tr:hover td{background:#fcfbf9}
       <button class="sb-item active" id="navOverview" onclick="switchTab('overview')"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Overview</span></button>
       <button class="sb-item" id="navPesanan" onclick="switchTab('pesanan')"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Pesanan</span></button>
       <button class="sb-item" id="navInsight" onclick="switchTab('insight')"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M8 15l3-4 3 2 4-6"/></svg><span>Insight Bulanan</span></button>
+      <button class="sb-item" id="navKalender" onclick="switchTab('kalender')" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Kalender</span></button>
       <button class="sb-item" id="navStaff" onclick="switchTab('staff')" style="display:none"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.8-3 3-4.5 5.5-4.5S13.7 16 14.5 19"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.7c2.2.2 3.8 1.5 4.5 3.8"/></svg><span>Kelola Pegawai</span></button>
     </nav>
     <div class="sb-foot">
@@ -383,6 +417,66 @@ tbody tr:hover td{background:#fcfbf9}
       </div>
     </div>
     <!-- ====== /TAB KELOLA PEGAWAI ====== -->
+
+    <!-- ====== TAB KALENDER ====== -->
+    <div id="tabKalender" style="display:none">
+      <div class="cal-head">
+        <div class="cal-nav">
+          <button class="cal-arrow" onclick="calMove(-1)">‹</button>
+          <h2 id="calTitle">—</h2>
+          <button class="cal-arrow" onclick="calMove(1)">›</button>
+          <button class="cal-today" onclick="calToday()">Hari ini</button>
+        </div>
+        <button class="btn" id="calAddBtn" onclick="openCalForm()">+ Tambah Agenda</button>
+      </div>
+      <div class="cal-weekdays">
+        <span>Min</span><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span>
+      </div>
+      <div class="cal-grid" id="calGrid"></div>
+    </div>
+    <!-- ====== /TAB KALENDER ====== -->
+
+    <!-- Modal Tambah/Edit Agenda -->
+    <div id="calModal" class="overlay" onclick="if(event.target===this)closeCalForm()">
+      <div class="modal">
+        <h3 id="calModalTitle">Tambah Agenda</h3>
+        <div class="cal-type-toggle">
+          <button type="button" id="calTypeEvent" class="cal-type active" onclick="setCalType('event')">📅 Event</button>
+          <button type="button" id="calTypeTask" class="cal-type" onclick="setCalType('task')">✅ Task</button>
+        </div>
+        <div class="field"><label>Judul</label><input id="calJudul" type="text" placeholder="cth: Kirim bunga PT Maju Jaya"></div>
+        <div class="field-row">
+          <div class="field"><label>Tanggal</label><input id="calTanggal" type="date"></div>
+          <div class="field" id="calJamWrap"><label>Jam (opsional)</label><input id="calJam" type="time"></div>
+        </div>
+        <div class="field"><label>Siapa yang handle?</label>
+          <select id="calHandle">
+            <option value="">— Belum ditentukan —</option>
+            <option value="Hendra">Hendra</option>
+            <option value="Felicia">Felicia</option>
+            <option value="Berdua">Hendra &amp; Felicia</option>
+          </select>
+        </div>
+        <div class="field"><label>Warna</label>
+          <div class="cal-colors" id="calColors">
+            <span class="cdot maroon active" data-c="maroon" onclick="pickColor('maroon')"></span>
+            <span class="cdot blue" data-c="blue" onclick="pickColor('blue')"></span>
+            <span class="cdot green" data-c="green" onclick="pickColor('green')"></span>
+            <span class="cdot orange" data-c="orange" onclick="pickColor('orange')"></span>
+            <span class="cdot purple" data-c="purple" onclick="pickColor('purple')"></span>
+          </div>
+        </div>
+        <div class="field"><label>Catatan (opsional)</label><textarea id="calCatatan" rows="2" placeholder="Detail tambahan..."></textarea></div>
+        <div id="calErr" class="err" style="display:none"></div>
+        <div class="modal-actions">
+          <button class="btn-ghost" id="calDeleteBtn" onclick="deleteCalItem()" style="display:none;color:#b3261e">🗑 Hapus</button>
+          <span style="flex:1"></span>
+          <button class="btn-ghost" onclick="closeCalForm()">Batal</button>
+          <button class="btn" onclick="saveCalItem()">Simpan</button>
+        </div>
+      </div>
+    </div>
+
   </div>
   </main>
 </div>
@@ -480,6 +574,9 @@ async function loadMyPermissions() {
     // nav Kelola Pegawai hanya untuk yang punya izin kelola_staff
     const navStaff = document.getElementById('navStaff');
     if (navStaff) navStaff.style.display = data.perm_kelola_staff ? 'flex' : 'none';
+    // nav Kalender: super_admin atau punya perm_kalender
+    const navKal = document.getElementById('navKalender');
+    if (navKal) navKal.style.display = (data.role==='super_admin' || data.perm_kalender) ? 'flex' : 'none';
     // perbarui nama asli di sidebar + greeting
     if (data.nama) {
       const nmEl = document.getElementById('userName'); if (nmEl) nmEl.textContent = data.nama;
@@ -669,6 +766,7 @@ function switchTab(name) {
   if (name === 'overview') loadOverview();
   if (name === 'insight') renderInsight();
   if (name === 'staff') loadStaffList();
+  if (name === 'kalender') renderCalendar();
 }
 
 // ===== OVERVIEW DASHBOARD =====
@@ -739,6 +837,122 @@ function loadOverview() {
 }
 function setText(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
 function setTrend(id, big, vs, up){ const e=document.getElementById(id); if(!e)return; e.className='trd '+(up?'up':'down'); e.innerHTML=big+'<span class="vs">'+vs+'</span>'; }
+
+// ===== KALENDER =====
+let calYear, calMonth, calData = [], calEditId = null, calPickedColor = 'maroon', calPickedType = 'event';
+const calMonthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+async function renderCalendar() {
+  const now = new Date();
+  if (calYear === undefined) { calYear = now.getFullYear(); calMonth = now.getMonth(); }
+  await loadCalData();
+  drawCalGrid();
+}
+
+async function loadCalData() {
+  try {
+    // ambil agenda bulan ini (+buffer) dari Supabase
+    const first = new Date(calYear, calMonth, 1).toISOString().slice(0,10);
+    const last  = new Date(calYear, calMonth+1, 0).toISOString().slice(0,10);
+    const { data, error } = await sb.from('dd_calendar').select('*')
+      .gte('tanggal', first).lte('tanggal', last).order('jam', { ascending: true });
+    calData = error ? [] : (data || []);
+  } catch(e) { calData = []; }
+}
+
+function drawCalGrid() {
+  document.getElementById('calTitle').textContent = calMonthNames[calMonth] + ' ' + calYear;
+  const grid = document.getElementById('calGrid');
+  const firstDay = new Date(calYear, calMonth, 1).getDay(); // 0=Min
+  const daysInMonth = new Date(calYear, calMonth+1, 0).getDate();
+  const daysPrev = new Date(calYear, calMonth, 0).getDate();
+  const today = new Date(); const todayStr2 = today.toISOString().slice(0,10);
+  let cells = [];
+  // hari bulan lalu (abu-abu)
+  for (let i = firstDay-1; i >= 0; i--) cells.push({ day: daysPrev-i, other: true, date: null });
+  // hari bulan ini
+  for (let d = 1; d <= daysInMonth; d++) {
+    const ds = calYear + '-' + String(calMonth+1).padStart(2,'0') + '-' + String(d).padStart(2,'0');
+    cells.push({ day: d, other: false, date: ds, today: ds === todayStr2 });
+  }
+  // lengkapi sampai kelipatan 7
+  while (cells.length % 7 !== 0) cells.push({ day: cells.length - (firstDay+daysInMonth) + 1, other: true, date: null });
+
+  grid.innerHTML = cells.map(function(c){
+    if (c.other) return '<div class="cal-cell other"><div class="cd-num">'+c.day+'</div></div>';
+    const items = calData.filter(function(it){ return it.tanggal === c.date; });
+    let evHtml = items.slice(0,3).map(function(it){
+      const cls = it.warna || 'maroon';
+      if (it.tipe === 'task') {
+        return '<div class="cal-ev task '+cls+(it.selesai?' done':'')+'">'+(it.selesai?'✓':'○')+' '+esc(it.judul)+'</div>';
+      }
+      return '<div class="cal-ev '+cls+'">'+(it.jam?it.jam.slice(0,5)+' ':'')+esc(it.judul)+'</div>';
+    }).join('');
+    if (items.length > 3) evHtml += '<div class="cal-more">+'+(items.length-3)+' lagi</div>';
+    return '<div class="cal-cell'+(c.today?' today':'')+'" onclick="openCalDay(\''+c.date+'\')"><div class="cd-num">'+c.day+'</div>'+evHtml+'</div>';
+  }).join('');
+}
+
+function calMove(dir){ calMonth += dir; if(calMonth<0){calMonth=11;calYear--;} if(calMonth>11){calMonth=0;calYear++;} renderCalendar(); }
+function calToday(){ const n=new Date(); calYear=n.getFullYear(); calMonth=n.getMonth(); renderCalendar(); }
+
+// klik tanggal → buka form dgn tanggal terisi (atau lihat agenda hari itu)
+function openCalDay(ds){
+  const items = calData.filter(function(it){ return it.tanggal === ds; });
+  if (items.length === 1) { openCalForm(items[0]); return; }
+  if (items.length > 1) { openCalForm(items[0]); return; } // buka yg pertama; bisa diperluas nanti
+  openCalForm(null, ds);
+}
+
+function openCalForm(item, presetDate){
+  calEditId = item ? item.id : null;
+  document.getElementById('calModalTitle').textContent = item ? 'Edit Agenda' : 'Tambah Agenda';
+  document.getElementById('calDeleteBtn').style.display = item ? 'inline-block' : 'none';
+  setCalType(item ? item.tipe : 'event');
+  document.getElementById('calJudul').value = item ? item.judul : '';
+  document.getElementById('calTanggal').value = item ? item.tanggal : (presetDate || new Date().toISOString().slice(0,10));
+  document.getElementById('calJam').value = item && item.jam ? item.jam.slice(0,5) : '';
+  document.getElementById('calHandle').value = item ? (item.handle||'') : '';
+  document.getElementById('calCatatan').value = item ? (item.catatan||'') : '';
+  pickColor(item ? (item.warna||'maroon') : 'maroon');
+  document.getElementById('calErr').style.display = 'none';
+  document.getElementById('calModal').classList.add('on');
+}
+function closeCalForm(){ document.getElementById('calModal').classList.remove('on'); }
+function setCalType(t){ calPickedType=t;
+  document.getElementById('calTypeEvent').classList.toggle('active', t==='event');
+  document.getElementById('calTypeTask').classList.toggle('active', t==='task');
+  document.getElementById('calJamWrap').style.display = t==='event' ? 'block' : 'none';
+}
+function pickColor(c){ calPickedColor=c; document.querySelectorAll('#calColors .cdot').forEach(function(d){ d.classList.toggle('active', d.dataset.c===c); }); }
+
+async function saveCalItem(){
+  const err = document.getElementById('calErr'); err.style.display='none';
+  const judul = document.getElementById('calJudul').value.trim();
+  const tanggal = document.getElementById('calTanggal').value;
+  if (!judul || !tanggal) { err.textContent='Judul & tanggal wajib diisi.'; err.style.display='block'; return; }
+  const row = {
+    tipe: calPickedType, judul: judul, tanggal: tanggal,
+    jam: (calPickedType==='event' && document.getElementById('calJam').value) ? document.getElementById('calJam').value : null,
+    handle: document.getElementById('calHandle').value || null,
+    catatan: document.getElementById('calCatatan').value.trim() || null,
+    warna: calPickedColor,
+    dibuat_oleh: window.__userEmail || null
+  };
+  let res;
+  if (calEditId) res = await sb.from('dd_calendar').update(row).eq('id', calEditId);
+  else res = await sb.from('dd_calendar').insert(row);
+  if (res.error) { err.textContent='Gagal simpan: '+res.error.message; err.style.display='block'; return; }
+  closeCalForm(); renderCalendar();
+}
+
+async function deleteCalItem(){
+  if (!calEditId) return;
+  if (!confirm('Hapus agenda ini?')) return;
+  const { error } = await sb.from('dd_calendar').delete().eq('id', calEditId);
+  if (error) { alert('Gagal hapus: '+error.message); return; }
+  closeCalForm(); renderCalendar();
+}
 function renderInsight() {
   const mo = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   const months = [];
