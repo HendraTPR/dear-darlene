@@ -755,7 +755,7 @@ function labaCell(o) {
   return '<div class="laba-cell unset">• biaya belum diisi</div>';
 }
 function switchTab(name) {
-  const tabs = ['overview','pesanan','insight','staff'];
+  const tabs = ['overview','pesanan','insight','kalender','staff'];
   tabs.forEach(t => {
     const cap = t.charAt(0).toUpperCase() + t.slice(1);
     const pane = document.getElementById('tab' + cap);
