@@ -165,6 +165,56 @@ tbody tr:hover td{background:#fcfbf9}
 .sr-actions{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
 .sr-actions button{font-size:12px;padding:6px 12px;border-radius:7px;border:1px solid #ccc;background:#fff;cursor:pointer;transition:.15s}
 .sr-actions button:hover{background:#f5f0e8}
+/* ===== DASHBOARD REDESIGN: SIDEBAR + OVERVIEW ===== */
+.dash-sidebar{width:236px;background:#fff;border-right:1px solid var(--line,#e8e0d4);padding:24px 14px;display:flex;flex-direction:column;position:fixed;top:0;bottom:0;left:0;z-index:50}
+.dash-sidebar .sb-brand{padding:0 10px 20px;border-bottom:1px solid var(--line,#e8e0d4);margin-bottom:16px}
+.dash-sidebar .sb-wm{font-family:var(--pf,'Playfair Display',serif);font-size:20px;color:#540B14;font-weight:600;letter-spacing:.5px}
+.dash-sidebar .sb-sub{font-size:9px;letter-spacing:2.5px;text-transform:uppercase;color:#6f5b52;margin-top:3px}
+.dash-sidebar .sb-nav{display:flex;flex-direction:column;gap:4px;flex:1}
+.sb-item{display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:10px;font-size:13.5px;color:#6f5b52;cursor:pointer;transition:.15s;font-weight:500;border:none;background:none;text-align:left;width:100%;font-family:inherit}
+.sb-item svg{width:18px;height:18px;stroke:currentColor;fill:none;stroke-width:1.7;flex-shrink:0}
+.sb-item:hover{background:#faf7f2;color:#540B14}
+.sb-item.active{background:#540B14;color:#fff}
+.sb-foot{border-top:1px solid var(--line,#e8e0d4);padding-top:12px;margin-top:8px}
+.sb-user{display:flex;align-items:center;gap:10px;padding:6px 8px 12px}
+.sb-user .ava{width:34px;height:34px;border-radius:50%;background:var(--paper,#F1E9DD);display:flex;align-items:center;justify-content:center;font-family:var(--pf,serif);color:#540B14;font-weight:600;font-size:14px;flex-shrink:0}
+.sb-user .nm{font-size:12px;font-weight:600;color:#352825;word-break:break-word}
+.sb-user .em{font-size:10px;color:#6f5b52;word-break:break-all}
+.sb-actions{display:flex;flex-direction:column;gap:5px}
+.sb-actions button{font-size:12px;padding:8px 10px;border-radius:8px;border:1px solid var(--line,#e8e0d4);background:#fff;color:#6f5b52;cursor:pointer;text-align:left;transition:.15s;font-family:inherit}
+.sb-actions button:hover{background:#faf7f2;color:#540B14}
+.dash-main{margin-left:236px;padding:30px 34px;min-height:100vh}
+@media(max-width:760px){.dash-sidebar{width:64px;padding:18px 8px}.dash-sidebar .sb-wm,.dash-sidebar .sb-sub,.sb-item span,.sb-user div,.sb-actions button span{display:none}.sb-item{justify-content:center}.dash-main{margin-left:64px;padding:20px 16px}}
+/* greeting */
+.ov-greet h1{font-family:var(--pf,serif);font-size:27px;font-weight:500;color:#540B14}
+.ov-greet p{font-size:13px;color:#6f5b52;margin-top:4px}
+/* stat cards */
+.ov-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:15px;margin:24px 0 28px}
+@media(max-width:980px){.ov-stats{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:520px){.ov-stats{grid-template-columns:1fr}}
+.ov-stat{background:#fff;border:1px solid var(--line,#e8e0d4);border-radius:14px;padding:17px 19px;box-shadow:0 1px 3px rgba(84,11,20,.04)}
+.ov-stat .lbl{font-size:10.5px;letter-spacing:1.1px;text-transform:uppercase;color:#6f5b52;font-weight:600}
+.ov-stat .val{font-family:var(--pf,serif);font-size:28px;color:#352825;margin:8px 0 5px;font-weight:600}
+.ov-stat .trd{font-size:11px;font-weight:500}
+.trd.up{color:#1d7a4f}.trd.down{color:#b3261e}.trd .vs{color:#6f5b52;font-weight:400}
+/* panels */
+.ov-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+@media(max-width:860px){.ov-grid{grid-template-columns:1fr}}
+.ov-panel{background:#fff;border:1px solid var(--line,#e8e0d4);border-radius:14px;padding:20px;box-shadow:0 1px 3px rgba(84,11,20,.04)}
+.ov-panel h3{font-family:var(--pf,serif);font-size:16px;color:#540B14;font-weight:600;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.ov-panel h3 button{font-family:inherit;font-size:11px;color:#8d3b46;background:none;border:none;cursor:pointer;font-weight:500}
+.ov-row{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid #faf7f2;font-size:13px;gap:10px}
+.ov-row:last-child{border:none}
+.ov-row .who b{display:block;font-weight:600;font-size:13px;color:#352825}
+.ov-row .who span{font-size:11px;color:#6f5b52}
+.ov-badge{font-size:9.5px;font-weight:600;letter-spacing:.4px;padding:4px 10px;border-radius:50px;white-space:nowrap;flex-shrink:0}
+.ov-badge.lunas{background:#e6f4ec;color:#1d7a4f}
+.ov-badge.belum{background:#fdecea;color:#b3261e}
+.ov-badge.proses{background:var(--paper,#F1E9DD);color:#8d3b46}
+.ov-bars{display:flex;align-items:flex-end;gap:6px;height:120px;padding:10px 2px 0}
+.ov-bars .b{flex:1;background:linear-gradient(180deg,#8d3b46,#540B14);border-radius:5px 5px 0 0;opacity:.85;min-height:4px;transition:.3s}
+.ov-blbl{display:flex;gap:6px;font-size:9px;color:#6f5b52;padding:6px 2px 0}
+.ov-blbl span{flex:1;text-align:center}
   </style>
 </head>
 <body>
@@ -180,21 +230,63 @@ tbody tr:hover td{background:#fcfbf9}
   </div>
 </div>
 <div id="app" style="display:none">
-  <div class="topbar">
-    <div class="brand"><b>Dear Darlene</b><span>Seller Center</span></div>
-    <div class="topbar-right">
-      <span class="user-tag" id="userTag">—</span>
-      <button class="btn-ghost" onclick="exportCSV()">⬇ Export CSV</button>
-      <button class="btn-ghost" onclick="openPw()">🔑 Password</button>
-      <button class="btn-ghost" onclick="doLogout()">Keluar</button>
+  <aside class="dash-sidebar">
+    <div class="sb-brand">
+      <div class="sb-wm">Dear Darlene</div>
+      <div class="sb-sub">Seller Center</div>
     </div>
-  </div>
-  <div class="wrap">
-    <div class="tabnav">
+    <nav class="sb-nav">
+      <button class="sb-item active" id="navOverview" onclick="switchTab('overview')"><svg viewBox="0 0 24 24"><path d="M3 12l9-8 9 8"/><path d="M5 10v10h14V10"/></svg><span>Overview</span></button>
+      <button class="sb-item" id="navPesanan" onclick="switchTab('pesanan')"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Pesanan</span></button>
+      <button class="sb-item" id="navInsight" onclick="switchTab('insight')"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M8 15l3-4 3 2 4-6"/></svg><span>Insight Bulanan</span></button>
+      <button class="sb-item" id="navStaff" onclick="switchTab('staff')" style="display:none"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.8-3 3-4.5 5.5-4.5S13.7 16 14.5 19"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.7c2.2.2 3.8 1.5 4.5 3.8"/></svg><span>Kelola Pegawai</span></button>
+    </nav>
+    <div class="sb-foot">
+      <div class="sb-actions">
+        <button onclick="exportCSV()">⬇ <span>Export CSV</span></button>
+        <button onclick="openPw()">🔑 <span>Ganti Password</span></button>
+        <button onclick="doLogout()">↩ <span>Keluar</span></button>
+      </div>
+      <div class="sb-user">
+        <div class="ava" id="userAva">—</div>
+        <div><div class="nm" id="userName">—</div><div class="em" id="userTag">—</div></div>
+      </div>
+    </div>
+  </aside>
+  <main class="dash-main">
+    <div class="wrap">
+      <div class="tabnav" style="display:none">
       <button class="tabbtn active" id="tabBtnPesanan" onclick="switchTab('pesanan')">Pesanan</button>
       <button class="tabbtn" id="tabBtnInsight" onclick="switchTab('insight')">Insight Bulanan</button>
       <button class="tabbtn" id="tabBtnStaff" onclick="switchTab('staff')" style="display:none">Kelola Pegawai</button>
     </div>
+
+    <!-- ====== TAB OVERVIEW ====== -->
+    <div id="tabOverview">
+      <div class="ov-greet">
+        <h1 id="ovGreetName">Halo 👋</h1>
+        <p id="ovGreetDate">Ringkasan toko kamu hari ini</p>
+      </div>
+      <div class="ov-stats">
+        <div class="ov-stat"><div class="lbl">Pesanan Hari Ini</div><div class="val" id="ovToday">—</div><div class="trd up" id="ovTodayTrd">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Belum Lunas</div><div class="val" id="ovUnpaid">—</div><div class="trd down" id="ovUnpaidTrd">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Omzet Bulan Ini</div><div class="val" id="ovRevenue">—</div><div class="trd up" id="ovRevenueTrd">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Total Pesanan</div><div class="val" id="ovTotal">—</div><div class="trd up" id="ovTotalTrd">&nbsp;</div></div>
+      </div>
+      <div class="ov-grid">
+        <div class="ov-panel">
+          <h3>Pesanan Terbaru <button onclick="switchTab('pesanan')">Lihat semua ›</button></h3>
+          <div id="ovRecent"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
+        </div>
+        <div class="ov-panel">
+          <h3>Omzet 7 Hari</h3>
+          <div class="ov-bars" id="ovBars"></div>
+          <div class="ov-blbl" id="ovBlbl"></div>
+        </div>
+      </div>
+    </div>
+    <!-- ====== /TAB OVERVIEW ====== -->
+
     <div id="tabPesanan">
     <div class="stats">
       <div class="scard"><div class="scard-label">Total Pesanan</div><div class="scard-val" id="sTotal">—</div><div class="scard-sub" id="sTotalSub">&nbsp;</div></div>
@@ -292,6 +384,7 @@ tbody tr:hover td{background:#fcfbf9}
     </div>
     <!-- ====== /TAB KELOLA PEGAWAI ====== -->
   </div>
+  </main>
 </div>
 <div id="pwModal" class="overlay" onclick="if(event.target===this)closePw()">
   <div class="modal">
@@ -342,10 +435,15 @@ sb.auth.onAuthStateChange((event, session) => {
   if (session) {
     document.getElementById('loginScreen').style.display = 'none';
     document.getElementById('app').style.display = 'block';
-    document.getElementById('userTag').textContent = session.user.email;
-    window.__userEmail = session.user.email;
+    const email = session.user.email;
+    document.getElementById('userTag').textContent = email;
+    window.__userEmail = email;
+    // avatar + nama (ambil dari email dulu, nanti diperbarui loadMyPermissions)
+    const initial = (email || '?').charAt(0).toUpperCase();
+    const avaEl = document.getElementById('userAva'); if (avaEl) avaEl.textContent = initial;
+    const nmEl = document.getElementById('userName'); if (nmEl) nmEl.textContent = email.split('@')[0];
     loadMyPermissions();
-    loadOrders();
+    loadOrders().then(() => { switchTab('overview'); });
   } else {
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
@@ -379,9 +477,15 @@ async function loadMyPermissions() {
     if (error || !data) { window.__myPerms = null; return; }
     window.__myPerms = data;
     window.__myRole = data.role;
-    // tombol tab Kelola Pegawai hanya untuk yang punya izin kelola_staff
-    const stBtn = document.getElementById('tabBtnStaff');
-    if (stBtn) stBtn.style.display = data.perm_kelola_staff ? 'inline-block' : 'none';
+    // nav Kelola Pegawai hanya untuk yang punya izin kelola_staff
+    const navStaff = document.getElementById('navStaff');
+    if (navStaff) navStaff.style.display = data.perm_kelola_staff ? 'flex' : 'none';
+    // perbarui nama asli di sidebar + greeting
+    if (data.nama) {
+      const nmEl = document.getElementById('userName'); if (nmEl) nmEl.textContent = data.nama;
+      const avaEl = document.getElementById('userAva'); if (avaEl) avaEl.textContent = data.nama.charAt(0).toUpperCase();
+      const gn = document.getElementById('ovGreetName'); if (gn) gn.textContent = 'Halo, ' + data.nama + ' 👋';
+    }
   } catch(e) { window.__myPerms = null; }
 }
 
@@ -554,16 +658,87 @@ function labaCell(o) {
   return '<div class="laba-cell unset">• biaya belum diisi</div>';
 }
 function switchTab(name) {
-  const tabs = ['pesanan','insight','staff'];
+  const tabs = ['overview','pesanan','insight','staff'];
   tabs.forEach(t => {
-    const pane = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
-    const btn  = document.getElementById('tabBtn' + t.charAt(0).toUpperCase() + t.slice(1));
+    const cap = t.charAt(0).toUpperCase() + t.slice(1);
+    const pane = document.getElementById('tab' + cap);
+    const nav  = document.getElementById('nav' + cap);
     if (pane) pane.style.display = (t === name) ? 'block' : 'none';
-    if (btn)  btn.classList.toggle('active', t === name);
+    if (nav)  nav.classList.toggle('active', t === name);
   });
+  if (name === 'overview') loadOverview();
   if (name === 'insight') renderInsight();
   if (name === 'staff') loadStaffList();
 }
+
+// ===== OVERVIEW DASHBOARD =====
+function loadOverview() {
+  let _src = [];
+  try { _src = allOrders || []; } catch(e) { _src = []; }
+  const orders = _src.filter(o => !o.deleted_at);
+  const today = todayStr();
+  // greeting tanggal
+  const dEl = document.getElementById('ovGreetDate');
+  if (dEl) {
+    const hari = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+    const bln = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const n = new Date();
+    dEl.textContent = hari[n.getDay()] + ', ' + n.getDate() + ' ' + bln[n.getMonth()] + ' ' + n.getFullYear() + ' · Ringkasan toko kamu hari ini';
+  }
+  // pesanan hari ini + kemarin (buat tren)
+  const yest = (function(){ const d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); })();
+  const todayN = orders.filter(o => (o.created_at||'').slice(0,10) === today).length;
+  const yestN  = orders.filter(o => (o.created_at||'').slice(0,10) === yest).length;
+  setText('ovToday', todayN);
+  const diff = todayN - yestN;
+  setTrend('ovTodayTrd', diff>=0?('▲ +'+diff+' '):('▼ '+diff+' '), 'vs kemarin', diff>=0);
+  // belum lunas
+  const unpaid = orders.filter(o => !isPaid(o));
+  setText('ovUnpaid', unpaid.length);
+  const utr = document.getElementById('ovUnpaidTrd');
+  if (utr) { utr.className = 'trd ' + (unpaid.length? 'down':'up'); utr.innerHTML = unpaid.length ? '● perlu follow-up' : '✓ semua lunas'; }
+  // omzet bulan ini (yyyy-mm) vs bulan lalu
+  const ym = today.slice(0,7);
+  const lastYm = (function(){ const d=new Date(); d.setMonth(d.getMonth()-1); return d.toISOString().slice(0,7); })();
+  const revThis = orders.filter(o=>(o.created_at||'').slice(0,7)===ym && isPaid(o)).reduce((s,o)=>s+(o.total||0),0);
+  const revLast = orders.filter(o=>(o.created_at||'').slice(0,7)===lastYm && isPaid(o)).reduce((s,o)=>s+(o.total||0),0);
+  setText('ovRevenue', fmtRp(revThis));
+  if (revLast>0) { const pct=Math.round((revThis-revLast)/revLast*100); setTrend('ovRevenueTrd', (pct>=0?'▲ ':'▼ ')+Math.abs(pct)+'% ', 'vs bulan lalu', pct>=0); }
+  else setTrend('ovRevenueTrd', '— ', 'data bulan ini', true);
+  // total pesanan
+  setText('ovTotal', orders.length);
+  const ttr=document.getElementById('ovTotalTrd'); if(ttr){ttr.className='trd up';ttr.innerHTML=fmtRp(orders.reduce((s,o)=>s+(o.total||0),0))+' total nilai';}
+  // pesanan terbaru (5)
+  const recent = orders.slice(0,4);
+  const rc = document.getElementById('ovRecent');
+  if (rc) {
+    rc.innerHTML = recent.length ? recent.map(function(o){
+      const paid = isPaid(o);
+      const st = (o.status||'baru');
+      let badge, cls;
+      if (!paid) { badge='BELUM LUNAS'; cls='belum'; }
+      else if (st==='dikirim'||st==='selesai') { badge=st.toUpperCase(); cls='proses'; }
+      else { badge='LUNAS'; cls='lunas'; }
+      const prod = Array.isArray(o.items)&&o.items[0] ? (o.items[0].nama||o.items[0].name||'Pesanan') : (o.produk||'Pesanan');
+      const who = (o.rec_name||o.sender_name||'—');
+      const sub = (o.sender_name? o.sender_name+' · ':'') + (o.rec_city||'');
+      return '<div class="ov-row"><div class="who"><b>'+esc(String(prod))+'</b><span>'+esc(who)+(sub?' · '+esc(sub):'')+'</span></div><span class="ov-badge '+cls+'">'+badge+'</span></div>';
+    }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada pesanan.</p>';
+  }
+  // omzet 7 hari (bar chart)
+  const bars=document.getElementById('ovBars'), blbl=document.getElementById('ovBlbl');
+  if (bars && blbl) {
+    const days=[], vals=[];
+    for (let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const k=d.toISOString().slice(0,10);
+      const v=orders.filter(o=>(o.created_at||'').slice(0,10)===k && isPaid(o)).reduce((s,o)=>s+(o.total||0),0);
+      days.push(['Min','Sen','Sel','Rab','Kam','Jum','Sab'][d.getDay()]); vals.push(v); }
+    const max=Math.max(...vals,1);
+    bars.innerHTML=vals.map(v=>'<div class="b" style="height:'+Math.max(4,Math.round(v/max*100))+'%" title="'+fmtRp(v)+'"></div>').join('');
+    blbl.innerHTML=days.map(d=>'<span>'+d+'</span>').join('');
+  }
+}
+function setText(id,v){ const e=document.getElementById(id); if(e) e.textContent=v; }
+function setTrend(id, big, vs, up){ const e=document.getElementById(id); if(!e)return; e.className='trd '+(up?'up':'down'); e.innerHTML=big+'<span class="vs">'+vs+'</span>'; }
 function renderInsight() {
   const mo = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
   const months = [];
