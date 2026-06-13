@@ -274,6 +274,8 @@ tbody tr:hover td{background:#fcfbf9}
       <button class="sb-item" id="navPesanan" onclick="switchTab('pesanan')"><svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg><span>Pesanan</span></button>
       <button class="sb-item" id="navInsight" onclick="switchTab('insight')"><svg viewBox="0 0 24 24"><path d="M4 19V5M4 19h16"/><path d="M8 15l3-4 3 2 4-6"/></svg><span>Insight Bulanan</span></button>
       <button class="sb-item" id="navKalender" onclick="switchTab('kalender')" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Kalender</span></button>
+      <button class="sb-item" id="navTrafik" onclick="switchTab('trafik')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9M12 7v5l3 3"/></svg><span>Trafik Pengunjung</span></button>
+      <button class="sb-item" id="navKeuangan" onclick="switchTab('keuangan')" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg><span>Keuangan</span></button>
       <button class="sb-item" id="navStaff" onclick="switchTab('staff')" style="display:none"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.8-3 3-4.5 5.5-4.5S13.7 16 14.5 19"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.7c2.2.2 3.8 1.5 4.5 3.8"/></svg><span>Kelola Pegawai</span></button>
     </nav>
     <div class="sb-foot">
@@ -437,6 +439,77 @@ tbody tr:hover td{background:#fcfbf9}
     </div>
     <!-- ====== /TAB KALENDER ====== -->
 
+    <!-- ====== TAB TRAFIK ====== -->
+    <div id="tabTrafik" style="display:none">
+      <div class="ov-greet">
+        <h1>Trafik Pengunjung</h1>
+        <p>Dari mana pengunjung deardarlene.co datang (data 30 hari terakhir)</p>
+      </div>
+      <div class="ov-stats" style="grid-template-columns:repeat(3,1fr)">
+        <div class="ov-stat"><div class="lbl">Pengunjung Hari Ini</div><div class="val" id="trToday">—</div><div class="trd up" id="trTodayTrd">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">7 Hari Terakhir</div><div class="val" id="trWeek">—</div><div class="trd up" id="trWeekTrd">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Sumber Teratas</div><div class="val" id="trTopSrc" style="font-size:21px">—</div><div class="trd up" id="trTopSrcTrd">&nbsp;</div></div>
+      </div>
+      <div class="ov-grid">
+        <div class="ov-panel">
+          <h3>Asal Pengunjung</h3>
+          <div id="trSources"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
+        </div>
+        <div class="ov-panel">
+          <h3>Pengunjung 7 Hari</h3>
+          <div class="ov-bars" id="trBars"></div>
+          <div class="ov-blbl" id="trBlbl"></div>
+        </div>
+      </div>
+      <div class="ov-panel" style="margin-top:16px">
+        <h3>Halaman Populer</h3>
+        <div id="trPages"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
+      </div>
+      <p style="font-size:11.5px;color:#6f5b52;margin-top:14px">ℹ️ Data mulai tercatat sejak fitur ini dipasang. Pengunjung lama (sebelum hari ini) tidak ikut terhitung.</p>
+    </div>
+    <!-- ====== /TAB TRAFIK ====== -->
+
+    <!-- ====== TAB KEUANGAN ====== -->
+    <div id="tabKeuangan" style="display:none">
+      <div class="ov-greet">
+        <h1>Keuangan — Pengeluaran</h1>
+        <p>Catat &amp; rekap pengeluaran toko per kategori</p>
+      </div>
+      <div class="cal-nav" style="margin:18px 0">
+        <button class="cal-arrow" onclick="expMove(-1)">‹</button>
+        <h2 id="expTitle" style="font-family:var(--pf,serif);font-size:18px;color:#540B14;font-weight:600;min-width:150px;text-align:center">—</h2>
+        <button class="cal-arrow" onclick="expMove(1)">›</button>
+        <button class="cal-today" onclick="expThisMonth()">Bulan ini</button>
+      </div>
+      <div class="ov-stats" style="grid-template-columns:repeat(3,1fr)">
+        <div class="ov-stat"><div class="lbl">Pengeluaran Bulan Ini</div><div class="val" id="expThis" style="font-size:23px">—</div><div class="trd up" id="expThisTrd">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Bulan Lalu</div><div class="val" id="expLast" style="font-size:23px">—</div><div class="trd" id="expLastLbl" style="color:#6f5b52">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Kategori Terbesar</div><div class="val" id="expTopCat" style="font-size:19px">—</div><div class="trd up" id="expTopCatTrd">&nbsp;</div></div>
+      </div>
+      <div class="ov-grid">
+        <div class="ov-panel">
+          <h3>➕ Catat Pengeluaran</h3>
+          <div class="field-row">
+            <div class="field"><label>Tanggal</label><input id="expDate" type="date"></div>
+            <div class="field"><label>Jumlah (Rp)</label><input id="expAmount" type="number" min="0" placeholder="cth: 250000"></div>
+          </div>
+          <div class="field"><label>Kategori (bebas)</label><input id="expCat" type="text" list="expCatList" placeholder="cth: Bahan baku, Bensin, Iklan..."><datalist id="expCatList"></datalist></div>
+          <div class="field"><label>Keterangan (opsional)</label><input id="expNote" type="text" placeholder="cth: Beli mawar 50 tangkai"></div>
+          <div id="expErr" class="err" style="display:none"></div>
+          <button class="btn" style="width:100%;margin-top:6px" onclick="saveExpense()">Simpan Pengeluaran</button>
+          <h3 style="margin-top:24px">Rekap per Kategori</h3>
+          <div id="expCats"><p style="color:#6f5b52;font-size:13px">Belum ada data bulan ini.</p></div>
+        </div>
+        <div class="ov-panel">
+          <h3 id="expListTitle">Pengeluaran</h3>
+          <div id="expList"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
+        </div>
+      </div>
+    </div>
+    <!-- ====== /TAB KEUANGAN ====== -->
+
+
+
     <!-- Modal Tambah/Edit Agenda -->
     <div id="calModal" class="overlay" onclick="if(event.target===this)closeCalForm()">
       <div class="modal">
@@ -480,7 +553,7 @@ tbody tr:hover td{background:#fcfbf9}
     </div>
 
     <!-- Modal Ubah Tanggal Kirim -->
-    <div id="editDelivModal" class="overlay" onclick="if(event.target===this)closeEditDelivery()">
+    <div id="editDelivModal" class="overlay" style="z-index:70" onclick="if(event.target===this)closeEditDelivery()">
       <div class="modal">
         <h3>Ubah Tanggal Kirim</h3>
         <p class="modal-hint" id="edDelInfo" style="margin:0 0 14px;color:#6f5b52;font-size:13px">—</p>
@@ -598,6 +671,9 @@ async function loadMyPermissions() {
     // nav Kalender: super_admin atau punya perm_kalender
     const navKal = document.getElementById('navKalender');
     if (navKal) navKal.style.display = (data.role==='super_admin' || data.perm_kalender) ? 'flex' : 'none';
+    // nav Keuangan: super_admin atau punya izin lihat keuangan
+    const navKeu = document.getElementById('navKeuangan');
+    if (navKeu) navKeu.style.display = (data.role==='super_admin' || data.perm_lihat_keuangan) ? 'flex' : 'none';
     // perbarui nama asli di sidebar + greeting
     if (data.nama) {
       const nmEl = document.getElementById('userName'); if (nmEl) nmEl.textContent = data.nama;
@@ -776,7 +852,7 @@ function labaCell(o) {
   return '<div class="laba-cell unset">• biaya belum diisi</div>';
 }
 function switchTab(name) {
-  const tabs = ['overview','pesanan','insight','kalender','staff'];
+  const tabs = ['overview','pesanan','insight','kalender','trafik','keuangan','staff'];
   tabs.forEach(t => {
     const cap = t.charAt(0).toUpperCase() + t.slice(1);
     const pane = document.getElementById('tab' + cap);
@@ -788,6 +864,8 @@ function switchTab(name) {
   if (name === 'insight') renderInsight();
   if (name === 'staff') loadStaffList();
   if (name === 'kalender') renderCalendar();
+  if (name === 'trafik') loadTrafik();
+  if (name === 'keuangan') renderKeuangan();
 }
 
 // ===== OVERVIEW DASHBOARD =====
@@ -1066,6 +1144,189 @@ async function saveDelivery(){
   // refresh detail popup kalau masih kebuka
   if (typeof openDetail === 'function' && document.getElementById('detailModal').classList.contains('on')) openDetail(id);
   alert('✅ Tanggal kirim berhasil diubah & tersinkron ke pesanan.');
+}
+
+// ===== TRAFIK PENGUNJUNG =====
+async function loadTrafik(){
+  let visits = [];
+  try {
+    const since = new Date(); since.setDate(since.getDate()-30);
+    const { data, error } = await sb.from('dd_visits').select('page,source,device,created_at')
+      .gte('created_at', since.toISOString()).order('created_at', { ascending:false }).limit(5000);
+    visits = error ? [] : (data || []);
+  } catch(e){ visits = []; }
+
+  const today = todayStr();
+  const yest = (function(){ const d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); })();
+  const byDay = function(ds){ return visits.filter(function(v){ return (v.created_at||'').slice(0,10)===ds; }).length; };
+
+  // hari ini vs kemarin
+  const tToday = byDay(today), tYest = byDay(yest);
+  setText('trToday', tToday);
+  const dif = tToday - tYest;
+  setTrend('trTodayTrd', (dif>=0?'▲ +':'▼ ')+Math.abs(dif)+' ', 'vs kemarin', dif>=0);
+
+  // 7 hari
+  let w = 0; for (let i=0;i<7;i++){ const d=new Date(); d.setDate(d.getDate()-i); w += byDay(d.toISOString().slice(0,10)); }
+  setText('trWeek', w);
+  const mEl=document.getElementById('trWeekTrd'); if(mEl){mEl.className='trd up';mEl.innerHTML=visits.length+' total 30 hari';}
+
+  // sumber
+  const srcCount = {};
+  visits.forEach(function(v){ const s=v.source||'Lainnya'; srcCount[s]=(srcCount[s]||0)+1; });
+  const srcArr = Object.keys(srcCount).map(function(k){ return {s:k, n:srcCount[k]}; }).sort(function(a,b){ return b.n-a.n; });
+  setText('trTopSrc', srcArr.length ? srcArr[0].s : '—');
+  const tsEl=document.getElementById('trTopSrcTrd'); if(tsEl && srcArr.length){tsEl.className='trd up';tsEl.innerHTML=srcArr[0].n+' kunjungan';}
+
+  const srcColors = {Google:'#1d7a4f', Instagram:'#6b3b8d', WhatsApp:'#1f6f8b', Facebook:'#2c5f8a', TikTok:'#352825', Direct:'#540B14', Lainnya:'#c2701c'};
+  const total = visits.length || 1;
+  const sEl = document.getElementById('trSources');
+  if (sEl) {
+    sEl.innerHTML = srcArr.length ? srcArr.map(function(x){
+      const pct = Math.round(x.n/total*100);
+      const col = srcColors[x.s] || '#6f5b52';
+      return '<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span style="font-weight:600;color:#352825"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+col+';margin-right:7px"></span>'+esc(x.s)+'</span><span style="color:#6f5b52">'+x.n+' · '+pct+'%</span></div><div style="height:7px;background:#f1ece3;border-radius:4px"><div style="height:7px;width:'+pct+'%;background:'+col+';border-radius:4px"></div></div></div>';
+    }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada data. Pengunjung baru akan mulai tercatat setelah fitur ini terpasang.</p>';
+  }
+
+  // grafik 7 hari
+  const bars=document.getElementById('trBars'), blbl=document.getElementById('trBlbl');
+  if (bars && blbl) {
+    const days=[], vals=[];
+    for (let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i);
+      days.push(['Min','Sen','Sel','Rab','Kam','Jum','Sab'][d.getDay()]); vals.push(byDay(d.toISOString().slice(0,10))); }
+    const max=Math.max.apply(null, vals.concat([1]));
+    bars.innerHTML=vals.map(function(v){ return '<div class="b" style="height:'+Math.max(4,Math.round(v/max*100))+'%" title="'+v+' pengunjung"></div>'; }).join('');
+    blbl.innerHTML=days.map(function(d){ return '<span>'+d+'</span>'; }).join('');
+  }
+
+  // halaman populer
+  const pgCount = {};
+  visits.forEach(function(v){ const p=v.page||'/'; pgCount[p]=(pgCount[p]||0)+1; });
+  const pgArr = Object.keys(pgCount).map(function(k){ return {p:k, n:pgCount[k]}; }).sort(function(a,b){ return b.n-a.n; }).slice(0,6);
+  const pgNames = {'/':'Beranda','/index.html':'Beranda','/koleksi.html':'Koleksi','/produk.html':'Produk','/order.html':'Form Order','/about.html':'Tentang','/faq.html':'FAQ','/news.html':'News'};
+  const pEl = document.getElementById('trPages');
+  if (pEl) {
+    pEl.innerHTML = pgArr.length ? pgArr.map(function(x){
+      return '<div class="ov-row"><div class="who"><b>'+esc(pgNames[x.p]||x.p)+'</b><span>'+esc(x.p)+'</span></div><span class="ov-badge proses">'+x.n+' kunjungan</span></div>';
+    }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada data.</p>';
+  }
+}
+
+// ===== KEUANGAN (PENGELUARAN) =====
+let expYear, expMonth, expData = [];
+const expMonthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+const expCatColors = ['#540B14','#1f6f8b','#6b3b8d','#1d7a4f','#c2701c','#8d3b46','#2c5f8a','#6f5b52'];
+
+async function renderKeuangan(){
+  const now = new Date();
+  if (expYear === undefined) { expYear = now.getFullYear(); expMonth = now.getMonth(); }
+  // default tanggal form = hari ini
+  const dEl = document.getElementById('expDate');
+  if (dEl && !dEl.value) dEl.value = todayStr();
+  await loadExpData();
+  drawKeuangan();
+}
+
+async function loadExpData(){
+  try {
+    // ambil bulan terpilih + bulan sebelumnya (buat perbandingan)
+    const firstPrev = new Date(expYear, expMonth-1, 1).toISOString().slice(0,10);
+    const lastThis  = new Date(expYear, expMonth+1, 0).toISOString().slice(0,10);
+    const { data, error } = await sb.from('dd_expenses').select('*')
+      .gte('tanggal', firstPrev).lte('tanggal', lastThis)
+      .order('tanggal', { ascending:false }).order('created_at', { ascending:false });
+    expData = error ? [] : (data || []);
+  } catch(e){ expData = []; }
+}
+
+function drawKeuangan(){
+  document.getElementById('expTitle').textContent = expMonthNames[expMonth] + ' ' + expYear;
+  document.getElementById('expListTitle').textContent = 'Pengeluaran ' + expMonthNames[expMonth] + ' ' + expYear;
+  const ymThis = expYear + '-' + String(expMonth+1).padStart(2,'0');
+  const prev = new Date(expYear, expMonth-1, 1);
+  const ymPrev = prev.getFullYear() + '-' + String(prev.getMonth()+1).padStart(2,'0');
+
+  const inMonth = function(ym){ return expData.filter(function(e){ return (e.tanggal||'').slice(0,7) === ym; }); };
+  const thisArr = inMonth(ymThis), prevArr = inMonth(ymPrev);
+  const sum = function(arr){ return arr.reduce(function(s,e){ return s + (Number(e.jumlah)||0); }, 0); };
+  const totThis = sum(thisArr), totPrev = sum(prevArr);
+
+  setText('expThis', fmtRp(totThis));
+  if (totPrev > 0) {
+    const pct = Math.round((totThis - totPrev) / totPrev * 100);
+    // pengeluaran NAIK = merah (down), TURUN = hijau (up)
+    setTrend('expThisTrd', (pct>=0?'▲ +':'▼ ')+Math.abs(pct)+'% ', 'vs bulan lalu', pct<0);
+  } else setTrend('expThisTrd', '— ', 'belum ada pembanding', true);
+  setText('expLast', fmtRp(totPrev));
+  const llEl = document.getElementById('expLastLbl');
+  if (llEl) llEl.textContent = expMonthNames[prev.getMonth()] + ' ' + prev.getFullYear();
+
+  // rekap kategori bulan terpilih
+  const catCount = {};
+  thisArr.forEach(function(e){ const k = (e.kategori||'Lainnya').trim(); catCount[k] = (catCount[k]||0) + (Number(e.jumlah)||0); });
+  const catArr = Object.keys(catCount).map(function(k){ return {k:k, n:catCount[k]}; }).sort(function(a,b){ return b.n - a.n; });
+  setText('expTopCat', catArr.length ? catArr[0].k : '—');
+  const tcEl = document.getElementById('expTopCatTrd');
+  if (tcEl) { tcEl.className='trd up'; tcEl.innerHTML = catArr.length ? fmtRp(catArr[0].n)+' · '+Math.round(catArr[0].n/(totThis||1)*100)+'%' : '&nbsp;'; }
+
+  const cEl = document.getElementById('expCats');
+  if (cEl) {
+    cEl.innerHTML = catArr.length ? catArr.map(function(x,i){
+      const pct = Math.round(x.n/(totThis||1)*100);
+      const col = expCatColors[i % expCatColors.length];
+      return '<div style="margin-bottom:11px"><div style="display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:4px"><span style="font-weight:600;color:#352825"><span style="display:inline-block;width:9px;height:9px;border-radius:50%;background:'+col+';margin-right:7px"></span>'+esc(x.k)+'</span><span style="color:#6f5b52">'+fmtRp(x.n)+' · '+pct+'%</span></div><div style="height:7px;background:#f1ece3;border-radius:4px"><div style="height:7px;width:'+pct+'%;background:'+col+';border-radius:4px"></div></div></div>';
+    }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada data bulan ini.</p>';
+  }
+
+  // saran kategori (datalist) dari semua kategori yang pernah dipakai
+  const dl = document.getElementById('expCatList');
+  if (dl) {
+    const seen = {};
+    expData.forEach(function(e){ const k=(e.kategori||'').trim(); if(k) seen[k]=1; });
+    dl.innerHTML = Object.keys(seen).map(function(k){ return '<option value="'+esc(k)+'">'; }).join('');
+  }
+
+  // daftar pengeluaran bulan terpilih
+  const lEl = document.getElementById('expList');
+  if (lEl) {
+    lEl.innerHTML = thisArr.length ? thisArr.map(function(e){
+      const who = (e.dibuat_oleh||'').split('@')[0];
+      const tgl = e.tanggal ? e.tanggal.slice(8,10)+'/'+e.tanggal.slice(5,7) : '—';
+      return '<div class="ov-row"><div class="who"><b>'+esc(e.keterangan||e.kategori||'—')+'</b><span>'+tgl+' · '+esc(e.kategori||'—')+(who?' · '+esc(who):'')+'</span></div><div style="display:flex;align-items:center;gap:8px"><span style="font-weight:600;color:#b3261e;font-size:13px;white-space:nowrap">- '+fmtRp(Number(e.jumlah)||0)+'</span>'+(canEditOrder()?'<button onclick="deleteExpense(\''+e.id+'\')" style="border:none;background:none;cursor:pointer;color:#6f5b52;font-size:13px" title="Hapus">🗑</button>':'')+'</div></div>';
+    }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada pengeluaran bulan ini.</p>';
+  }
+}
+
+function expMove(dir){ expMonth += dir; if(expMonth<0){expMonth=11;expYear--;} if(expMonth>11){expMonth=0;expYear++;} renderKeuangan(); }
+function expThisMonth(){ const n=new Date(); expYear=n.getFullYear(); expMonth=n.getMonth(); renderKeuangan(); }
+
+async function saveExpense(){
+  const err = document.getElementById('expErr'); err.style.display='none';
+  const tanggal = document.getElementById('expDate').value;
+  const jumlah = parseInt(document.getElementById('expAmount').value, 10);
+  const kategori = document.getElementById('expCat').value.trim();
+  const keterangan = document.getElementById('expNote').value.trim();
+  if (!tanggal || !kategori || !jumlah || jumlah <= 0) {
+    err.textContent = 'Tanggal, kategori, dan jumlah wajib diisi.'; err.style.display='block'; return;
+  }
+  const { error } = await sb.from('dd_expenses').insert({
+    tanggal: tanggal, kategori: kategori, keterangan: keterangan || null,
+    jumlah: jumlah, dibuat_oleh: window.__userEmail || null
+  });
+  if (error) { err.textContent = 'Gagal simpan: '+error.message; err.style.display='block'; return; }
+  // bersihkan form (tanggal dibiarkan), refresh
+  document.getElementById('expAmount').value = '';
+  document.getElementById('expCat').value = '';
+  document.getElementById('expNote').value = '';
+  renderKeuangan();
+}
+
+async function deleteExpense(id){
+  if (!confirm('Hapus pengeluaran ini?')) return;
+  const { error } = await sb.from('dd_expenses').delete().eq('id', id);
+  if (error) { alert('Gagal hapus: '+error.message); return; }
+  renderKeuangan();
 }
 function renderInsight() {
   const mo = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];

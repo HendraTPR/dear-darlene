@@ -70,3 +70,56 @@ function ddSwap(thumb, mainId){
   if(!main)return;
   var tmp=main.src; main.src=thumb.src; thumb.src=tmp;
 }
+
+/* ===== Vercel Web Analytics (lacak pengunjung & asal trafik) ===== */
+/* Aktif otomatis di semua halaman. Data muncul di dashboard Vercel → Analytics */
+(function(){
+  window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };
+  var s = document.createElement('script');
+  s.defer = true;
+  s.src = '/_vercel/insights/script.js';
+  document.head.appendChild(s);
+})();
+
+/* ===== Pencatat Kunjungan Dear Darlene (trafik: dari mana pengunjung datang) =====
+   Dicatat: halaman, asal (Google/IG/dll), device. TANPA data pribadi.
+   1x per sesi kunjungan. Hasil tampil di dashboard seller (menu Trafik). */
+(function(){
+  try {
+    if (location.pathname.indexOf('seller') > -1) return;        // jangan catat halaman admin
+    if (sessionStorage.getItem('dd_v')) return;                   // 1x per sesi
+    sessionStorage.setItem('dd_v','1');
+
+    var ref = document.referrer || '';
+    var q = new URLSearchParams(location.search);
+    var utm = q.get('utm_source') || '';
+    var src = 'Direct';
+    var r = (utm || ref).toLowerCase();
+    if (r.indexOf('instagram') > -1 || utm.toLowerCase()==='ig') src = 'Instagram';
+    else if (r.indexOf('google') > -1) src = 'Google';
+    else if (r.indexOf('whatsapp') > -1 || r.indexOf('wa.me') > -1) src = 'WhatsApp';
+    else if (r.indexOf('facebook') > -1 || r.indexOf('fb.') > -1) src = 'Facebook';
+    else if (r.indexOf('tiktok') > -1) src = 'TikTok';
+    else if (ref && ref.indexOf(location.hostname) === -1) src = 'Lainnya';
+
+    var device = (Math.min(screen.width, screen.height) < 768 || /Mobi|Android/i.test(navigator.userAgent)) ? 'mobile' : 'desktop';
+
+    fetch('https://vypzevhoafubnbqitmcl.supabase.co/rest/v1/dd_visits', {
+      method: 'POST',
+      keepalive: true,
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cHpldmhvYWZ1Ym5icWl0bWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTU0OTUsImV4cCI6MjA5NTY5MTQ5NX0.e8StQSN-s2kdOqVazqvqEXEyDSCdAEf7BHXIUvPIQDM',
+        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cHpldmhvYWZ1Ym5icWl0bWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTU0OTUsImV4cCI6MjA5NTY5MTQ5NX0.e8StQSN-s2kdOqVazqvqEXEyDSCdAEf7BHXIUvPIQDM',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        page: location.pathname,
+        source: src,
+        referrer: ref ? ref.slice(0, 200) : null,
+        utm_source: utm || null,
+        device: device
+      })
+    }).catch(function(){});
+  } catch(e) {}
+})();
