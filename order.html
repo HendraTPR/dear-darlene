@@ -513,6 +513,7 @@ document.getElementById("submitBtn").addEventListener("click",function(){
   if(!ok){err.style.display="block";document.querySelector('.form-card').scrollIntoView({behavior:"smooth",block:"start"});return;}
   err.style.display="none";
   try{saveOrderToDB();}catch(e){console.warn(e);}
+  try{ if(window.ddTrackFunnel) window.ddTrackFunnel('wa'); }catch(e){}
   window.open("https://wa.me/"+CONFIG.waNumber+"?text="+encodeURIComponent(buildMessage()),"_blank");
 });
 

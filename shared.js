@@ -128,3 +128,33 @@ function ddSwap(thumb, mainId){
     }).catch(function(){});
   } catch(e) {}
 })();
+
+/* ===== Funnel Trafik: catat tahap perjalanan pengunjung di web =====
+   Tahap 1 (Buka web) = kunjungan normal di atas.
+   Tahap 2 (Lihat Koleksi/Produk), 3 (Buka Form Order), 4 (Klik Pesan via WA).
+   Dicatat 1x per sesi per tahap, pakai penanda page khusus. */
+(function(){
+  window.ddTrackFunnel = function(stage){
+    try {
+      var key = 'dd_fn_' + stage;
+      if (sessionStorage.getItem(key)) return;   // 1x per sesi per tahap
+      sessionStorage.setItem(key, '1');
+      fetch('https://vypzevhoafubnbqitmcl.supabase.co/rest/v1/dd_visits', {
+        method: 'POST', keepalive: true,
+        headers: {
+          'Content-Type': 'application/json',
+          'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cHpldmhvYWZ1Ym5icWl0bWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTU0OTUsImV4cCI6MjA5NTY5MTQ5NX0.e8StQSN-s2kdOqVazqvqEXEyDSCdAEf7BHXIUvPIQDM',
+          'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZ5cHpldmhvYWZ1Ym5icWl0bWNsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODAxMTU0OTUsImV4cCI6MjA5NTY5MTQ5NX0.e8StQSN-s2kdOqVazqvqEXEyDSCdAEf7BHXIUvPIQDM',
+          'Prefer': 'return=minimal'
+        },
+        body: JSON.stringify({ page: '__funnel_' + stage, source: 'funnel', device: null })
+      }).catch(function(){});
+    } catch(e) {}
+  };
+  try {
+    if (location.pathname.indexOf('seller') > -1) return;
+    var p = location.pathname.toLowerCase();
+    if (p.indexOf('koleksi') > -1 || p.indexOf('produk') > -1) window.ddTrackFunnel('browse');
+    if (p.indexOf('order') > -1) window.ddTrackFunnel('order');
+  } catch(e) {}
+})();

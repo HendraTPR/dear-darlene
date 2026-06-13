@@ -201,8 +201,10 @@ tbody tr:hover td{background:#fcfbf9}
 .ov-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
 @media(max-width:860px){.ov-grid{grid-template-columns:1fr}}
 .ov-panel{background:#fff;border:1px solid var(--line,#e8e0d4);border-radius:14px;padding:20px;box-shadow:0 1px 3px rgba(84,11,20,.04)}
-.ov-panel h3{font-family:var(--pf,serif);font-size:16px;color:#540B14;font-weight:600;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
-.ov-panel h3 button{font-family:inherit;font-size:11px;color:#8d3b46;background:none;border:none;cursor:pointer;font-weight:500}
+.ov-panel h3{font-family:var(--pf,serif);font-size:17px;color:#540B14;font-weight:700;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.ov-panel h3 button{font-family:var(--body,inherit);font-size:13px;color:#fff;background:#540B14;border:none;cursor:pointer;font-weight:600;padding:9px 16px;border-radius:9px;display:inline-flex;align-items:center;gap:6px;transition:.15s;box-shadow:0 1px 3px rgba(84,11,20,.15)}
+.ov-panel h3 button:hover{background:#7a2230;transform:translateY(-1px)}
+.panel-desc{font-size:12.5px;color:#6f5b52;line-height:1.55;margin:-6px 0 14px;max-width:680px}
 .ov-row{display:flex;justify-content:space-between;align-items:center;padding:10px 2px;border-bottom:1px solid #faf7f2;font-size:13px;gap:10px}
 .ov-row:last-child{border:none}
 .ov-row .who b{display:block;font-weight:600;font-size:13px;color:#352825}
@@ -408,9 +410,11 @@ tbody tr:hover td{background:#fcfbf9}
             <label class="perm-item"><input type="checkbox" id="perm_lihat_pesanan" checked> Lihat pesanan</label>
             <label class="perm-item"><input type="checkbox" id="perm_update_status"> Update status pengiriman</label>
             <label class="perm-item"><input type="checkbox" id="perm_input_pembayaran"> Input pembayaran &amp; konfirmasi lunas</label>
-            <label class="perm-item"><input type="checkbox" id="perm_lihat_keuangan"> Lihat keuangan / laba</label>
             <label class="perm-item"><input type="checkbox" id="perm_lihat_data_customer"> Lihat data customer (HP &amp; alamat)</label>
             <label class="perm-item"><input type="checkbox" id="perm_edit_hapus_pesanan"> Edit / hapus pesanan</label>
+            <label class="perm-item"><input type="checkbox" id="perm_kalender"> Kalender (acara &amp; jadwal kirim)</label>
+            <label class="perm-item"><input type="checkbox" id="perm_lihat_keuangan"> Keuangan, Stok &amp; Produksi (laporan biaya/HPP)</label>
+            <label class="perm-item"><input type="checkbox" id="perm_kelola_staff"> Kelola pegawai (tambah/atur akun)</label>
           </div>
           <div id="stErr" class="err" style="display:none;margin-top:12px"></div>
           <div id="stOk" class="ok-msg" style="display:none;margin-top:12px"></div>
@@ -482,6 +486,11 @@ tbody tr:hover td{background:#fcfbf9}
         <h3>Halaman Populer</h3>
         <div id="trPages"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
       </div>
+      <div class="ov-panel" style="margin-top:16px">
+        <h3>🛒 Funnel Pengunjung → Pesan</h3>
+        <p class="panel-desc">Perjalanan pengunjung di web: dari buka situs sampai klik "Pesan via WhatsApp". Tiap tahap dihitung 1x per kunjungan. (Closing final terjadi di WhatsApp, jadi tidak terhitung di sini.)</p>
+        <div id="trFunnel"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
+      </div>
       <p style="font-size:11.5px;color:#6f5b52;margin-top:14px">ℹ️ Data mulai tercatat sejak fitur ini dipasang. Pengunjung lama (sebelum hari ini) tidak ikut terhitung.</p>
     </div>
     <!-- ====== /TAB TRAFIK ====== -->
@@ -540,15 +549,18 @@ tbody tr:hover td{background:#fcfbf9}
         <div class="ov-stat"><div class="lbl">Perlu Restock</div><div class="val" id="stkLowVal">—</div><div class="trd" id="stkLowSub" style="color:#b3261e">&nbsp;</div></div>
       </div>
       <div class="ov-panel">
-        <h3>🌹 Stok Bahan Mentah <button onclick="openMaterialForm()">+ Tambah / Beli / Edit</button></h3>
+        <h3>🌹 Stok Bahan Mentah <button onclick="openMaterialForm()"><span style="font-size:16px">＋</span> Tambah / Beli</button></h3>
+        <p class="panel-desc">Bahan dasar untuk bikin papan bunga (mawar, papan, lampu, pita). Klik tombol untuk menambah bahan baru, mencatat pembelian, atau edit stok.</p>
         <div id="stkMaterials"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
       </div>
       <div class="ov-panel" style="margin-top:14px">
-        <h3>💐 Stok Produk Jadi (Ready Stock) <button onclick="openProductForm()">+ Tambah / Edit Stok</button></h3>
+        <h3>💐 Stok Produk Jadi (Ready Stock) <button onclick="openProductForm()"><span style="font-size:16px">＋</span> Edit Stok</button></h3>
+        <p class="panel-desc">Produk yang sudah jadi & siap dikirim (hasil produksi batch). Stok berkurang otomatis saat pesanan ditandai lunas.</p>
         <div id="stkProducts"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
       </div>
       <div class="ov-panel" style="margin-top:14px">
-        <h3>🧾 Resep Produk → HPP <button onclick="openRecipeForm()">+ Atur Resep</button></h3>
+        <h3>🧾 Resep Produk → HPP <button onclick="openRecipeForm()"><span style="font-size:16px">＋</span> Atur Resep</button></h3>
+        <p class="panel-desc">Tentukan bahan & jumlah untuk tiap produk. Dari sini HPP (modal per produk) dihitung otomatis.</p>
         <div id="stkRecipes"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
       </div>
     </div>
@@ -666,6 +678,12 @@ tbody tr:hover td{background:#fcfbf9}
           <div class="field" id="prdcOrderWrap" style="display:none"><label>Untuk Pesanan</label>
             <select id="prdcOrder"><option value="">— pilih pesanan —</option></select>
           </div>
+        </div>
+        <div class="field" id="prdcStatusWrap"><label>Status Produksi</label>
+          <select id="prdcStatus">
+            <option value="selesai">✅ Selesai (langsung masuk stok jadi)</option>
+            <option value="ongoing">⏳ Sedang Dikerjakan (belum masuk stok)</option>
+          </select>
         </div>
         <label style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6f5b52;font-weight:600;display:block;margin:6px 0 4px">Bahan Terpakai</label>
         <div id="prdcRows"></div>
@@ -889,6 +907,8 @@ async function createStaff() {
     lihat_keuangan: document.getElementById('perm_lihat_keuangan').checked,
     lihat_data_customer: document.getElementById('perm_lihat_data_customer').checked,
     edit_hapus_pesanan: document.getElementById('perm_edit_hapus_pesanan').checked,
+    kalender: document.getElementById('perm_kalender').checked,
+    kelola_staff: document.getElementById('perm_kelola_staff').checked,
   };
   btn.disabled = true; btn.textContent = 'Membuat...';
   const { status, body } = await callStaffFunc({ action: 'create', email, password, nama, perms });
@@ -919,9 +939,11 @@ async function loadStaffList() {
     ['perm_lihat_pesanan','Lihat pesanan'],
     ['perm_update_status','Update status'],
     ['perm_input_pembayaran','Input bayar'],
-    ['perm_lihat_keuangan','Keuangan'],
+    ['perm_lihat_keuangan','Keuangan/Stok/Produksi'],
     ['perm_lihat_data_customer','Data customer'],
     ['perm_edit_hapus_pesanan','Edit/hapus'],
+    ['perm_kalender','Kalender'],
+    ['perm_kelola_staff','Kelola pegawai'],
   ];
   box.innerHTML = (body.staff || []).map(function(u){
     const isAdmin = u.role === 'super_admin';
@@ -1365,6 +1387,12 @@ async function loadTrafik(){
     }
   } catch(e){ visits = []; }
 
+  // pisahkan event funnel dari kunjungan asli (biar statistik lain tidak terganggu)
+  const funnelEvents = visits.filter(function(v){ return (v.page||'').indexOf('__funnel_') === 0; });
+  visits = visits.filter(function(v){ return (v.page||'').indexOf('__funnel_') !== 0; });
+  window.__trFunnel = funnelEvents;
+  window.__trVisits = visits;
+
   const today = todayStr();
   const yest = (function(){ const d=new Date(); d.setDate(d.getDate()-1); return d.toISOString().slice(0,10); })();
   const byDay = function(ds){ return visits.filter(function(v){ return (v.created_at||'').slice(0,10)===ds; }).length; };
@@ -1419,6 +1447,39 @@ async function loadTrafik(){
     pEl.innerHTML = pgArr.length ? pgArr.map(function(x){
       return '<div class="ov-row"><div class="who"><b>'+esc(pgNames[x.p]||x.p)+'</b><span>'+esc(x.p)+'</span></div><span class="ov-badge proses">'+x.n+' kunjungan</span></div>';
     }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada data.</p>';
+  }
+
+  // ===== FUNNEL =====
+  const fe = window.__trFunnel || [];
+  const cntFunnel = function(stage){ return fe.filter(function(v){ return v.page === '__funnel_' + stage; }).length; };
+  const s1 = visits.length;            // Buka web = kunjungan asli
+  const s2 = cntFunnel('browse');      // Lihat Koleksi/Produk
+  const s3 = cntFunnel('order');       // Buka Form Order
+  const s4 = cntFunnel('wa');          // Klik Pesan via WA
+  const stages = [
+    { label:'Buka Web', sub:'Semua pengunjung', n:s1, col:'#540B14', icon:'🌐' },
+    { label:'Lihat Koleksi / Produk', sub:'Browsing produk', n:s2, col:'#8d3b46', icon:'👀' },
+    { label:'Buka Form Order', sub:'Mulai isi pesanan', n:s3, col:'#1f6f8b', icon:'📝' },
+    { label:'Klik "Pesan via WA"', sub:'Lanjut ke WhatsApp', n:s4, col:'#1d7a4f', icon:'💬' }
+  ];
+  const fEl = document.getElementById('trFunnel');
+  if (fEl) {
+    if (s1 === 0) { fEl.innerHTML = '<p style="color:#6f5b52;font-size:13px">Belum ada data funnel. Akan terisi seiring pengunjung menjelajah web.</p>'; }
+    else {
+      const maxN = Math.max(s1, 1);
+      fEl.innerHTML = stages.map(function(st, i){
+        const pctBar = Math.max(2, Math.round(st.n / maxN * 100));
+        const conv = i === 0 ? 100 : (stages[i-1].n > 0 ? Math.round(st.n / stages[i-1].n * 100) : 0);
+        const convTxt = i === 0 ? '' : '<span style="font-size:11px;color:'+(conv>=50?'#1d7a4f':(conv>=20?'#c2701c':'#b3261e'))+';font-weight:600;margin-left:8px">↓ '+conv+'% lanjut</span>';
+        return '<div style="margin-bottom:14px">'
+          + '<div style="display:flex;justify-content:space-between;align-items:baseline;margin-bottom:5px"><span style="font-weight:700;color:#352825;font-size:13px">'+st.icon+' '+st.label+'</span><span style="font-size:13px;color:#352825;font-weight:700">'+st.n+'</span></div>'
+          + '<div style="height:22px;background:#f1ece3;border-radius:7px;overflow:hidden"><div style="height:22px;width:'+pctBar+'%;background:'+st.col+';border-radius:7px;transition:.4s"></div></div>'
+          + '<div style="font-size:11px;color:#6f5b52;margin-top:3px">'+st.sub+convTxt+'</div>'
+          + '</div>';
+      }).join('');
+      const overall = s1 > 0 ? Math.round(s4 / s1 * 100) : 0;
+      fEl.innerHTML += '<div style="margin-top:14px;padding:12px 14px;background:#faf8f5;border-radius:10px;border:1px solid var(--line,#e8e0d4);font-size:12.5px;color:#352825"><b>Konversi keseluruhan:</b> dari '+s1+' pengunjung, <b style="color:#1d7a4f">'+s4+' ('+overall+'%)</b> lanjut klik Pesan via WhatsApp.</div>';
+    }
   }
 }
 
@@ -1712,11 +1773,14 @@ function drawProduksiTab(){
   if (hEl) {
     hEl.innerHTML = prdProduction.length ? prdProduction.map(function(p){
       const tag = p.jenis==='batch' ? '<span style="font-size:9px;font-weight:600;padding:3px 9px;border-radius:6px;background:#e4eef5;color:#1f6f8b;margin-right:6px">BATCH</span>' : '<span style="font-size:9px;font-weight:600;padding:3px 9px;border-radius:6px;background:#ede4f3;color:#6b3b8d;margin-right:6px">CUSTOM</span>';
+      const isOngoing = p.status === 'ongoing';
+      const statusBadge = isOngoing ? '<span style="font-size:9px;font-weight:600;padding:3px 9px;border-radius:6px;background:#fff4e0;color:#c2701c;margin-right:6px">⏳ DIKERJAKAN</span>' : (p.jenis==='batch' ? '<span style="font-size:9px;font-weight:600;padding:3px 9px;border-radius:6px;background:#e6f4ec;color:#1d7a4f;margin-right:6px">✅ SELESAI</span>' : '');
       const tgl = p.tanggal ? p.tanggal.slice(8,10)+'/'+p.tanggal.slice(5,7) : '';
       const bahanTxt = Array.isArray(p.bahan) ? p.bahan.map(function(b){ return (b.qty||0)+' '+(b.nama||''); }).join(' + ') : '';
       const who = (p.dibuat_oleh||'').split('@')[0];
       const hppLine = p.jenis==='batch' ? ('HPP '+fmtRp(Number(p.hpp_satuan)||0)+'/pcs') : 'HPP custom';
-      return '<div class="ov-row"><div class="who">'+tag+'<b>'+esc(p.produk)+' × '+(Number(p.qty)||0)+' pcs</b><span>'+tgl+' · '+esc(bahanTxt)+(who?' · '+esc(who):'')+'</span></div><div style="text-align:right"><b style="font-size:13px">'+fmtRp(Number(p.total_hpp)||0)+'</b><br><span style="font-size:10.5px;color:#6f5b52">'+hppLine+'</span></div></div>';
+      const finishBtn = isOngoing ? '<button onclick="finishProduction(\''+p.id+'\')" style="margin-top:5px;font-size:11px;font-weight:600;color:#fff;background:#1d7a4f;border:none;padding:6px 12px;border-radius:7px;cursor:pointer">✓ Tandai Selesai</button>' : '';
+      return '<div class="ov-row"><div class="who">'+tag+statusBadge+'<b>'+esc(p.produk)+' × '+(Number(p.qty)||0)+' pcs</b><span>'+tgl+' · '+esc(bahanTxt)+(who?' · '+esc(who):'')+'</span>'+finishBtn+'</div><div style="text-align:right"><b style="font-size:13px">'+fmtRp(Number(p.total_hpp)||0)+'</b><br><span style="font-size:10.5px;color:#6f5b52">'+hppLine+'</span></div></div>';
     }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada produksi bulan ini. Klik tombol Batch atau Custom di atas.</p>';
   }
 }
@@ -1991,6 +2055,10 @@ function openProductionForm(jenis){
     : 'Untuk 1 pesanan khusus → HPP nempel ke pesanan. Tidak masuk stok jadi.';
   document.getElementById('prdcQtyLabel').textContent = prdcJenis==='batch' ? 'Jumlah Dihasilkan (pcs)' : 'Jumlah (pcs)';
   document.getElementById('prdcOrderWrap').style.display = prdcJenis==='custom' ? 'block' : 'none';
+  // status hanya untuk batch
+  const stWrap = document.getElementById('prdcStatusWrap');
+  if (stWrap) stWrap.style.display = prdcJenis==='batch' ? 'block' : 'none';
+  const stSel = document.getElementById('prdcStatus'); if (stSel) stSel.value = 'selesai';
   document.getElementById('prdcProduk').value = '';
   document.getElementById('prdcQty').value = '1';
   // datalist produk
@@ -2073,6 +2141,8 @@ async function saveProduction(){
   });
   if (!bahan.length) { err.textContent='Tambahkan minimal 1 bahan.'; err.style.display='block'; return; }
   const hppSatuan = Math.round(total/qtyPcs);
+  // status: custom selalu 'selesai'; batch bisa 'ongoing'
+  const status = prdcJenis==='batch' ? (document.getElementById('prdcStatus').value || 'selesai') : 'selesai';
   try {
     // 1) kurangi stok bahan + log
     const lowWarn = [];
@@ -2085,9 +2155,13 @@ async function saveProduction(){
       if (newStok < 0) lowWarn.push(m.nama+' ('+newStok+' '+m.satuan+')');
     }
     // 2) catat produksi
-    await sb.from('dd_production').insert({ jenis:prdcJenis, produk:produk, qty:qtyPcs, total_hpp:Math.round(total), hpp_satuan:hppSatuan, bahan:bahan, order_id:orderId||null, dibuat_oleh:window.__userEmail||null, tanggal:todayStr() });
-    // 3a) batch → tambah stok produk jadi (+update HPP)
-    if (prdcJenis==='batch') {
+    // 2) catat produksi (simpan status). Kalau kolom status belum ada di DB, fallback tanpa status.
+    let prodErr = (await sb.from('dd_production').insert({ jenis:prdcJenis, produk:produk, qty:qtyPcs, total_hpp:Math.round(total), hpp_satuan:hppSatuan, bahan:bahan, order_id:orderId||null, status:status, dibuat_oleh:window.__userEmail||null, tanggal:todayStr() })).error;
+    if (prodErr && /status/i.test(prodErr.message||'')) {
+      await sb.from('dd_production').insert({ jenis:prdcJenis, produk:produk, qty:qtyPcs, total_hpp:Math.round(total), hpp_satuan:hppSatuan, bahan:bahan, order_id:orderId||null, dibuat_oleh:window.__userEmail||null, tanggal:todayStr() });
+    }
+    // 3a) batch SELESAI → tambah stok produk jadi. Kalau masih ongoing, belum masuk stok.
+    if (prdcJenis==='batch' && status==='selesai') {
       const existing = prdProducts.find(function(p){ return p.nama.toLowerCase()===produk.toLowerCase(); });
       if (existing) {
         await sb.from('dd_products').update({ stok:(Number(existing.stok)||0)+qtyPcs, hpp_satuan:hppSatuan }).eq('id', existing.id);
@@ -2103,6 +2177,24 @@ async function saveProduction(){
     if (lowWarn.length) alert('⚠️ Produksi tersimpan, tapi bahan ini jadi MINUS:\n\n'+lowWarn.join('\n')+'\n\nSegera restock ya!');
     closeProductionForm(); refreshProduksiViews();
   } catch(e){ err.textContent='Gagal simpan: '+e.message; err.style.display='block'; }
+}
+
+// Tandai batch ongoing → selesai (baru masuk stok produk jadi)
+async function finishProduction(id){
+  const p = prdProduction.find(function(x){ return x.id===id; });
+  if (!p) return;
+  if (!confirm('Tandai produksi "'+p.produk+' × '+p.qty+' pcs" sebagai SELESAI?\n\nProduk jadi akan masuk ke stok ready.')) return;
+  try {
+    await sb.from('dd_production').update({ status:'selesai' }).eq('id', id);
+    const existing = prdProducts.find(function(x){ return x.nama.toLowerCase()===p.produk.toLowerCase(); });
+    if (existing) {
+      await sb.from('dd_products').update({ stok:(Number(existing.stok)||0)+(Number(p.qty)||0), hpp_satuan:Number(p.hpp_satuan)||0 }).eq('id', existing.id);
+    } else {
+      await sb.from('dd_products').insert({ nama:p.produk, stok:Number(p.qty)||0, hpp_satuan:Number(p.hpp_satuan)||0, stok_minimum:0 });
+    }
+    refreshProduksiViews();
+    alert('✅ Produksi selesai! '+p.qty+' pcs '+p.produk+' masuk ke stok produk jadi.');
+  } catch(e){ alert('Gagal: '+e.message); }
 }
 
 function renderInsight() {
