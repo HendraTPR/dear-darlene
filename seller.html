@@ -281,6 +281,7 @@ tbody tr:hover td{background:#fcfbf9}
     <div class="sb-foot">
       <div class="sb-actions">
         <button onclick="exportCSV()">⬇ <span>Export CSV</span></button>
+        <button onclick="exportOrdersXLSX()">📊 <span>Export Excel</span></button>
         <button onclick="openPw()">🔑 <span>Ganti Password</span></button>
         <button onclick="doLogout()">↩ <span>Keluar</span></button>
       </div>
@@ -443,7 +444,14 @@ tbody tr:hover td{background:#fcfbf9}
     <div id="tabTrafik" style="display:none">
       <div class="ov-greet">
         <h1>Trafik Pengunjung</h1>
-        <p>Dari mana pengunjung deardarlene.co datang (data 30 hari terakhir)</p>
+        <p>Dari mana pengunjung deardarlene.co datang · Rentang:
+          <select id="trRange" onchange="loadTrafik()" style="padding:4px 8px;border:1px solid var(--line,#e8e0d4);border-radius:7px;font-family:inherit;font-size:12px;color:#540B14;background:#fff;cursor:pointer">
+            <option value="30">30 Hari</option>
+            <option value="90">3 Bulan</option>
+            <option value="365">1 Tahun</option>
+            <option value="1095">3 Tahun</option>
+          </select>
+        </p>
       </div>
       <div class="ov-stats" style="grid-template-columns:repeat(3,1fr)">
         <div class="ov-stat"><div class="lbl">Pengunjung Hari Ini</div><div class="val" id="trToday">—</div><div class="trd up" id="trTodayTrd">&nbsp;</div></div>
@@ -633,9 +641,16 @@ sb.auth.onAuthStateChange((event, session) => {
     const initial = (email || '?').charAt(0).toUpperCase();
     const avaEl = document.getElementById('userAva'); if (avaEl) avaEl.textContent = initial;
     const nmEl = document.getElementById('userName'); if (nmEl) nmEl.textContent = email.split('@')[0];
-    loadMyPermissions();
-    loadOrders().then(() => { switchTab('overview'); });
+    // FIX BUG: hanya jalankan saat PERTAMA kali masuk.
+    // Supabase memicu event ini berkala (refresh token) — tanpa penjaga ini,
+    // halaman dipaksa pindah ke Overview tiap beberapa detik.
+    if (!window.__appInit) {
+      window.__appInit = true;
+      loadMyPermissions();
+      loadOrders().then(() => { switchTab('overview'); });
+    }
   } else {
+    window.__appInit = false;
     document.getElementById('loginScreen').style.display = 'flex';
     document.getElementById('app').style.display = 'none';
   }
@@ -1151,12 +1166,22 @@ async function saveDelivery(){
 
 // ===== TRAFIK PENGUNJUNG =====
 async function loadTrafik(){
+  const rEl = document.getElementById('trRange');
+  const days = rEl ? parseInt(rEl.value, 10) : 30;
   let visits = [];
   try {
-    const since = new Date(); since.setDate(since.getDate()-30);
-    const { data, error } = await sb.from('dd_visits').select('page,source,device,created_at')
-      .gte('created_at', since.toISOString()).order('created_at', { ascending:false }).limit(5000);
-    visits = error ? [] : (data || []);
+    const since = new Date(); since.setDate(since.getDate()-days);
+    const iso = since.toISOString();
+    // ambil bertahap per 1000 baris (kuat sampai 20.000 kunjungan)
+    let from = 0;
+    for (let i = 0; i < 20; i++) {
+      const { data, error } = await sb.from('dd_visits').select('page,source,device,created_at')
+        .gte('created_at', iso).order('created_at', { ascending:false }).range(from, from+999);
+      if (error || !data || !data.length) break;
+      visits = visits.concat(data);
+      if (data.length < 1000) break;
+      from += 1000;
+    }
   } catch(e){ visits = []; }
 
   const today = todayStr();
@@ -1172,7 +1197,7 @@ async function loadTrafik(){
   // 7 hari
   let w = 0; for (let i=0;i<7;i++){ const d=new Date(); d.setDate(d.getDate()-i); w += byDay(d.toISOString().slice(0,10)); }
   setText('trWeek', w);
-  const mEl=document.getElementById('trWeekTrd'); if(mEl){mEl.className='trd up';mEl.innerHTML=visits.length+' total 30 hari';}
+  const mEl=document.getElementById('trWeekTrd'); if(mEl){const lbl = days>=1095?'3 tahun':(days>=365?'1 tahun':(days>=90?'3 bulan':'30 hari'));mEl.className='trd up';mEl.innerHTML=visits.length+' total '+lbl;}
 
   // sumber
   const srcCount = {};
@@ -1469,6 +1494,40 @@ function exportCSV() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a'); a.href = url; a.download = 'dear-darlene-pesanan-' + todayStr() + '.csv';
   document.body.appendChild(a); a.click(); a.remove(); URL.revokeObjectURL(url);
+}
+
+// Export Pesanan ke Excel asli (.xlsx)
+function exportOrdersXLSX(){
+  const rows = viewOrders.length ? viewOrders : allOrders;
+  if (!rows.length) { alert('Tidak ada data untuk diexport.'); return; }
+  const go = function(){
+    try {
+      const data = rows.map(function(o){
+        return {
+          'Tanggal': (o.created_at||'').slice(0,10),
+          'Penerima': o.rec_name||'', 'HP Penerima': o.rec_phone||'',
+          'Kota': o.rec_city||'', 'Alamat': o.rec_addr||'',
+          'Pengirim': o.sender_name||'', 'HP Pengirim': o.sender_phone||'',
+          'Tgl Kirim': o.del_date||'', 'Jam': o.del_time||'',
+          'Tulisan Papan': o.board_text||'', 'From': o.from_text||'',
+          'Status': o.status||'', 'Pembayaran': o.payment_status||'',
+          'Total (Rp)': Number(o.total)||0,
+          'Produk': (typeof fmtItems==='function') ? fmtItems(o.items) : ''
+        };
+      });
+      const ws = XLSX.utils.json_to_sheet(data);
+      ws['!cols'] = [{wch:11},{wch:18},{wch:14},{wch:14},{wch:32},{wch:18},{wch:14},{wch:11},{wch:7},{wch:24},{wch:14},{wch:10},{wch:13},{wch:13},{wch:30}];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, 'Pesanan');
+      XLSX.writeFile(wb, 'dear-darlene-pesanan-' + todayStr() + '.xlsx');
+    } catch(e){ alert('Gagal membuat Excel: ' + e.message); }
+  };
+  if (window.XLSX) return go();
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload = go;
+  s.onerror = function(){ alert('Gagal memuat modul Excel (cek koneksi). Sementara pakai Export CSV.'); };
+  document.head.appendChild(s);
 }
 function openDetail(id) {
   const o = orderMap.get(id); if (!o) return;
