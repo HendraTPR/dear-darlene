@@ -276,7 +276,8 @@ tbody tr:hover td{background:#fcfbf9}
       <button class="sb-item" id="navKalender" onclick="switchTab('kalender')" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg><span>Kalender</span></button>
       <button class="sb-item" id="navTrafik" onclick="switchTab('trafik')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 9 9M12 7v5l3 3"/></svg><span>Trafik Pengunjung</span></button>
       <button class="sb-item" id="navKeuangan" onclick="switchTab('keuangan')" style="display:none"><svg viewBox="0 0 24 24"><rect x="3" y="6" width="18" height="13" rx="2"/><path d="M3 10h18M7 15h4"/></svg><span>Keuangan</span></button>
-      <button class="sb-item" id="navProduksi" onclick="switchTab('produksi')" style="display:none"><svg viewBox="0 0 24 24"><path d="M3 21V9l6 4V9l6 4V9l6 4v8z"/><path d="M3 21h18"/></svg><span>Produksi &amp; Stok</span></button>
+      <button class="sb-item" id="navStok" onclick="switchTab('stok')" style="display:none"><svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg><span>Stok</span></button>
+      <button class="sb-item" id="navProduksi" onclick="switchTab('produksi')" style="display:none"><svg viewBox="0 0 24 24"><path d="M3 21V9l6 4V9l6 4V9l6 4v8z"/><path d="M3 21h18"/></svg><span>Produksi</span></button>
       <button class="sb-item" id="navStaff" onclick="switchTab('staff')" style="display:none"><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.8-3 3-4.5 5.5-4.5S13.7 16 14.5 19"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.7c2.2.2 3.8 1.5 4.5 3.8"/></svg><span>Kelola Pegawai</span></button>
     </nav>
     <div class="sb-foot">
@@ -446,12 +447,19 @@ tbody tr:hover td{background:#fcfbf9}
       <div class="ov-greet">
         <h1>Trafik Pengunjung</h1>
         <p>Dari mana pengunjung deardarlene.co datang · Rentang:
-          <select id="trRange" onchange="loadTrafik()" style="padding:4px 8px;border:1px solid var(--line,#e8e0d4);border-radius:7px;font-family:inherit;font-size:12px;color:#540B14;background:#fff;cursor:pointer">
-            <option value="30">30 Hari</option>
+          <select id="trRange" onchange="onTrRangeChange()" style="padding:4px 8px;border:1px solid var(--line,#e8e0d4);border-radius:7px;font-family:inherit;font-size:12px;color:#540B14;background:#fff;cursor:pointer">
+            <option value="7">7 Hari</option>
+            <option value="30" selected>30 Hari</option>
+            <option value="month">Per Bulan ▾</option>
             <option value="90">3 Bulan</option>
             <option value="365">1 Tahun</option>
             <option value="1095">3 Tahun</option>
           </select>
+          <span id="trMonthNav" style="display:none;margin-left:10px;white-space:nowrap">
+            <button class="cal-arrow" style="width:28px;height:28px;font-size:14px;vertical-align:middle" onclick="trMonthMove(-1)">‹</button>
+            <b id="trMonthLabel" style="font-size:13px;color:#540B14;margin:0 6px;vertical-align:middle">—</b>
+            <button class="cal-arrow" style="width:28px;height:28px;font-size:14px;vertical-align:middle" onclick="trMonthMove(1)">›</button>
+          </span>
         </p>
       </div>
       <div class="ov-stats" style="grid-template-columns:repeat(3,1fr)">
@@ -520,33 +528,60 @@ tbody tr:hover td{background:#fcfbf9}
     </div>
     <!-- ====== /TAB KEUANGAN ====== -->
 
-    <!-- ====== TAB PRODUKSI & STOK ====== -->
-    <div id="tabProduksi" style="display:none">
+    <!-- ====== TAB STOK ====== -->
+    <div id="tabStok" style="display:none">
       <div class="ov-greet">
-        <h1>Produksi &amp; Stok</h1>
-        <p>Stok bahan, resep produk, dan HPP otomatis dari pesanan lunas</p>
+        <h1>Stok</h1>
+        <p>Stok bahan mentah &amp; produk jadi siap kirim</p>
       </div>
       <div class="ov-stats" style="grid-template-columns:repeat(3,1fr)">
-        <div class="ov-stat"><div class="lbl">Nilai Stok Saat Ini</div><div class="val" id="prdStockVal" style="font-size:22px">—</div><div class="trd up" id="prdStockSub">&nbsp;</div></div>
-        <div class="ov-stat"><div class="lbl">Bahan Hampir Habis</div><div class="val" id="prdLowCount">—</div><div class="trd" id="prdLowSub" style="color:#b3261e">&nbsp;</div></div>
-        <div class="ov-stat"><div class="lbl">HPP Bulan Ini</div><div class="val" id="prdHpp" style="font-size:22px">—</div><div class="trd up" id="prdHppSub">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Nilai Stok Bahan</div><div class="val" id="stkBahanVal" style="font-size:21px">—</div><div class="trd up" id="stkBahanSub">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Produk Jadi (Ready)</div><div class="val" id="stkProdukVal">—</div><div class="trd up" id="stkProdukSub">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Perlu Restock</div><div class="val" id="stkLowVal">—</div><div class="trd" id="stkLowSub" style="color:#b3261e">&nbsp;</div></div>
       </div>
-      <div class="ov-grid">
-        <div class="ov-panel">
-          <h3>📦 Stok Bahan <button onclick="openMaterialForm()">+ Tambah / Beli</button></h3>
-          <div id="prdMaterials"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
-        </div>
-        <div class="ov-panel">
-          <h3>🧾 Resep Produk → HPP <button onclick="openRecipeForm()">+ Atur Resep</button></h3>
-          <div id="prdRecipes"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
-        </div>
+      <div class="ov-panel">
+        <h3>🌹 Stok Bahan Mentah <button onclick="openMaterialForm()">+ Tambah / Beli / Edit</button></h3>
+        <div id="stkMaterials"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
       </div>
-      <div class="ov-panel" style="margin-top:16px;background:linear-gradient(135deg,#540B14,#7a2230);color:#fff;border:none">
-        <h3 style="color:#fff">⚡ Otomatis: Pesanan LUNAS → Stok berkurang → HPP tercatat</h3>
-        <p style="font-size:12.5px;opacity:.92;line-height:1.6;margin:0">Begitu pesanan ditandai <b>"Sudah Bayar"</b>, sistem membaca produknya, mengurangi stok bahan sesuai resep, lalu mencatat HPP pesanan itu. Kalau stok kurang, tetap dikurangi (boleh minus) dengan peringatan.</p>
+      <div class="ov-panel" style="margin-top:14px">
+        <h3>💐 Stok Produk Jadi (Ready Stock) <button onclick="openProductForm()">+ Tambah / Edit Stok</button></h3>
+        <div id="stkProducts"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
+      </div>
+      <div class="ov-panel" style="margin-top:14px">
+        <h3>🧾 Resep Produk → HPP <button onclick="openRecipeForm()">+ Atur Resep</button></h3>
+        <div id="stkRecipes"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
       </div>
     </div>
-    <!-- ====== /TAB PRODUKSI & STOK ====== -->
+    <!-- ====== /TAB STOK ====== -->
+
+    <!-- ====== TAB PRODUKSI ====== -->
+    <div id="tabProduksi" style="display:none">
+      <div class="ov-greet">
+        <h1>Produksi</h1>
+        <p>Catat produksi batch (masuk stok jadi) atau custom (per pesanan)</p>
+      </div>
+      <div class="ov-stats" style="grid-template-columns:repeat(3,1fr)">
+        <div class="ov-stat"><div class="lbl">Produksi Bulan Ini</div><div class="val" id="prodCountVal">—</div><div class="trd up" id="prodCountSub">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Total HPP Produksi</div><div class="val" id="prodHppVal" style="font-size:21px">—</div><div class="trd up" id="prodHppSub">&nbsp;</div></div>
+        <div class="ov-stat"><div class="lbl">Produk Jadi Dihasilkan</div><div class="val" id="prodPcsVal">—</div><div class="trd up" id="prodPcsSub">&nbsp;</div></div>
+      </div>
+      <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap">
+        <div onclick="openProductionForm('batch')" style="flex:1;min-width:230px;background:linear-gradient(135deg,#1f6f8b,#16566d);color:#fff;border-radius:14px;padding:18px;cursor:pointer">
+          <div style="font-size:24px">🏭</div><b style="font-family:var(--pf,serif);font-size:15px">+ Produksi Batch</b>
+          <p style="font-size:11.5px;opacity:.9;margin-top:4px;line-height:1.5">Bikin banyak sekaligus → masuk stok produk jadi. HPP/pcs = total bahan ÷ jumlah.</p>
+        </div>
+        <div onclick="openProductionForm('custom')" style="flex:1;min-width:230px;background:linear-gradient(135deg,#6b3b8d,#542d70);color:#fff;border-radius:14px;padding:18px;cursor:pointer">
+          <div style="font-size:24px">✂️</div><b style="font-family:var(--pf,serif);font-size:15px">+ Produksi Custom</b>
+          <p style="font-size:11.5px;opacity:.9;margin-top:4px;line-height:1.5">Untuk 1 pesanan khusus → HPP nempel ke order. Tidak masuk stok jadi.</p>
+        </div>
+      </div>
+      <div class="ov-panel">
+        <h3>📋 Riwayat Produksi</h3>
+        <div id="prodHistory"><p style="color:#6f5b52;font-size:13px">Memuat...</p></div>
+      </div>
+    </div>
+    <!-- ====== /TAB PRODUKSI ====== -->
+
 
     <!-- Modal Bahan -->
     <div id="materialModal" class="overlay" onclick="if(event.target===this)closeMaterialForm()">
@@ -595,6 +630,57 @@ tbody tr:hover td{background:#fcfbf9}
         </div>
       </div>
     </div>
+
+    <!-- Modal Produk Jadi (stok ready) -->
+    <div id="productModal" class="overlay" onclick="if(event.target===this)closeProductForm()">
+      <div class="modal">
+        <h3 id="prodModalTitle">Tambah / Edit Produk Jadi</h3>
+        <p class="modal-hint" style="margin:0 0 12px;color:#6f5b52;font-size:12px">Edit stok produk jadi yang siap kirim. Untuk operasional sekarang, stok bisa dikoreksi manual di sini.</p>
+        <div class="field"><label>Produk</label>
+          <select id="prodExisting" onchange="onProdExistingChange()"><option value="">— Produk baru —</option></select>
+        </div>
+        <div class="field"><label>Nama Produk</label><input id="prodNama" type="text" list="prodNamaList" placeholder="cth: Grande Rosie"><datalist id="prodNamaList"></datalist></div>
+        <div class="field-row">
+          <div class="field"><label>Jumlah Stok (pcs)</label><input id="prodStok" type="number" step="any" placeholder="cth: 10"></div>
+          <div class="field"><label>HPP / pcs (Rp)</label><input id="prodHppManual" type="number" min="0" placeholder="cth: 150000"></div>
+        </div>
+        <div class="field"><label>Stok Minimum (peringatan)</label><input id="prodMin" type="number" step="any" placeholder="cth: 3"></div>
+        <div id="prodErr" class="err" style="display:none"></div>
+        <div class="modal-actions">
+          <button class="btn-ghost" id="prodDeleteBtn" onclick="deleteProduct()" style="display:none;color:#b3261e">🗑 Hapus</button>
+          <span style="flex:1"></span>
+          <button class="btn-ghost" onclick="closeProductForm()">Batal</button>
+          <button class="btn" onclick="saveProduct()">Simpan</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Produksi (batch / custom) -->
+    <div id="productionModal" class="overlay" onclick="if(event.target===this)closeProductionForm()">
+      <div class="modal" style="max-width:580px">
+        <h3 id="prdcModalTitle">Produksi Batch</h3>
+        <p class="modal-hint" id="prdcHint" style="margin:0 0 12px;color:#6f5b52;font-size:12px"></p>
+        <div class="field"><label>Produk yang dihasilkan</label><input id="prdcProduk" type="text" list="prodNamaList" placeholder="cth: Grande Rosie"></div>
+        <div class="field-row">
+          <div class="field"><label id="prdcQtyLabel">Jumlah Dihasilkan (pcs)</label><input id="prdcQty" type="number" step="any" value="1" oninput="updatePrdcHpp()"></div>
+          <div class="field" id="prdcOrderWrap" style="display:none"><label>Untuk Pesanan</label>
+            <select id="prdcOrder"><option value="">— pilih pesanan —</option></select>
+          </div>
+        </div>
+        <label style="font-size:10px;letter-spacing:1px;text-transform:uppercase;color:#6f5b52;font-weight:600;display:block;margin:6px 0 4px">Bahan Terpakai</label>
+        <div id="prdcRows"></div>
+        <button class="btn-ghost" onclick="addPrdcRow()" style="margin-top:8px;width:100%;border:1px dashed var(--line,#e8e0d4)">+ Tambah Bahan</button>
+        <button class="btn-ghost" id="prdcFromRecipe" onclick="fillPrdcFromRecipe()" style="margin-top:6px;width:100%;font-size:12px;color:#1f6f8b">⚡ Isi otomatis dari resep produk</button>
+        <div id="prdcSummary" style="margin-top:12px;padding:11px 13px;background:#faf8f5;border-radius:9px;font-size:12.5px"></div>
+        <div id="prdcErr" class="err" style="display:none"></div>
+        <div class="modal-actions">
+          <span style="flex:1"></span>
+          <button class="btn-ghost" onclick="closeProductionForm()">Batal</button>
+          <button class="btn" onclick="saveProduction()">Simpan Produksi</button>
+        </div>
+      </div>
+    </div>
+
 
 
 
@@ -773,6 +859,8 @@ async function loadMyPermissions() {
     // nav Produksi & Stok: super_admin atau izin keuangan (akses laporan biaya/produksi)
     const navPrd = document.getElementById('navProduksi');
     if (navPrd) navPrd.style.display = (data.role==='super_admin' || data.perm_lihat_keuangan) ? 'flex' : 'none';
+    const navStk = document.getElementById('navStok');
+    if (navStk) navStk.style.display = (data.role==='super_admin' || data.perm_lihat_keuangan) ? 'flex' : 'none';
     // perbarui nama asli di sidebar + greeting
     if (data.nama) {
       const nmEl = document.getElementById('userName'); if (nmEl) nmEl.textContent = data.nama;
@@ -951,7 +1039,7 @@ function labaCell(o) {
   return '<div class="laba-cell unset">• biaya belum diisi</div>';
 }
 function switchTab(name) {
-  const tabs = ['overview','pesanan','insight','kalender','trafik','keuangan','produksi','staff'];
+  const tabs = ['overview','pesanan','insight','kalender','trafik','keuangan','stok','produksi','staff'];
   tabs.forEach(t => {
     const cap = t.charAt(0).toUpperCase() + t.slice(1);
     const pane = document.getElementById('tab' + cap);
@@ -965,7 +1053,8 @@ function switchTab(name) {
   if (name === 'kalender') renderCalendar();
   if (name === 'trafik') loadTrafik();
   if (name === 'keuangan') renderKeuangan();
-  if (name === 'produksi') renderProduksi();
+  if (name === 'stok') renderStok();
+  if (name === 'produksi') renderProduksiTab();
 }
 
 // ===== OVERVIEW DASHBOARD =====
@@ -1249,16 +1338,26 @@ async function saveDelivery(){
 // ===== TRAFIK PENGUNJUNG =====
 async function loadTrafik(){
   const rEl = document.getElementById('trRange');
-  const days = rEl ? parseInt(rEl.value, 10) : 30;
+  const mode = rEl ? rEl.value : '30';
   let visits = [];
-  try {
+  let fromIso, toIso = null;
+  if (mode === 'month') {
+    // bulan spesifik (pakai trYear/trMonth)
+    if (window.trYear === undefined) { const n=new Date(); window.trYear=n.getFullYear(); window.trMonth=n.getMonth(); }
+    fromIso = new Date(window.trYear, window.trMonth, 1).toISOString();
+    toIso = new Date(window.trYear, window.trMonth+1, 1).toISOString();
+  } else {
+    const days = parseInt(mode, 10) || 30;
     const since = new Date(); since.setDate(since.getDate()-days);
-    const iso = since.toISOString();
-    // ambil bertahap per 1000 baris (kuat sampai 20.000 kunjungan)
+    fromIso = since.toISOString();
+  }
+  try {
     let from = 0;
     for (let i = 0; i < 20; i++) {
-      const { data, error } = await sb.from('dd_visits').select('page,source,device,created_at')
-        .gte('created_at', iso).order('created_at', { ascending:false }).range(from, from+999);
+      let qy = sb.from('dd_visits').select('page,source,device,created_at')
+        .gte('created_at', fromIso).order('created_at', { ascending:false }).range(from, from+999);
+      if (toIso) qy = qy.lt('created_at', toIso);
+      const { data, error } = await qy;
       if (error || !data || !data.length) break;
       visits = visits.concat(data);
       if (data.length < 1000) break;
@@ -1279,7 +1378,7 @@ async function loadTrafik(){
   // 7 hari
   let w = 0; for (let i=0;i<7;i++){ const d=new Date(); d.setDate(d.getDate()-i); w += byDay(d.toISOString().slice(0,10)); }
   setText('trWeek', w);
-  const mEl=document.getElementById('trWeekTrd'); if(mEl){const lbl = days>=1095?'3 tahun':(days>=365?'1 tahun':(days>=90?'3 bulan':'30 hari'));mEl.className='trd up';mEl.innerHTML=visits.length+' total '+lbl;}
+  const mEl=document.getElementById('trWeekTrd'); if(mEl){var _mode=(document.getElementById('trRange')||{}).value; var lbl; if(_mode==='month'){lbl=(typeof trMonthName==='function'?trMonthName():'bulan ini');} else {var _d=parseInt(_mode,10)||30; lbl=_d>=1095?'3 tahun':(_d>=365?'1 tahun':(_d>=90?'3 bulan':(_d+' hari')));} mEl.className='trd up';mEl.innerHTML=visits.length+' total '+lbl;}
 
   // sumber
   const srcCount = {};
@@ -1321,6 +1420,30 @@ async function loadTrafik(){
       return '<div class="ov-row"><div class="who"><b>'+esc(pgNames[x.p]||x.p)+'</b><span>'+esc(x.p)+'</span></div><span class="ov-badge proses">'+x.n+' kunjungan</span></div>';
     }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada data.</p>';
   }
+}
+
+// navigasi mode rentang trafik
+const trMonthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+function trMonthName(){ if(window.trYear===undefined){const n=new Date();window.trYear=n.getFullYear();window.trMonth=n.getMonth();} return trMonthNames[window.trMonth]+' '+window.trYear; }
+function onTrRangeChange(){
+  const mode = document.getElementById('trRange').value;
+  const nav = document.getElementById('trMonthNav');
+  if (mode === 'month') {
+    if (window.trYear === undefined) { const n=new Date(); window.trYear=n.getFullYear(); window.trMonth=n.getMonth(); }
+    document.getElementById('trMonthLabel').textContent = trMonthName();
+    nav.style.display = 'inline';
+  } else {
+    nav.style.display = 'none';
+  }
+  loadTrafik();
+}
+function trMonthMove(dir){
+  if (window.trYear === undefined) { const n=new Date(); window.trYear=n.getFullYear(); window.trMonth=n.getMonth(); }
+  window.trMonth += dir;
+  if (window.trMonth < 0) { window.trMonth = 11; window.trYear--; }
+  if (window.trMonth > 11) { window.trMonth = 0; window.trYear++; }
+  document.getElementById('trMonthLabel').textContent = trMonthName();
+  loadTrafik();
 }
 
 // ===== KEUANGAN (PENGELUARAN) =====
@@ -1493,6 +1616,115 @@ function exportExpXLSX(){
 }
 // ============ PRODUKSI & STOK ============
 let prdMaterials = [], prdRecipes = [], prdHppLog = [], recEditProduk = null, matEditId = null;
+let prdProducts = [], prdProduction = [], prodEditId = null, prdcJenis = 'batch';
+
+async function loadProduksiAll(){
+  try {
+    const m = await sb.from('dd_materials').select('*').order('nama');
+    prdMaterials = m.error ? [] : (m.data || []);
+    const r = await sb.from('dd_recipes').select('*');
+    prdRecipes = r.error ? [] : (r.data || []);
+    const p = await sb.from('dd_products').select('*').order('nama');
+    prdProducts = p.error ? [] : (p.data || []);
+    const ym = todayStr().slice(0,7);
+    const pr = await sb.from('dd_production').select('*').gte('tanggal', ym+'-01').order('created_at',{ascending:false});
+    prdProduction = pr.error ? [] : (pr.data || []);
+    const h = await sb.from('dd_hpp_log').select('*').gte('tanggal', ym+'-01');
+    prdHppLog = h.error ? [] : (h.data || []);
+  } catch(e){ prdMaterials=[]; prdRecipes=[]; prdProducts=[]; prdProduction=[]; prdHppLog=[]; }
+}
+
+// ====== TAB STOK ======
+async function renderStok(){
+  await loadProduksiAll();
+  drawStok();
+}
+
+function drawStok(){
+  let nilaiBahan = 0, low = 0;
+  prdMaterials.forEach(function(m){
+    nilaiBahan += (Number(m.stok)||0) * (Number(m.harga_satuan)||0);
+    if ((Number(m.stok)||0) <= (Number(m.stok_minimum)||0)) low++;
+  });
+  let totalPcs = 0, lowProd = 0;
+  prdProducts.forEach(function(p){
+    totalPcs += Number(p.stok)||0;
+    if ((Number(p.stok)||0) <= (Number(p.stok_minimum)||0)) lowProd++;
+  });
+  setText('stkBahanVal', fmtRp(nilaiBahan));
+  const bs=document.getElementById('stkBahanSub'); if(bs) bs.innerHTML = prdMaterials.length + ' jenis bahan';
+  setText('stkProdukVal', totalPcs + ' pcs');
+  const ps=document.getElementById('stkProdukSub'); if(ps) ps.innerHTML = prdProducts.length + ' jenis produk';
+  setText('stkLowVal', low + lowProd);
+  const ls=document.getElementById('stkLowSub'); if(ls){ ls.className='trd '+((low+lowProd)?'down':'up'); ls.innerHTML = (low+lowProd) ? '⚠ stok menipis' : '✓ semua aman'; }
+
+  // stok bahan
+  const mEl = document.getElementById('stkMaterials');
+  if (mEl) {
+    mEl.innerHTML = prdMaterials.length ? prdMaterials.map(function(m){
+      const stok = Number(m.stok)||0, min = Number(m.stok_minimum)||0;
+      const badge = stok < 0 ? '<span class="ov-badge belum">MINUS</span>' : (stok > min ? '<span class="ov-badge lunas">AMAN</span>' : '<span class="ov-badge belum">MENIPIS</span>');
+      return '<div class="ov-row" style="cursor:pointer" onclick="openMaterialForm(\''+m.id+'\')"><div class="who"><b>'+esc(m.nama)+'</b><span>'+fmtRp(Number(m.harga_satuan)||0)+' / '+esc(m.satuan)+'</span></div><div style="text-align:right"><b style="font-size:13px">'+stok+' '+esc(m.satuan)+'</b><br>'+badge+'</div></div>';
+    }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada bahan. Klik "+ Tambah / Beli / Edit".</p>';
+  }
+
+  // stok produk jadi
+  const pEl = document.getElementById('stkProducts');
+  if (pEl) {
+    pEl.innerHTML = prdProducts.length ? prdProducts.map(function(p){
+      const stok = Number(p.stok)||0, min = Number(p.stok_minimum)||0;
+      const badge = stok <= 0 ? '<span class="ov-badge belum">HABIS</span>' : (stok > min ? '<span class="ov-badge lunas">READY</span>' : '<span class="ov-badge belum">TINGGAL '+stok+'</span>');
+      return '<div class="ov-row" style="cursor:pointer" onclick="openProductForm(\''+p.id+'\')"><div class="who"><b>'+esc(p.nama)+'</b><span>HPP '+fmtRp(Number(p.hpp_satuan)||0)+' / pcs</span></div><div style="text-align:right"><b style="font-size:13px">'+stok+' pcs</b><br>'+badge+'</div></div>';
+    }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada produk jadi. Produksi batch dulu, atau klik "+ Tambah / Edit Stok".</p>';
+  }
+
+  // resep
+  const rEl = document.getElementById('stkRecipes');
+  if (rEl) {
+    const produkSet = {};
+    prdRecipes.forEach(function(r){ produkSet[r.produk] = 1; });
+    const produks = Object.keys(produkSet);
+    rEl.innerHTML = produks.length ? produks.map(function(p){
+      const rows = prdRecipes.filter(function(r){ return r.produk===p; });
+      const detail = rows.map(function(r){ const m=matById(r.material_id); return (Number(r.qty)||0)+' '+(m?esc(m.nama):'?'); }).join(' + ');
+      return '<div style="background:#faf8f5;border:1px solid var(--line,#e8e0d4);border-radius:10px;padding:11px 13px;margin-bottom:9px;cursor:pointer" onclick="openRecipeForm(\''+encodeURIComponent(p)+'\')"><b style="font-size:12.5px;color:#540B14">'+esc(p)+'</b><div style="font-size:11px;color:#6f5b52;margin-top:3px;line-height:1.5">'+detail+'</div><div style="font-size:11px;color:#1d7a4f;font-weight:600;margin-top:4px">HPP otomatis ≈ '+fmtRp(hppOfProduk(p))+'</div></div>';
+    }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada resep. Klik "+ Atur Resep".</p>';
+  }
+}
+
+// ====== TAB PRODUKSI ======
+async function renderProduksiTab(){
+  await loadProduksiAll();
+  drawProduksiTab();
+}
+
+function drawProduksiTab(){
+  setText('prodCountVal', prdProduction.length);
+  const cs=document.getElementById('prodCountSub'); if(cs) cs.innerHTML='bulan ini';
+  const totalHpp = prdProduction.reduce(function(s,p){ return s+(Number(p.total_hpp)||0); },0);
+  setText('prodHppVal', fmtRp(totalHpp));
+  const hs=document.getElementById('prodHppSub'); if(hs) hs.innerHTML='total biaya produksi';
+  const totalPcs = prdProduction.filter(function(p){return p.jenis==='batch';}).reduce(function(s,p){ return s+(Number(p.qty)||0); },0);
+  setText('prodPcsVal', totalPcs + ' pcs');
+  const pcs=document.getElementById('prodPcsSub'); if(pcs) pcs.innerHTML='dari produksi batch';
+
+  const hEl = document.getElementById('prodHistory');
+  if (hEl) {
+    hEl.innerHTML = prdProduction.length ? prdProduction.map(function(p){
+      const tag = p.jenis==='batch' ? '<span style="font-size:9px;font-weight:600;padding:3px 9px;border-radius:6px;background:#e4eef5;color:#1f6f8b;margin-right:6px">BATCH</span>' : '<span style="font-size:9px;font-weight:600;padding:3px 9px;border-radius:6px;background:#ede4f3;color:#6b3b8d;margin-right:6px">CUSTOM</span>';
+      const tgl = p.tanggal ? p.tanggal.slice(8,10)+'/'+p.tanggal.slice(5,7) : '';
+      const bahanTxt = Array.isArray(p.bahan) ? p.bahan.map(function(b){ return (b.qty||0)+' '+(b.nama||''); }).join(' + ') : '';
+      const who = (p.dibuat_oleh||'').split('@')[0];
+      const hppLine = p.jenis==='batch' ? ('HPP '+fmtRp(Number(p.hpp_satuan)||0)+'/pcs') : 'HPP custom';
+      return '<div class="ov-row"><div class="who">'+tag+'<b>'+esc(p.produk)+' × '+(Number(p.qty)||0)+' pcs</b><span>'+tgl+' · '+esc(bahanTxt)+(who?' · '+esc(who):'')+'</span></div><div style="text-align:right"><b style="font-size:13px">'+fmtRp(Number(p.total_hpp)||0)+'</b><br><span style="font-size:10.5px;color:#6f5b52">'+hppLine+'</span></div></div>';
+    }).join('') : '<p style="color:#6f5b52;font-size:13px">Belum ada produksi bulan ini. Klik tombol Batch atau Custom di atas.</p>';
+  }
+}
+
+async function renderProduksiOLD(){
+  await loadProduksiData();
+  drawProduksi();
+}
 
 async function renderProduksi(){
   await loadProduksiData();
@@ -1603,7 +1835,7 @@ async function saveMaterial(){
       if (error) throw error;
       if (qty !== 0 && data) await sb.from('dd_stock_log').insert({ material_id: data.id, tipe:'masuk', qty: qty, catatan:'Stok awal', dibuat_oleh: window.__userEmail||null });
     }
-    closeMaterialForm(); renderProduksi();
+    closeMaterialForm(); refreshProduksiViews();
   } catch(e){ err.textContent='Gagal simpan: '+e.message; err.style.display='block'; }
 }
 
@@ -1612,7 +1844,7 @@ async function deleteMaterial(){
   if (!confirm('Hapus bahan ini? Resep yang memakainya juga akan terhapus.')) return;
   const { error } = await sb.from('dd_materials').delete().eq('id', matEditId);
   if (error) { alert('Gagal hapus: '+error.message); return; }
-  closeMaterialForm(); renderProduksi();
+  closeMaterialForm(); refreshProduksiViews();
 }
 
 // ----- Modal Resep -----
@@ -1674,7 +1906,7 @@ async function saveRecipe(){
     if (target !== produk) await sb.from('dd_recipes').delete().eq('produk', produk);
     const { error } = await sb.from('dd_recipes').insert(rows);
     if (error) throw error;
-    closeRecipeForm(); renderProduksi();
+    closeRecipeForm(); refreshProduksiViews();
   } catch(e){ err.textContent='Gagal simpan: '+e.message; err.style.display='block'; }
 }
 
@@ -1683,7 +1915,194 @@ async function deleteRecipe(){
   if (!confirm('Hapus resep "'+recEditProduk+'"?')) return;
   const { error } = await sb.from('dd_recipes').delete().eq('produk', recEditProduk);
   if (error) { alert('Gagal hapus: '+error.message); return; }
-  closeRecipeForm(); renderProduksi();
+  closeRecipeForm(); refreshProduksiViews();
+}
+
+// refresh tab yang sedang aktif (stok / produksi)
+function refreshProduksiViews(){
+  const stokVis = document.getElementById('tabStok') && document.getElementById('tabStok').style.display !== 'none';
+  const prodVis = document.getElementById('tabProduksi') && document.getElementById('tabProduksi').style.display !== 'none';
+  if (stokVis) renderStok();
+  else if (prodVis) renderProduksiTab();
+  else loadProduksiAll();
+}
+
+// ----- Modal Produk Jadi -----
+function prodById(id){ return prdProducts.find(function(p){ return p.id===id; }); }
+
+function openProductForm(id){
+  prodEditId = id || null;
+  const p = id ? prodById(id) : null;
+  document.getElementById('prodModalTitle').textContent = p ? 'Edit Stok: ' + p.nama : 'Tambah / Edit Produk Jadi';
+  document.getElementById('prodDeleteBtn').style.display = p ? 'inline-block' : 'none';
+  const sel = document.getElementById('prodExisting');
+  sel.innerHTML = '<option value="">— Produk baru —</option>' + prdProducts.map(function(x){ return '<option value="'+x.id+'"'+(p&&p.id===x.id?' selected':'')+'>'+esc(x.nama)+'</option>'; }).join('');
+  // datalist nama produk dari pesanan + resep + produk
+  const names = {};
+  try { (allOrders||[]).forEach(function(o){ if(Array.isArray(o.items)) o.items.forEach(function(it){ const n=it.nama||it.name; if(n) names[n]=1; }); }); } catch(e){}
+  prdRecipes.forEach(function(r){ names[r.produk]=1; });
+  prdProducts.forEach(function(x){ names[x.nama]=1; });
+  document.getElementById('prodNamaList').innerHTML = Object.keys(names).map(function(n){ return '<option value="'+esc(n)+'">'; }).join('');
+  document.getElementById('prodNama').value = p ? p.nama : '';
+  document.getElementById('prodStok').value = p ? p.stok : '';
+  document.getElementById('prodHppManual').value = p ? p.hpp_satuan : '';
+  document.getElementById('prodMin').value = p ? p.stok_minimum : '';
+  document.getElementById('prodErr').style.display = 'none';
+  document.getElementById('productModal').classList.add('on');
+}
+function closeProductForm(){ document.getElementById('productModal').classList.remove('on'); }
+function onProdExistingChange(){
+  const id = document.getElementById('prodExisting').value;
+  if (id) openProductForm(id);
+  else { prodEditId=null; ['prodNama','prodStok','prodHppManual','prodMin'].forEach(function(x){ document.getElementById(x).value=''; }); document.getElementById('prodDeleteBtn').style.display='none'; }
+}
+async function saveProduct(){
+  const err = document.getElementById('prodErr'); err.style.display='none';
+  const nama = document.getElementById('prodNama').value.trim();
+  const stok = parseFloat(document.getElementById('prodStok').value) || 0;
+  const hpp = parseInt(document.getElementById('prodHppManual').value,10) || 0;
+  const min = parseFloat(document.getElementById('prodMin').value) || 0;
+  if (!nama) { err.textContent='Nama produk wajib diisi.'; err.style.display='block'; return; }
+  try {
+    if (prodEditId) {
+      const { error } = await sb.from('dd_products').update({ nama:nama, stok:stok, hpp_satuan:hpp, stok_minimum:min }).eq('id', prodEditId);
+      if (error) throw error;
+    } else {
+      const { error } = await sb.from('dd_products').insert({ nama:nama, stok:stok, hpp_satuan:hpp, stok_minimum:min });
+      if (error) throw error;
+    }
+    closeProductForm(); refreshProduksiViews();
+  } catch(e){ err.textContent='Gagal simpan: '+e.message; err.style.display='block'; }
+}
+async function deleteProduct(){
+  if (!prodEditId) return;
+  if (!confirm('Hapus produk jadi ini?')) return;
+  const { error } = await sb.from('dd_products').delete().eq('id', prodEditId);
+  if (error) { alert('Gagal hapus: '+error.message); return; }
+  closeProductForm(); refreshProduksiViews();
+}
+
+// ----- Modal Produksi (batch / custom) -----
+function openProductionForm(jenis){
+  prdcJenis = jenis || 'batch';
+  document.getElementById('prdcModalTitle').textContent = prdcJenis==='batch' ? '🏭 Produksi Batch' : '✂️ Produksi Custom';
+  document.getElementById('prdcHint').textContent = prdcJenis==='batch'
+    ? 'Bikin banyak sekaligus → masuk stok produk jadi. HPP/pcs = total bahan ÷ jumlah.'
+    : 'Untuk 1 pesanan khusus → HPP nempel ke pesanan. Tidak masuk stok jadi.';
+  document.getElementById('prdcQtyLabel').textContent = prdcJenis==='batch' ? 'Jumlah Dihasilkan (pcs)' : 'Jumlah (pcs)';
+  document.getElementById('prdcOrderWrap').style.display = prdcJenis==='custom' ? 'block' : 'none';
+  document.getElementById('prdcProduk').value = '';
+  document.getElementById('prdcQty').value = '1';
+  // datalist produk
+  const names = {};
+  prdRecipes.forEach(function(r){ names[r.produk]=1; });
+  prdProducts.forEach(function(x){ names[x.nama]=1; });
+  try { (allOrders||[]).forEach(function(o){ if(Array.isArray(o.items)) o.items.forEach(function(it){ const n=it.nama||it.name; if(n) names[n]=1; }); }); } catch(e){}
+  document.getElementById('prodNamaList').innerHTML = Object.keys(names).map(function(n){ return '<option value="'+esc(n)+'">'; }).join('');
+  // dropdown pesanan (custom) - yang belum lunas / aktif
+  if (prdcJenis==='custom') {
+    const sel = document.getElementById('prdcOrder');
+    let opts = '<option value="">— pilih pesanan —</option>';
+    try {
+      (allOrders||[]).filter(function(o){ return !o.deleted_at; }).slice(0,50).forEach(function(o){
+        const prod = (Array.isArray(o.items)&&o.items[0]) ? (o.items[0].nama||o.items[0].name||'') : '';
+        opts += '<option value="'+o.id+'">'+esc((o.rec_name||'')+' · '+prod)+'</option>';
+      });
+    } catch(e){}
+    sel.innerHTML = opts;
+  }
+  document.getElementById('prdcRows').innerHTML = '';
+  addPrdcRow();
+  document.getElementById('prdcErr').style.display='none';
+  updatePrdcHpp();
+  document.getElementById('productionModal').classList.add('on');
+}
+function closeProductionForm(){ document.getElementById('productionModal').classList.remove('on'); }
+
+function addPrdcRow(matId, qty){
+  const wrap = document.getElementById('prdcRows');
+  const div = document.createElement('div');
+  div.className = 'field-row prdcRow';
+  div.style.cssText = 'gap:8px;margin-bottom:8px;align-items:flex-end';
+  const opts = '<option value="">— pilih bahan —</option>' + prdMaterials.map(function(m){ return '<option value="'+m.id+'"'+(matId===m.id?' selected':'')+'>'+esc(m.nama)+' ('+esc(m.satuan)+') · sisa '+(Number(m.stok)||0)+'</option>'; }).join('');
+  div.innerHTML = '<div class="field" style="flex:2"><label>Bahan</label><select class="prdcMat" onchange="updatePrdcHpp()">'+opts+'</select></div><div class="field" style="flex:1"><label>Jumlah Total</label><input class="prdcQ" type="number" step="any" value="'+(qty!=null?qty:'')+'" oninput="updatePrdcHpp()" placeholder="0"></div><button class="btn-ghost" onclick="this.parentNode.remove();updatePrdcHpp()" style="color:#b3261e;padding:8px 10px">✕</button>';
+  wrap.appendChild(div);
+}
+
+function fillPrdcFromRecipe(){
+  const produk = document.getElementById('prdcProduk').value.trim();
+  const qtyPcs = parseFloat(document.getElementById('prdcQty').value) || 1;
+  if (!produk) { alert('Isi nama produk dulu, lalu klik ini.'); return; }
+  const recRows = prdRecipes.filter(function(r){ return r.produk===produk; });
+  if (!recRows.length) { alert('Produk "'+produk+'" belum punya resep. Atur resep dulu di menu Stok, atau isi bahan manual.'); return; }
+  document.getElementById('prdcRows').innerHTML = '';
+  recRows.forEach(function(r){ addPrdcRow(r.material_id, (Number(r.qty)||0) * qtyPcs); });
+  updatePrdcHpp();
+}
+
+function updatePrdcHpp(){
+  let total = 0;
+  document.querySelectorAll('#prdcRows .prdcRow').forEach(function(row){
+    const mid = row.querySelector('.prdcMat').value;
+    const q = parseFloat(row.querySelector('.prdcQ').value)||0;
+    const m = matById(mid);
+    if (m) total += (Number(m.harga_satuan)||0) * q;
+  });
+  const qtyPcs = parseFloat(document.getElementById('prdcQty').value) || 1;
+  const perPcs = qtyPcs>0 ? Math.round(total/qtyPcs) : 0;
+  const sum = document.getElementById('prdcSummary');
+  if (sum) {
+    sum.innerHTML = '<div style="display:flex;justify-content:space-between"><span style="color:#6f5b52">Total HPP produksi</span><b style="color:#540B14">'+fmtRp(Math.round(total))+'</b></div>' +
+      (prdcJenis==='batch' ? '<div style="display:flex;justify-content:space-between;margin-top:4px"><span style="color:#6f5b52">HPP per pcs ('+qtyPcs+' pcs)</span><b style="color:#1d7a4f">'+fmtRp(perPcs)+'</b></div>' : '');
+  }
+}
+
+async function saveProduction(){
+  const err = document.getElementById('prdcErr'); err.style.display='none';
+  const produk = document.getElementById('prdcProduk').value.trim();
+  const qtyPcs = parseFloat(document.getElementById('prdcQty').value) || 0;
+  if (!produk || qtyPcs<=0) { err.textContent='Produk & jumlah wajib diisi.'; err.style.display='block'; return; }
+  const orderId = prdcJenis==='custom' ? document.getElementById('prdcOrder').value : null;
+  // kumpulkan bahan
+  const bahan = []; let total = 0;
+  document.querySelectorAll('#prdcRows .prdcRow').forEach(function(row){
+    const mid = row.querySelector('.prdcMat').value;
+    const q = parseFloat(row.querySelector('.prdcQ').value)||0;
+    const m = matById(mid);
+    if (m && q>0) { const harga=Number(m.harga_satuan)||0; bahan.push({material_id:mid, nama:m.nama, qty:q, harga:harga}); total += harga*q; }
+  });
+  if (!bahan.length) { err.textContent='Tambahkan minimal 1 bahan.'; err.style.display='block'; return; }
+  const hppSatuan = Math.round(total/qtyPcs);
+  try {
+    // 1) kurangi stok bahan + log
+    const lowWarn = [];
+    for (const b of bahan) {
+      const m = matById(b.material_id);
+      const newStok = (Number(m.stok)||0) - b.qty;
+      await sb.from('dd_materials').update({ stok:newStok }).eq('id', b.material_id);
+      await sb.from('dd_stock_log').insert({ material_id:b.material_id, tipe:'keluar', qty:-b.qty, catatan:'Produksi '+prdcJenis+': '+produk, order_id:orderId||null, dibuat_oleh:window.__userEmail||null });
+      m.stok = newStok;
+      if (newStok < 0) lowWarn.push(m.nama+' ('+newStok+' '+m.satuan+')');
+    }
+    // 2) catat produksi
+    await sb.from('dd_production').insert({ jenis:prdcJenis, produk:produk, qty:qtyPcs, total_hpp:Math.round(total), hpp_satuan:hppSatuan, bahan:bahan, order_id:orderId||null, dibuat_oleh:window.__userEmail||null, tanggal:todayStr() });
+    // 3a) batch → tambah stok produk jadi (+update HPP)
+    if (prdcJenis==='batch') {
+      const existing = prdProducts.find(function(p){ return p.nama.toLowerCase()===produk.toLowerCase(); });
+      if (existing) {
+        await sb.from('dd_products').update({ stok:(Number(existing.stok)||0)+qtyPcs, hpp_satuan:hppSatuan }).eq('id', existing.id);
+      } else {
+        await sb.from('dd_products').insert({ nama:produk, stok:qtyPcs, hpp_satuan:hppSatuan, stok_minimum:0 });
+      }
+    }
+    // 3b) custom → catat HPP ke order (kalau dipilih)
+    if (prdcJenis==='custom' && orderId) {
+      const ex = await sb.from('dd_hpp_log').select('id').eq('order_id', orderId).maybeSingle();
+      if (!(ex && ex.data)) await sb.from('dd_hpp_log').insert({ order_id:orderId, produk:produk, hpp:Math.round(total), tanggal:todayStr() });
+    }
+    if (lowWarn.length) alert('⚠️ Produksi tersimpan, tapi bahan ini jadi MINUS:\n\n'+lowWarn.join('\n')+'\n\nSegera restock ya!');
+    closeProductionForm(); refreshProduksiViews();
+  } catch(e){ err.textContent='Gagal simpan: '+e.message; err.style.display='block'; }
 }
 
 function renderInsight() {
@@ -1767,46 +2186,52 @@ async function processStockForOrder(o){
   try {
     // cek belum pernah diproses (hindari dobel)
     const exist = await sb.from('dd_hpp_log').select('id').eq('order_id', o.id).maybeSingle();
-    if (exist && exist.data) return; // sudah pernah
+    if (exist && exist.data) return; // sudah pernah (mis. custom sudah dicatat saat produksi)
     // pastikan data master ada
-    if (!prdMaterials.length && !prdRecipes.length) {
+    if (!prdMaterials.length && !prdRecipes.length && !prdProducts.length) {
       const m = await sb.from('dd_materials').select('*'); prdMaterials = m.error?[]:(m.data||[]);
       const r = await sb.from('dd_recipes').select('*'); prdRecipes = r.error?[]:(r.data||[]);
+      const p = await sb.from('dd_products').select('*'); prdProducts = p.error?[]:(p.data||[]);
     }
-    // kumpulkan produk dari item pesanan
     const items = Array.isArray(o.items) ? o.items : [];
     if (!items.length) return;
     let totalHpp = 0; const produkNames = [];
-    const usage = {}; // material_id -> qty terpakai
-    items.forEach(function(it){
-      const nama = it.nama || it.name; if (!nama) return;
+    const warns = [];
+
+    for (const it of items) {
+      const nama = it.nama || it.name; if (!nama) continue;
       const jumlah = Number(it.qty || it.jumlah || 1) || 1;
       produkNames.push(nama);
-      const recRows = prdRecipes.filter(function(r){ return r.produk === nama; });
-      recRows.forEach(function(r){
-        usage[r.material_id] = (usage[r.material_id]||0) + (Number(r.qty)||0) * jumlah;
-      });
-      totalHpp += hppOfProduk(nama) * jumlah;
-    });
-    // kurangi stok tiap bahan + log
-    const lowWarn = [];
-    for (const mid in usage) {
-      const m = prdMaterials.find(function(x){ return x.id===mid; });
-      if (!m) continue;
-      const pakai = usage[mid];
-      const newStok = (Number(m.stok)||0) - pakai;
-      await sb.from('dd_materials').update({ stok: newStok }).eq('id', mid);
-      await sb.from('dd_stock_log').insert({ material_id: mid, tipe:'keluar', qty: -pakai, catatan:'Produksi pesanan', order_id: o.id, dibuat_oleh: window.__userEmail||null });
-      m.stok = newStok; // sinkron lokal
-      if (newStok < 0) lowWarn.push(m.nama + ' (' + newStok + ' ' + m.satuan + ')');
+      // 1) cek STOK PRODUK JADI dulu
+      const prod = prdProducts.find(function(p){ return p.nama.toLowerCase()===nama.toLowerCase(); });
+      if (prod) {
+        const newStok = (Number(prod.stok)||0) - jumlah;
+        await sb.from('dd_products').update({ stok: newStok }).eq('id', prod.id);
+        prod.stok = newStok;
+        totalHpp += (Number(prod.hpp_satuan)||0) * jumlah;
+        if (newStok < 0) warns.push(nama + ' (stok jadi: ' + newStok + ' pcs)');
+      } else {
+        // 2) tidak ada stok jadi → kurangi BAHAN via resep
+        const recRows = prdRecipes.filter(function(r){ return r.produk === nama; });
+        for (const r of recRows) {
+          const m = prdMaterials.find(function(x){ return x.id===r.material_id; });
+          if (!m) continue;
+          const pakai = (Number(r.qty)||0) * jumlah;
+          const newStok = (Number(m.stok)||0) - pakai;
+          await sb.from('dd_materials').update({ stok: newStok }).eq('id', m.id);
+          await sb.from('dd_stock_log').insert({ material_id: m.id, tipe:'keluar', qty:-pakai, catatan:'Pesanan (tanpa stok jadi): '+nama, order_id:o.id, dibuat_oleh:window.__userEmail||null });
+          m.stok = newStok;
+          if (newStok < 0) warns.push(m.nama + ' (' + newStok + ' ' + m.satuan + ')');
+        }
+        totalHpp += hppOfProduk(nama) * jumlah;
+      }
     }
-    // catat HPP (kalau ada resepnya)
+    // catat HPP pesanan
     if (totalHpp > 0) {
-      await sb.from('dd_hpp_log').insert({ order_id: o.id, produk: produkNames.join(', '), hpp: Math.round(totalHpp), tanggal: todayStr() });
+      await sb.from('dd_hpp_log').insert({ order_id:o.id, produk:produkNames.join(', '), hpp:Math.round(totalHpp), tanggal:todayStr() });
     }
-    // peringatan kalau ada stok minus
-    if (lowWarn.length) {
-      alert('⚠️ Stok berkurang, tapi beberapa bahan jadi MINUS:\n\n' + lowWarn.join('\n') + '\n\nSegera restock ya!');
+    if (warns.length) {
+      alert('⚠️ Stok berkurang, tapi ada yang MINUS:\n\n' + warns.join('\n') + '\n\nSegera restock / produksi ya!');
     }
   } catch(e){ /* diam-diam, jangan ganggu alur pembayaran */ }
 }

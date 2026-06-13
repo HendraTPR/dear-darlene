@@ -92,14 +92,19 @@ function ddSwap(thumb, mainId){
 
     var ref = document.referrer || '';
     var q = new URLSearchParams(location.search);
-    var utm = q.get('utm_source') || '';
+    var utm = (q.get('utm_source') || '').toLowerCase();
+    var utmMed = (q.get('utm_medium') || '').toLowerCase();
+    var hasFbclid = location.search.indexOf('fbclid') > -1;
+    var hasGclid = location.search.indexOf('gclid') > -1;
+    var r = (utm + ' ' + utmMed + ' ' + ref).toLowerCase();
     var src = 'Direct';
-    var r = (utm || ref).toLowerCase();
-    if (r.indexOf('instagram') > -1 || utm.toLowerCase()==='ig') src = 'Instagram';
-    else if (r.indexOf('google') > -1) src = 'Google';
-    else if (r.indexOf('whatsapp') > -1 || r.indexOf('wa.me') > -1) src = 'WhatsApp';
-    else if (r.indexOf('facebook') > -1 || r.indexOf('fb.') > -1) src = 'Facebook';
-    else if (r.indexOf('tiktok') > -1) src = 'TikTok';
+    // Instagram: utm ig/instagram, atau referrer instagram, atau link bio (l.instagram / bio.site dgn utm ig)
+    if (utm === 'ig' || utm === 'instagram' || r.indexOf('instagram') > -1 || ref.indexOf('l.instagram') > -1) src = 'Instagram';
+    else if (utm === 'fb' || utm === 'facebook' || r.indexOf('facebook') > -1 || r.indexOf('fb.') > -1 || hasFbclid) src = 'Facebook';
+    else if (utm === 'tiktok' || utm === 'tt' || r.indexOf('tiktok') > -1) src = 'TikTok';
+    else if (utm === 'wa' || utm === 'whatsapp' || r.indexOf('whatsapp') > -1 || r.indexOf('wa.me') > -1) src = 'WhatsApp';
+    else if (utm === 'google' || r.indexOf('google') > -1 || hasGclid) src = 'Google';
+    else if (utm) src = utm.charAt(0).toUpperCase() + utm.slice(1); // utm lain → pakai nilainya
     else if (ref && ref.indexOf(location.hostname) === -1) src = 'Lainnya';
 
     var device = (Math.min(screen.width, screen.height) < 768 || /Mobi|Android/i.test(navigator.userAgent)) ? 'mobile' : 'desktop';
