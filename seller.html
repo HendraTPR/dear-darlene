@@ -480,6 +480,9 @@ tbody tr:hover td{background:#fcfbf9}
         <h2 id="expTitle" style="font-family:var(--pf,serif);font-size:18px;color:#540B14;font-weight:600;min-width:150px;text-align:center">—</h2>
         <button class="cal-arrow" onclick="expMove(1)">›</button>
         <button class="cal-today" onclick="expThisMonth()">Bulan ini</button>
+        <span style="flex:1"></span>
+        <button class="cal-today" onclick="exportExpCSV()">⬇ CSV</button>
+        <button class="cal-today" onclick="exportExpXLSX()" style="font-weight:600;color:#1d7a4f">⬇ Excel</button>
       </div>
       <div class="ov-stats" style="grid-template-columns:repeat(3,1fr)">
         <div class="ov-stat"><div class="lbl">Pengeluaran Bulan Ini</div><div class="val" id="expThis" style="font-size:23px">—</div><div class="trd up" id="expThisTrd">&nbsp;</div></div>
@@ -1327,6 +1330,59 @@ async function deleteExpense(id){
   const { error } = await sb.from('dd_expenses').delete().eq('id', id);
   if (error) { alert('Gagal hapus: '+error.message); return; }
   renderKeuangan();
+}
+
+// data pengeluaran bulan yang sedang dipilih
+function expMonthArr(){
+  const ym = expYear + '-' + String(expMonth+1).padStart(2,'0');
+  return expData.filter(function(e){ return (e.tanggal||'').slice(0,7) === ym; })
+    .slice().sort(function(a,b){ return (a.tanggal||'').localeCompare(b.tanggal||''); });
+}
+
+// Export CSV (kebuka di Excel/Google Sheets)
+function exportExpCSV(){
+  const rows = expMonthArr();
+  if (!rows.length) { alert('Belum ada pengeluaran di bulan ini.'); return; }
+  const q = function(s){ s = (s==null?'':String(s)); return '"' + s.replace(/"/g,'""') + '"'; };
+  let csv = 'Tanggal;Kategori;Keterangan;Jumlah (Rp);Dibuat Oleh\n';
+  let tot = 0;
+  rows.forEach(function(e){
+    tot += Number(e.jumlah)||0;
+    csv += [e.tanggal, q(e.kategori), q(e.keterangan||''), Number(e.jumlah)||0, q((e.dibuat_oleh||'').split('@')[0])].join(';') + '\n';
+  });
+  csv += ['TOTAL','','', tot, ''].join(';') + '\n';
+  const nama = 'pengeluaran-' + expMonthNames[expMonth] + '-' + expYear + '.csv';
+  const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = nama; a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+// Export Excel asli (.xlsx) — bisa langsung dibuka di Excel / di-import ke Google Sheets
+function exportExpXLSX(){
+  const rows = expMonthArr();
+  if (!rows.length) { alert('Belum ada pengeluaran di bulan ini.'); return; }
+  const go = function(){
+    try {
+      let tot = 0;
+      const data = rows.map(function(e){
+        tot += Number(e.jumlah)||0;
+        return { 'Tanggal': e.tanggal, 'Kategori': e.kategori||'', 'Keterangan': e.keterangan||'', 'Jumlah (Rp)': Number(e.jumlah)||0, 'Dibuat Oleh': (e.dibuat_oleh||'').split('@')[0] };
+      });
+      data.push({ 'Tanggal':'TOTAL', 'Kategori':'', 'Keterangan':'', 'Jumlah (Rp)': tot, 'Dibuat Oleh':'' });
+      const ws = XLSX.utils.json_to_sheet(data);
+      ws['!cols'] = [{wch:12},{wch:18},{wch:34},{wch:14},{wch:16}];
+      const wb = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(wb, ws, expMonthNames[expMonth] + ' ' + expYear);
+      XLSX.writeFile(wb, 'pengeluaran-' + expMonthNames[expMonth] + '-' + expYear + '.xlsx');
+    } catch(e){ alert('Gagal membuat Excel: ' + e.message); }
+  };
+  if (window.XLSX) return go();
+  const s = document.createElement('script');
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js';
+  s.onload = go;
+  s.onerror = function(){ alert('Gagal memuat modul Excel (cek koneksi). Sementara bisa pakai tombol CSV.'); };
+  document.head.appendChild(s);
 }
 function renderInsight() {
   const mo = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
